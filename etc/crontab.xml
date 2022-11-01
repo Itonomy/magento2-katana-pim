@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="itonomy_katanapim">
+        <job name="itonomy_katanapim_specifications_import" instance="Itonomy\Katanapim\Cron\SpecificationsImport"
+             method="execute">
+            <config_path>katanapim_crons/crons/specifications</config_path>
+        </job>
+        <job name="itonomy_katanapim_products_import" instance="Itonomy\Katanapim\Cron\ProductsImport"
+             method="execute">
+            <config_path>katanapim_crons/crons/products</config_path>
+        </job>
+        <job name="itonomy_katanapim_specifications_localization_import" instance="Itonomy\Katanapim\Cron\SpecificationsLocalizationImport"
+             method="execute">
+            <config_path>katanapim_crons/crons/specification_localization</config_path>
+        </job>
+    </group>
+</config>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="katanapim_attribute_mapping" resource="default" engine="innodb"
+           comment="Katana PIM Attribute Mapping Table">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity Id"/>
+        <column xsi:type="int" name="katana_id" padding="10" unsigned="true" nullable="false"
+                comment="Katana Entity Id"/>
+        <column xsi:type="varchar" name="katana_attribute_code" nullable="false" length="255"
+                comment="Katana Attribute Code"/>
+        <column xsi:type="varchar" name="katana_attribute_name" nullable="false" length="255"
+                comment="Katana Attribute Name"/>
+        <column xsi:type="varchar" name="katana_attribute_type" nullable="false" length="255"
+                comment="Katana Attribute Type"/>
+        <column xsi:type="varchar" name="katana_attribute_type_id" nullable="false" length="255"
+                comment="Katana Attribute Type Id"/>
+        <column xsi:type="int" name="magento_attribute_id" padding="10" unsigned="true" nullable="false" default="0"
+                comment="Magento Attribute Id"/>
+        <column xsi:type="varchar" name="magento_attribute_code" nullable="false" length="255"
+                comment="Magento Attribute Code"/>
+        <column xsi:type="smallint" name="is_configurable" nullable="false" default="0"
+                comment="Magento Attribute Code"/>
+        <column xsi:type="int" name="store" padding="10" unsigned="true" nullable="false" default="0"
+                comment="store"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+
+        <constraint xsi:type="unique" referenceId="KATANA_MAGENTO_CODE">
+            <column name="katana_attribute_code"/>
+            <column name="magento_attribute_code"/>
+        </constraint>
+    </table>
+    <table name="katanapim_attribute_set" resource="default" engine="innodb"
+           comment="Katana PIM Characteristic Group">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Katana Characteristic Group Id"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255"
+                comment="Katana Characteristic Group Name"/>
+        <column xsi:type="varchar" name="code" nullable="false" length="255"
+                comment="Katana Characteristic Group Code"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="katanapim_set_to_attribute" resource="default" engine="innodb"
+           comment="Katana PIM Characteristic Group Id to Katana Characteristic Id">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity Id"/>
+        <column xsi:type="int" name="set_id" padding="10" unsigned="true" nullable="false"
+                comment="Katana Characteristic Group Id"/>
+        <column xsi:type="int" name="attribute_id" padding="10" unsigned="true" nullable="false"
+                comment="Katana Characteristic Id"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+
+        <constraint xsi:type="unique" referenceId="KATANA_SET_TO_ATTRIBUTE">
+            <column name="set_id"/>
+            <column name="attribute_id"/>
+        </constraint>
+    </table>
+</schema>

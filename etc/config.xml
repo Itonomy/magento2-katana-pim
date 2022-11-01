@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <katanapim_crons>
+            <crons>
+                <specifications>4 */6 * * *</specifications>
+                <specification_localization>33 */8 * * *</specification_localization>
+                <products>16 */4 * * *</products>
+            </crons>
+        </katanapim_crons>
+    </default>
+</config>

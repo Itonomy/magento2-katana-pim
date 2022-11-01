@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Itonomy_Katanapim::base" title="Katana PIM" sortOrder="1300">
+                    <resource id="Itonomy_Katanapim::attributes" title="Attributes Mapping" />
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

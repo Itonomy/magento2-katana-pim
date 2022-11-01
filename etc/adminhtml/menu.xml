@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Itonomy_Katanapim::base" title="Katana PIM"
+             module="Itonomy_Katanapim" sortOrder="30"
+             resource="Itonomy_Katanapim::base" />
+
+        <add id="Itonomy_Katanapim::attributes" title="Attributes Mapping"
+             module="Itonomy_Katanapim" sortOrder="35"
+             parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::attributes"
+             action="katanapim/attribute/"/>
+
+        <add id="Itonomy_Katanapim::configuration" title="Configuration"
+             module="Itonomy_Katanapim" sortOrder="40"
+             parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::base"
+             action="adminhtml/system_config/edit/section/katanapim_general"/>
+    </menu>
+</config>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">itonomy_katanapim_attribute_mapping_form.itonomy_katanapim_dynamic_rows_data_source</item>
+            <item name="deps" xsi:type="string">itonomy_katanapim_attribute_mapping_form.itonomy_katanapim_dynamic_rows_data_source</item>
+        </item>
+        <item name="config" xsi:type="array">
+            <item name="dataScope" xsi:type="string">data</item>
+            <item name="namespace" xsi:type="string">dynamic_rows</item>
+        </item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+        <item name="buttons" xsi:type="array">
+            <item name="save" xsi:type="string">Itonomy\Katanapim\Block\Adminhtml\Attribute\Mapping\SaveButton</item>
+        </item>
+    </argument>
+    <dataSource name="itonomy_katanapim_dynamic_rows_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Itonomy\Katanapim\Ui\DataProvider</argument>
+            <argument name="name" xsi:type="string">itonomy_katanapim_dynamic_rows_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">id</argument>
+            <argument name="requestFieldName" xsi:type="string">store</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="submit_url" xsi:type="url" path="katanapim/attribute/save"/>
+                </item>
+            </argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+    </dataSource>
+    <fieldset name="itonomy_katanapim_dynamic_rows_set">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="label" xsi:type="string" translate="true">Mapping</item>
+                <item name="sortOrder" xsi:type="number">10</item>
+            </item>
+        </argument>
+        <container name="itonomy_katanapim_dynamic_rows_container">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/dynamic-rows/dynamic-rows</item>
+                    <item name="template" xsi:type="string">ui/dynamic-rows/templates/default</item>
+                    <item name="componentType" xsi:type="string">dynamicRows</item>
+                    <item name="recordTemplate" xsi:type="string">record</item>
+                    <item name="addButtonLabel" xsi:type="string">Add Row</item>
+                    <item name="deleteProperty" xsi:type="boolean">false</item>
+                    <item name="pageSize" xsi:type="number">50</item>
+                    <item name="additionalClasses" xsi:type="string">admin__field-wide</item>
+                </item>
+            </argument>
+            <container name="record">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="component" xsi:type="string" translate="true">Magento_Ui/js/dynamic-rows/record</item>
+                        <item name="isTemplate" xsi:type="boolean">true</item>
+                        <item name="is_collection" xsi:type="boolean">true</item>
+                        <item name="showFallbackReset" xsi:type="boolean">false</item>
+                    </item>
+                </argument>
+                <field name="id">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="label" xsi:type="string" translate="true">ID</item>
+                            <item name="visible" xsi:type="boolean">false</item>
+                            <item name="formElement" xsi:type="string">input</item>
+                            <item name="dataScope" xsi:type="string">id</item>
+                        </item>
+                    </argument>
+                </field>
+                <field name="name">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="label" xsi:type="string" translate="true">Katana Attribute Name</item>
+                            <item name="formElement" xsi:type="string">input</item>
+                            <item name="elementTmpl" xsi:type="string">ui/form/element/text</item>
+                            <item name="dataScope" xsi:type="string">name</item>
+                            <item name="sortOrder" xsi:type="string">10</item>
+                        </item>
+                    </argument>
+                </field>
+                <field name="katana_attribute_code">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="label" xsi:type="string" translate="true">Katana Attribute Code</item>
+                            <item name="formElement" xsi:type="string">input</item>
+                            <item name="elementTmpl" xsi:type="string">ui/form/element/text</item>
+                            <item name="dataScope" xsi:type="string">katana_attribute_code</item>
+                            <item name="sortOrder" xsi:type="string">20</item>
+                        </item>
+                    </argument>
+                </field>
+                <field name="magento_attribute_code">
+                    <argument name="data" xsi:type="array">
+                        <item name="options" xsi:type="object">Itonomy\Katanapim\Ui\Options</item>
+                        <item name="config" xsi:type="array">
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="formElement" xsi:type="string">select</item>
+                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/select</item>
+                            <item name="label" xsi:type="string" translate="true">Magento Attribute Code</item>
+                            <item name="dataScope" xsi:type="string">magento_attribute_code</item>
+                            <item name="default" xsi:type="string">0</item>
+                            <item name="disabled" xsi:type="boolean">false</item>
+                            <item name="showFallbackReset" xsi:type="boolean">false</item>
+                            <item name="sortOrder" xsi:type="string">30</item>
+                        </item>
+                    </argument>
+                </field>
+                <field name="is_configurable">
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="dataType" xsi:type="string">boolean</item>
+                            <item name="formElement" xsi:type="string">select</item>
+                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/boolean</item>
+                            <item name="elementTmpl" xsi:type="string">ui/form/element/checkbox</item>
+                            <item name="label" xsi:type="string" translate="true">Is Configurable</item>
+                            <item name="dataScope" xsi:type="string">is_configurable</item>
+                            <item name="checked" xsi:type="boolean">false</item>
+                            <item name="disabled" xsi:type="boolean">false</item>
+                            <item name="sortOrder" xsi:type="string">40</item>
+                        </item>
+                    </argument>
+                </field>
+                <actionDelete>
+                    <argument name="data" xsi:type="array">
+                        <item name="config" xsi:type="array">
+                            <item name="componentType" xsi:type="string">actionDelete</item>
+                            <item name="dataType" xsi:type="string">text</item>
+                            <item name="fit" xsi:type="boolean">false</item>
+                            <item name="label" xsi:type="string">Actions</item>
+                            <item name="additionalClasses" xsi:type="string">data-grid-actions-cell</item>
+                            <item name="template" xsi:type="string">Magento_Backend/dynamic-rows/cells/action-delete
+                            </item>
+                        </item>
+                    </argument>
+                </actionDelete>
+            </container>
+        </container>
+    </fieldset>
+</form>

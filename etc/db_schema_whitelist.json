@@ -1,0 +1,41 @@
+{
+    "katanapim_attribute_mapping": {
+        "column": {
+            "id": true,
+            "katana_id": true,
+            "katana_attribute_code": true,
+            "katana_attribute_name": true,
+            "katana_attribute_type": true,
+            "katana_attribute_type_id": true,
+            "magento_attribute_id": true,
+            "magento_attribute_code": true,
+            "is_configurable": true,
+            "store": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "KATANA_MAGENTO_CODE": true
+        }
+    },
+    "katanapim_attribute_set": {
+        "column": {
+            "id": true,
+            "name": true,
+            "code": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "katanapim_set_to_attribute": {
+        "column": {
+            "id": true,
+            "set_id": true,
+            "attribute_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "KATANA_SET_TO_ATTRIBUTE": true
+        }
+    }
+}

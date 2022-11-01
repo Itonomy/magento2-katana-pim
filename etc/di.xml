@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Itonomy\Katanapim\Model\LoggerHandler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Itonomy\Katanapim\Model\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">katana</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Itonomy\Katanapim\Model\LoggerHandler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="katana_specifications_import" xsi:type="object">Itonomy\Katanapim\Console\Command\SpecificationsImport</item>
+                <item name="katana_specification_options_import" xsi:type="object">Itonomy\Katanapim\Console\Command\SpecificationsLocalizationImport</item>
+                <item name="katana_product_import" xsi:type="object">Itonomy\Katanapim\Console\Command\ImportProducts</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Itonomy\Katanapim\Model\Data\Product\DataParser">
+        <arguments>
+            <argument name="dataParsers" xsi:type="array">
+                <item name="simple" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser</item>
+                <item name="configurable" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\ConfigurableDataParser</item>
+                <item name="specifications" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\SpecificationsDataParser</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Itonomy\Katanapim\Model\Data\Product\DataPreprocessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="missingData" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\MissingDataPreprocessor</item>
+                <item name="categories" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\CategoryDataPreprocessor</item>
+                <item name="images" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\ImageDataPreprocessor</item>
+                <item name="attachments" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\AttachmentsDataPreprocessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <preference for="Itonomy\Katanapim\Api\Data\AttributeMappingInterface"
+                type="Itonomy\Katanapim\Model\AttributeMapping"/>
+    <preference for="Itonomy\Katanapim\Api\Data\AttributeSetInterface"
+                type="Itonomy\Katanapim\Model\AttributeSet"/>
+    <preference for="Itonomy\Katanapim\Api\Data\AttributeSetToAttributeInterface"
+                type="Itonomy\Katanapim\Model\AttributeSetToAttribute"/>
+    <preference for="Itonomy\Katanapim\Api\AttributeSetToAttributeRepositoryInterface"
+                type="Itonomy\Katanapim\Model\AttributeSetToAttributeRepository"/>
+    <preference for="Itonomy\Katanapim\Model\Import\Product\PersistenceProcessorInterface"
+                type="Itonomy\Katanapim\Model\Import\Product\Persistence\CsvProcessor"/>
+</config>

@@ -1,0 +1,81 @@
+<?php
+declare(strict_types=1);
+
+namespace Itonomy\Katanapim\Controller\Adminhtml\Attribute;
+
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Itonomy\Katanapim\Model\AttributeMappingFactory;
+use Itonomy\Katanapim\Model\AttributeMappingRepository;
+
+class Save extends Action
+{
+    /**
+     * Authorization level of a basic admin session
+     */
+    const ADMIN_RESOURCE = 'Itonomy_Katanapim::attributes';
+
+    private AttributeMappingFactory $attributeMapping;
+
+    private AttributeMappingRepository $attributeMappingRepository;
+
+    /**
+     * @param Context $context
+     * @param AttributeMappingFactory $attributeMapping
+     * @param AttributeMappingRepository $attributeMappingRepository
+     */
+    public function __construct(
+        Context $context,
+        AttributeMappingFactory $attributeMapping,
+        AttributeMappingRepository $attributeMappingRepository
+    ) {
+        parent::__construct($context);
+        $this->attributeMapping = $attributeMapping;
+        $this->attributeMappingRepository = $attributeMappingRepository;
+    }
+
+    /**
+     * @InheritDoc
+     */
+    public function execute()
+    {
+        try {
+            $data = $this->getRequest()->getParam('itonomy_katanapim_dynamic_rows_container');
+
+            if (!is_array($data) || empty($data)) {
+                throw new \Exception('No data to save');
+            }
+
+            $idsForSave = [];
+
+            foreach ($data as $itemData) {
+                if (empty($itemData['id'])) {
+                    continue;
+                }
+                $idsForSave[] = $itemData['id'];
+            }
+
+            $this->attributeMappingRepository->deleteMapping($idsForSave);
+
+            foreach ($data as $itemData) {
+                if (empty($itemData['id'])) {
+                    unset($itemData['id']);
+                }
+
+                $itemData['is_configurable'] = (int) ($itemData['is_configurable'] === 'true');
+
+                /** @var \Itonomy\Katanapim\Model\AttributeMapping $model */
+                $model = $this->attributeMapping->create();
+                $model->addData($itemData);
+
+                $this->attributeMappingRepository->save($model);
+            }
+
+            $this->messageManager->addSuccessMessage(__('Attribute Mapping has been saved successfully'));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__($e->getMessage()));
+        }
+
+        return $this->_redirect('*/*/index', ['store' => 0]);
+    }
+}

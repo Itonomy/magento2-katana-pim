@@ -11,7 +11,14 @@ use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
  */
 class SpecificationsImport
 {
+    /**
+     * @var Specifications
+     */
     private Specifications $specifications;
+
+    /**
+     * @var SpecificationGroup
+     */
     private SpecificationGroup $specificationGroup;
 
     /**
@@ -29,6 +36,8 @@ class SpecificationsImport
     }
 
     /**
+     * Execute specifications import
+     *
      * @return void
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\RuntimeException

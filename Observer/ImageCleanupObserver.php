@@ -11,7 +11,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\FileSystemException;
 
 /**
- * Class ImageCleanupObserver
+ * Class responsible for cleaning up katana product image import directory
  */
 class ImageCleanupObserver implements ObserverInterface
 {
@@ -30,6 +30,13 @@ class ImageCleanupObserver implements ObserverInterface
      */
     private Katana $katanaConfig;
 
+    /**
+     * ImageCleanupObserver constructor.
+     *
+     * @param ImageDirectoryProvider $directoryProvider
+     * @param Logger $logger
+     * @param Katana $katanaConfig
+     */
     public function __construct(
         ImageDirectoryProvider $directoryProvider,
         Logger $logger,

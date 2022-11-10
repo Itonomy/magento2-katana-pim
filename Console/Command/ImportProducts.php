@@ -9,12 +9,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBarFactory;
 
+/**
+ * CLI Command to import products from KatanaPim
+ */
 class ImportProducts extends Command
 {
+    /**
+     * @var ProductImport
+     */
     private ProductImport $importer;
+
+    /**
+     * @var ProgressBarFactory
+     */
     private ProgressBarFactory $progressBarFactory;
 
     /**
+     * ImportProducts constructor.
+     *
      * @param ProductImport $importer
      * @param ProgressBarFactory $progressBarFactory
      * @param string|null $name

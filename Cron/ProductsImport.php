@@ -10,6 +10,9 @@ use Itonomy\Katanapim\Model\Import\Product\ProductImport;
  */
 class ProductsImport
 {
+    /**
+     * @var ProductImport
+     */
     private ProductImport $importer;
 
     /**
@@ -24,7 +27,10 @@ class ProductsImport
     }
 
     /**
+     * Execute product import
+     *
      * @return void
+     * @throws \Throwable
      */
     public function execute(): void
     {

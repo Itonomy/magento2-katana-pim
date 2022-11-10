@@ -5,12 +5,11 @@ namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 
 use Itonomy\Katanapim\Model\Helper\UrlKeyGenerator;
 
-/**
- * Class MissingDataPreprocessor
- */
 class MissingDataPreprocessor implements PreprocessorInterface
 {
     /**
+     * @inheritDoc
+     *
      * @param array $productData
      * @return array
      */

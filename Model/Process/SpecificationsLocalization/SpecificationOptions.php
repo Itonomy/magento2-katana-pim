@@ -12,11 +12,12 @@ use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterfaceFactory;
 use Magento\Eav\Api\Data\AttributeOptionLabelInterfaceFactory;
 use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Store\Model\Store;
 
 /**
- * Class SpecificationOptions
+ * Class for importing specification (attribute) options
  */
 class SpecificationOptions
 {
@@ -81,7 +82,7 @@ class SpecificationOptions
      * @param ProductAttributeInterface $productAttribute
      * @throws InputException
      * @throws StateException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     public function process(array $optionsData, ProductAttributeInterface $productAttribute)
     {
@@ -122,15 +123,15 @@ class SpecificationOptions
      *
      * @param AttributeInterface $attribute
      * @param AttributeOptionInterface $option
-     * @param $optionData
+     * @param array $optionData
      * @throws InputException
      * @throws StateException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     private function updateExistingOption(
         AttributeInterface $attribute,
         AttributeOptionInterface $option,
-        $optionData
+        array $optionData
     ): void {
         $storeLabels = $this->createStoreLabels($optionData);
         if (!empty($storeLabels)) {
@@ -149,12 +150,12 @@ class SpecificationOptions
      *
      * @param AttributeInterface $attribute
      * @param string $label
-     * @param $optionData
+     * @param array $optionData
      * @return void
      * @throws InputException
      * @throws StateException
      */
-    private function createOption(AttributeInterface $attribute, string $label, $optionData): void
+    private function createOption(AttributeInterface $attribute, string $label, array $optionData): void
     {
         $option = $this->attributeOptionInterfaceFactory->create();
         $option->setLabel($label);
@@ -170,10 +171,10 @@ class SpecificationOptions
     /**
      * Create store labels
      *
-     * @param $optionData
+     * @param array $optionData
      * @return array
      */
-    private function createStoreLabels($optionData): array
+    private function createStoreLabels(array $optionData): array
     {
         $storeLabels = [];
 
@@ -198,10 +199,10 @@ class SpecificationOptions
     /**
      * Find store ids which use this katana language code
      *
-     * @param $LanguageCode
+     * @param string $languageCode
      * @return array
      */
-    private function findLanguageStoreIds($LanguageCode): array
+    private function findLanguageStoreIds(string $languageCode): array
     {
         if (empty($this->localesToStoreIds)) {
             foreach ($this->katanaConfig->getLanguageMapping() as $storeId => $langCode) {
@@ -209,10 +210,12 @@ class SpecificationOptions
             }
         }
 
-        return $this->localesToStoreIds[$LanguageCode] ?? [];
+        return $this->localesToStoreIds[$languageCode] ?? [];
     }
 
     /**
+     * Compare two strings
+     *
      * @param string $str1
      * @param string $str2
      * @return int

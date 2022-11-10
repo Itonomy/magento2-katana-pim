@@ -13,10 +13,16 @@ class Save extends Action
     /**
      * Authorization level of a basic admin session
      */
-    const ADMIN_RESOURCE = 'Itonomy_Katanapim::attributes';
+    public const ADMIN_RESOURCE = 'Itonomy_Katanapim::attributes';
 
+    /**
+     * @var AttributeMappingFactory
+     */
     private AttributeMappingFactory $attributeMapping;
 
+    /**
+     * @var AttributeMappingRepository
+     */
     private AttributeMappingRepository $attributeMappingRepository;
 
     /**
@@ -43,7 +49,8 @@ class Save extends Action
             $data = $this->getRequest()->getParam('itonomy_katanapim_dynamic_rows_container');
 
             if (!is_array($data) || empty($data)) {
-                throw new \Exception('No data to save');
+                $this->messageManager->addErrorMessage(__('No data to save'));
+                return $this->_redirect('*/*/index', ['store' => 0]);
             }
 
             $idsForSave = [];

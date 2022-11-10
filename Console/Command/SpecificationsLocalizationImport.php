@@ -40,9 +40,9 @@ class SpecificationsLocalizationImport extends Command
     }
 
     /**
-     * Set the name and description
+     * @inheritDoc
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('katana:import:specifications:localization')
             ->setDescription('Import product specifications localization');
@@ -50,6 +50,8 @@ class SpecificationsLocalizationImport extends Command
     }
 
     /**
+     * @inheritDoc
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int

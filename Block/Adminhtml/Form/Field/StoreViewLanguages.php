@@ -5,9 +5,6 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Class StoreViewLanguages
- */
 class StoreViewLanguages extends AbstractFieldArray
 {
     public const LANGUAGE_CODE = 'language_code';

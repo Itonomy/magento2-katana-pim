@@ -8,11 +8,19 @@ use Itonomy\Katanapim\Model\ResourceModel\AttributeMapping\CollectionFactory;
 
 class DataProvider extends AbstractDataProvider
 {
+    /**
+     * @var array
+     */
     private array $loadedData = [];
 
+    /**
+     * @var CollectionFactory
+     */
     private CollectionFactory $collectionFactory;
 
     /**
+     * DataProvider constructor.
+     *
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName

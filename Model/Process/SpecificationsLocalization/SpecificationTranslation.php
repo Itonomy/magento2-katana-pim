@@ -13,8 +13,19 @@ use Magento\Framework\Exception\StateException;
 
 class SpecificationTranslation
 {
+    /**
+     * @var Katana
+     */
     private Katana $katanaConfig;
+
+    /**
+     * @var ProductAttributeRepositoryInterface
+     */
     private ProductAttributeRepositoryInterface $attributeRepository;
+
+    /**
+     * @var FrontendLabelFactory
+     */
     private FrontendLabelFactory $frontendLabelFactory;
 
     /**
@@ -68,10 +79,10 @@ class SpecificationTranslation
     /**
      * Extract attribute labels from api data
      *
-     * @param $localizationData
+     * @param array $localizationData
      * @return array
      */
-    private function getApiLabels($localizationData): array
+    private function getApiLabels(array $localizationData): array
     {
         $languageMapping = $this->katanaConfig->getLanguageMapping();
         $apiLabels = [];
@@ -86,7 +97,7 @@ class SpecificationTranslation
                 }
             }
 
-            if (is_null($apiLabelValue)) {
+            if ($apiLabelValue === null) {
                 continue;
             }
 

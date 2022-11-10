@@ -17,6 +17,8 @@ interface DataParserInterface
     public function parse(array $data): array;
 
     /**
+     * Set already parsed data
+     *
      * @param array $parsedData
      * @return $this
      */

@@ -12,6 +12,7 @@ use Itonomy\Katanapim\Model\RestClient;
 use Laminas\Http\Request;
 use Laminas\Stdlib\Parameters;
 use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class ProductImport
 {
@@ -138,10 +139,12 @@ class ProductImport
     }
 
     /**
-     * @param $items
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * Import products
+     *
+     * @param array $items
+     * @throws NoSuchEntityException
      */
-    private function importItems($items): void
+    private function importItems(array $items): void
     {
         //Global scope import
         //TODO: carry all parsed data for all products due to configurable product creation

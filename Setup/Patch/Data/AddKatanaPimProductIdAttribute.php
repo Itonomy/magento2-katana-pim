@@ -11,7 +11,6 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Eav\Api\Data\AttributeGroupInterfaceFactory;
 use Magento\Eav\Api\Data\AttributeSetInterfaceFactory;
-use Zend_Validate_Exception;
 
 class AddKatanaPimProductIdAttribute implements DataPatchInterface
 {
@@ -45,7 +44,7 @@ class AddKatanaPimProductIdAttribute implements DataPatchInterface
      *
      * @return $this|DataPatchInterface
      * @throws LocalizedException
-     * @throws Zend_Validate_Exception
+     * @throws \Zend_Validate_Exception
      */
     public function apply()
     {

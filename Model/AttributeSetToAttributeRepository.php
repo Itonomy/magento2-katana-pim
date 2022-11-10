@@ -10,6 +10,9 @@ use Magento\Framework\Exception\CouldNotSaveException;
 
 class AttributeSetToAttributeRepository implements AttributeSetToAttributeRepositoryInterface
 {
+    /**
+     * @var array
+     */
     private array $codes = [];
 
     /**
@@ -27,6 +30,8 @@ class AttributeSetToAttributeRepository implements AttributeSetToAttributeReposi
     }
 
     /**
+     * Inserts a table row with specified data
+     *
      * @param array $data Column-value pairs or array of column-value pairs.
      * @param array $fields update fields pairs or values
      * @return int The number of affected rows.
@@ -45,6 +50,8 @@ class AttributeSetToAttributeRepository implements AttributeSetToAttributeReposi
     }
 
     /**
+     * Get configurable product variation codes
+     *
      * @param int $specificationGroupId
      * @return array ['katana_color' => 'color', 'katana_size' => 'size'...]
      * @throws \Magento\Framework\Exception\LocalizedException

@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\ResourceModel;
 
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class AttributeMapping extends AbstractDb
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -17,10 +18,12 @@ class AttributeMapping extends AbstractDb
     }
 
     /**
+     * Insert a table row with specified data
+     *
      * @param array $data Column-value pairs or array of column-value pairs.
      * @param array $fields update fields pairs or values
      * @return int The number of affected rows.
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function insertOnDuplicate(array $data, array $fields = []): int
     {
@@ -29,9 +32,11 @@ class AttributeMapping extends AbstractDb
     }
 
     /**
+     * Delete katana attribute mappings. All or by specific ids.
+     *
      * @param array $savedIds
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function deleteMapping(array $savedIds = []): AttributeMapping
     {

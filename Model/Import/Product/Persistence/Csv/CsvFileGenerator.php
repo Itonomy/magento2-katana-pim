@@ -17,27 +17,42 @@ class CsvFileGenerator
      */
     private DirectoryList $directoryList;
 
+    /**
+     * CsvFileGenerator constructor.
+     *
+     * @param DirectoryList $directoryList
+     */
     public function __construct(
         DirectoryList $directoryList
     ) {
         $this->directoryList = $directoryList;
     }
 
-    public function generateFile($data): string
+    /**
+     * Create csv file and store data to it
+     *
+     * @param array $data
+     * @return string
+     * @throws FileSystemException
+     */
+    public function generateFile(array $data): string
     {
         $this->writeFile($data);
         return self::OUTPUT_CSV;
     }
 
     /**
+     * Write data to a csv file
+     *
      * @param array $content
+     * @return void
      * @throws FileSystemException
      */
-    protected function writeFile(array $content)
+    protected function writeFile(array $content): void
     {
         $varDirPath = $this->directoryList->getPath(DirectoryList::VAR_DIR);
         $dirPath = $varDirPath . '/' . self::CSV_FILE_DIRECTORY;
-
+        //phpcs:disable Magento2.Functions.DiscouragedFunction
         if (!\is_dir($dirPath) && !\mkdir($dirPath, 0777, true) && !\is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
         }
@@ -51,6 +66,7 @@ class CsvFileGenerator
         foreach ($content as $row) {
             $orderedRow = \array_replace($emptyRow, $row);
             \fputcsv($file, $orderedRow, ',');
+            //phpcs:enable Magento2.Functions.DiscouragedFunction
         }
     }
 }

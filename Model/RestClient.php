@@ -12,22 +12,36 @@ use Laminas\Http\Request;
 use Laminas\Stdlib\Parameters;
 use Magento\Framework\Serialize\Serializer\Json;
 
-/**
- * Class RestClient
- */
 class RestClient
 {
+
+    /**
+     * @var Json
+     */
     private Json $jsonSerializer;
+
+    /**
+     * @var HeadersFactory
+     */
     private HeadersFactory $headersFactory;
+
+    /**
+     * @var ClientFactory
+     */
     private ClientFactory $clientFactory;
+
+    /**
+     * @var Config
+     */
     private Config $config;
 
     /**
+     * RestClient constructor.
+     *
      * @param Json $jsonSerializer
      * @param HeadersFactory $headersFactory
      * @param ClientFactory $clientFactory
      * @param Config $config
-     * @param Logger $logger
      */
     public function __construct(
         Json $jsonSerializer,
@@ -42,12 +56,14 @@ class RestClient
     }
 
     /**
+     * Execute a rest api call
+     *
      * @param string $urlPart
      * @param string $method
      * @param Parameters|null $parameters
      * @return array|null
      * @throws WebApiException
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function execute(
         string $urlPart,
@@ -55,7 +71,7 @@ class RestClient
         Parameters $parameters = null
     ): ?array {
         if (empty($this->config->getApiUrl())) {
-            throw new \Exception('Undefined API base url.');
+            throw new \InvalidArgumentException('Undefined API base url.');
         }
 
         $url = $this->config->getApiUrl() . $urlPart;
@@ -68,6 +84,8 @@ class RestClient
     }
 
     /**
+     * Instantiate a rest api call
+     *
      * @param string $url
      * @param string $method
      * @param Parameters $parameters

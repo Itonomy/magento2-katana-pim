@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model;
 
-class LoggerHandler extends \Magento\Framework\Logger\Handler\Base
+use Magento\Framework\Logger\Handler\Base;
+
+class LoggerHandler extends Base
 {
     /**
-     * Logging level
      * @var int
      */
     protected $loggerType = Logger::INFO;
 
     /**
-     * File name
      * @var string
      */
     protected $fileName = '/var/log/katanapim/system.log';

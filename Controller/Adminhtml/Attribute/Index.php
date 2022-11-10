@@ -12,8 +12,11 @@ class Index extends Action
     /**
      * Authorization level of a basic admin session
      */
-    const ADMIN_RESOURCE = 'Itonomy_Katanapim::attributes';
+    public const ADMIN_RESOURCE = 'Itonomy_Katanapim::attributes';
 
+    /**
+     * @var PageFactory
+     */
     protected PageFactory $resultPageFactory;
 
     /**

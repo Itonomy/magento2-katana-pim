@@ -20,15 +20,29 @@ use Magento\Store\Model\Store;
  */
 class ValidateAttributeOptionValue
 {
+    /**
+     * @var AttributeRepositoryInterface
+     */
     private AttributeRepositoryInterface $attributeRepository;
 
+    /**
+     * @var AttributeOptionInterfaceFactory
+     */
     private AttributeOptionInterfaceFactory $attributeOptionInterfaceFactory;
 
+    /**
+     * @var AttributeOptionManagementInterface
+     */
     private AttributeOptionManagementInterface $attributeOptionManagement;
 
+    /**
+     * @var AttributeOptionLabelInterfaceFactory
+     */
     private AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory;
 
     /**
+     * ValidateAttributeOptionValue constructor.
+     *
      * @param AttributeRepositoryInterface $attributeRepository
      * @param AttributeOptionInterfaceFactory $attributeOptionInterfaceFactory
      * @param AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory
@@ -47,6 +61,8 @@ class ValidateAttributeOptionValue
     }
 
     /**
+     * Validate attribute option values
+     *
      * @param array $attributeValues
      * @return void
      * @throws InputException
@@ -142,6 +158,8 @@ class ValidateAttributeOptionValue
     }
 
     /**
+     * Compare two strings
+     *
      * @param string $str1
      * @param string $str2
      * @return int

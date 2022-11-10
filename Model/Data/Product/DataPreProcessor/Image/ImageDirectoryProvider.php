@@ -21,6 +21,8 @@ class ImageDirectoryProvider
     private Filesystem $filesystem;
 
     /**
+     * ImageDirectoryProvider constructor.
+     *
      * @param Filesystem $filesystem
      */
     public function __construct(
@@ -62,6 +64,8 @@ class ImageDirectoryProvider
     }
 
     /**
+     * Get absolute path
+     *
      * @return string
      * @throws FileSystemException
      */

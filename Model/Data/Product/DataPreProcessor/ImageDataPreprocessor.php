@@ -11,9 +11,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\File\Uploader;
 use Magento\Framework\Filesystem\Io\File;
 
-/**
- * Class ImageDataPreprocessor
- */
 class ImageDataPreprocessor implements PreprocessorInterface
 {
     /**
@@ -35,8 +32,21 @@ class ImageDataPreprocessor implements PreprocessorInterface
      * @var string|null
      */
     private ?string $downloadDir;
+
+    /**
+     * @var File
+     */
     private File $file;
 
+    /**
+     * ImageDataPreprocessor constructor.
+     *
+     * @param Logger $logger
+     * @param FileDownloader $fileDownloader
+     * @param ImageDirectoryProvider $imageDirectoryProvider
+     * @param File $file
+     * @param string|null $downloadDir
+     */
     public function __construct(
         Logger $logger,
         FileDownloader $fileDownloader,
@@ -52,6 +62,8 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $productData
      * @return array
      * @throws FileSystemException
@@ -81,6 +93,8 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * Download images
+     *
      * @param array $productData
      * @return array
      * @throws FileSystemException
@@ -128,10 +142,12 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
-     * @param $errors
+     * Log errors
+     *
+     * @param array $errors
      * @return void
      */
-    private function logErrors($errors): void
+    private function logErrors(array $errors): void
     {
         foreach ($errors as $error) {
             $this->logger->error(
@@ -141,13 +157,14 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * Get file path
+     *
      * @param string $url
      * @return string
-     * @throws FileSystemException
-     * @throws LocalizedException
      */
     private function getFilePath(string $url): string
     {
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction
         $pathinfo = pathinfo($url);
         $fileName = $pathinfo['filename'] . '.' . $pathinfo['extension'];
         $correctName = Uploader::getCorrectFileName($fileName);
@@ -180,6 +197,8 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * Check if file already exists
+     *
      * @param string $filePath
      * @return bool
      * @throws FileSystemException

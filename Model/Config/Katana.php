@@ -19,6 +19,8 @@ class Katana extends AbstractHelper
     private const LANGUAGE_MAPPING = 'katanapim_product_import/store_languages/store_language_mapping';
 
     /**
+     * Get Api Url
+     *
      * @return string
      */
     public function getApiUrl(): string
@@ -27,6 +29,8 @@ class Katana extends AbstractHelper
     }
 
     /**
+     * Get Api Key
+     *
      * @return string
      */
     public function getApiKey(): string
@@ -35,6 +39,8 @@ class Katana extends AbstractHelper
     }
 
     /**
+     * Is Product Import Enabled
+     *
      * @return bool
      */
     public function isProductImportEnabled(): bool
@@ -43,6 +49,8 @@ class Katana extends AbstractHelper
     }
 
     /**
+     * Should the saved images be cleared
+     *
      * @return bool
      */
     public function isCleanImageCacheSet(): bool
@@ -51,6 +59,8 @@ class Katana extends AbstractHelper
     }
 
     /**
+     * Get storeId to language code mapping
+     *
      * @return array
      */
     public function getLanguageMapping(): array

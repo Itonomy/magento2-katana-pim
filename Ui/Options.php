@@ -12,13 +12,24 @@ use Magento\Framework\Data\OptionSourceInterface;
 
 class Options implements OptionSourceInterface
 {
+    /**
+     * @var SearchCriteriaBuilder
+     */
     private SearchCriteriaBuilder $searchCriteriaBuilder;
 
+    /**
+     * @var AttributeRepositoryInterface
+     */
     private AttributeRepositoryInterface $attributeRepository;
 
+    /**
+     * @var SortOrderBuilder
+     */
     private SortOrderBuilder $sortOrderBuilder;
 
     /**
+     * Options constructor.
+     *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param SortOrderBuilder $sortOrderBuilder
      * @param AttributeRepositoryInterface $attributeRepository
@@ -34,6 +45,8 @@ class Options implements OptionSourceInterface
     }
 
     /**
+     * Get Option Array
+     *
      * @return array
      */
     public function toOptionArray(): array
@@ -52,7 +65,6 @@ class Options implements OptionSourceInterface
             ProductAttributeInterface::ENTITY_TYPE_CODE,
             $searchCriteria
         );
-
 
         $result = [];
         $result[] = ['value' => '', 'label' => '-'];

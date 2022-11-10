@@ -7,7 +7,7 @@ use Itonomy\Katanapim\Block\Adminhtml\Form\Field\StoreViewLanguages as StoreView
 use Magento\Config\Model\Config\Backend\Serialized;
 
 /**
- * Class StoreViewLanguages
+ * Backend model for store view to katanapim language code mapping
  */
 class StoreViewLanguages extends Serialized
 {

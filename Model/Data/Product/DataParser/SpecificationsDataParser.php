@@ -8,18 +8,45 @@ use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Api\ProductAttributeOptionManagementInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterfaceFactory;
+use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\StateException;
 
 class SpecificationsDataParser implements DataParserInterface
 {
+    /**
+     * @var CollectionFactory
+     */
     private CollectionFactory $mappingCollectionFactory;
+
+    /**
+     * @var ProductAttributeRepositoryInterface
+     */
     private ProductAttributeRepositoryInterface $productAttributeRepository;
+
+    /**
+     * @var ProductAttributeOptionManagementInterface
+     */
     private ProductAttributeOptionManagementInterface $attributeOptionManagement;
+
+    /**
+     * @var AttributeOptionInterfaceFactory
+     */
     private AttributeOptionInterfaceFactory $attributeOptionFactory;
 
+    /**
+     * @var array
+     */
     private array $attributeMapping;
+
+    /**
+     * @var array
+     */
     public array $parsedData = [];
 
     /**
+     * SpecificationsDataParser constructor.
+     *
      * @param ProductAttributeRepositoryInterface $productAttributeRepository
      * @param CollectionFactory $mappingCollectionFactory
      * @param ProductAttributeOptionManagementInterface $attributeOptionManagement
@@ -39,12 +66,13 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $data
      * @return array
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\StateException
-     * @throws \Exception
+     * @throws InputException
+     * @throws NoSuchEntityException
+     * @throws StateException
      */
     public function parse(array $data): array
     {
@@ -54,12 +82,14 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
+     * Parse data
+     *
      * @param array $item
      * @param array $attributesMapping
      * @return array
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\StateException
+     * @throws InputException
+     * @throws NoSuchEntityException
+     * @throws StateException
      * @throws \Exception
      */
     private function parseData(array $item, array $attributesMapping): array
@@ -75,12 +105,12 @@ class SpecificationsDataParser implements DataParserInterface
             $katanaCode = $attributeMapping['katana_attribute_code'];
             $value = $productSpecs[$katanaCode]['value'] ?? null;
 
-            if (!is_null($value)) {
+            if ($value !== null) {
                 $attribute = $this->productAttributeRepository->get($magentoCode);
 
                 if ($attribute->getFrontendInput() === 'select') {
                     if ($attributeMapping['katana_attribute_type'] !== 'select') {
-                        throw new \Exception('Katana and magento attribute types do not match.');
+                        throw new \RuntimeException('Katana and magento attribute types do not match.');
                     }
 
                     if (!$this->isSelectAttributeValueExists($value, $attribute)) {
@@ -95,9 +125,11 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
+     * Get custom attribute mapping sorted by magento attribute codes
+     *
      * @return array
      */
-    private function getSortedCustomAttributeMapping()
+    private function getSortedCustomAttributeMapping(): array
     {
         if (empty($this->attributeMapping)) {
             $collection = $this->mappingCollectionFactory->create();
@@ -114,11 +146,13 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
+     * Get sorted specifications
+     *
      * @param array $data
      * @return array
      * @throws \Exception
      */
-    private function getSortedSpecifications(array $data)
+    private function getSortedSpecifications(array $data): array
     {
         $sorted = [];
         try {
@@ -137,8 +171,10 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
-     * @param ProductAttributeInterface $attribute
+     * Check if the attribute option already exists
+     *
      * @param string $value
+     * @param ProductAttributeInterface $attribute
      * @return bool
      */
     private function isSelectAttributeValueExists(string $value, ProductAttributeInterface $attribute): bool
@@ -155,10 +191,12 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
-     * @param ProductAttributeInterface $attribute
+     * Create new attribute option
+     *
      * @param string $value
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\StateException
+     * @param ProductAttributeInterface $attribute
+     * @throws InputException
+     * @throws StateException
      */
     private function createNewOption(string $value, ProductAttributeInterface $attribute): void
     {
@@ -171,6 +209,8 @@ class SpecificationsDataParser implements DataParserInterface
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $parsedData
      * @return DataParserInterface
      */

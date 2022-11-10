@@ -9,7 +9,7 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 class AttributeSet extends AbstractDb
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -17,6 +17,8 @@ class AttributeSet extends AbstractDb
     }
 
     /**
+     * Inserts a table row with specified data
+     *
      * @param array $data Column-value pairs or array of column-value pairs.
      * @param array $fields update fields pairs or values
      * @return int The number of affected rows.

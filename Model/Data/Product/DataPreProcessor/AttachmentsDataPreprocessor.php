@@ -3,17 +3,6 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 
-use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\FileDownloader;
-use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\ImageDirectoryProvider;
-use Itonomy\Katanapim\Model\Logger;
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\File\Uploader;
-use Magento\Framework\Filesystem\Io\File;
-
-/**
- * Class ImageDataPreprocessor
- */
 class AttachmentsDataPreprocessor implements PreprocessorInterface
 {
     /**
@@ -22,6 +11,8 @@ class AttachmentsDataPreprocessor implements PreprocessorInterface
     private const KATANA_ATTACHMENTS = 'katana_attachments';
 
     /**
+     * @inheritDoc
+     *
      * @param array $productData
      * @return mixed
      */
@@ -33,6 +24,8 @@ class AttachmentsDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * Process katana product attachments
+     *
      * @param array $productData
      * @return string|null
      */

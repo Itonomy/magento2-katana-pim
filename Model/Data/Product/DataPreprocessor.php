@@ -15,6 +15,11 @@ class DataPreprocessor
      */
     private array $processors;
 
+    /**
+     * DataPreprocessor constructor.
+     *
+     * @param array $processors
+     */
     public function __construct(
         array $processors
     ) {

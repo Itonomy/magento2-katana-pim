@@ -5,6 +5,7 @@ namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser;
 use Itonomy\Katanapim\Model\Helper\UrlKeyGenerator;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\StoreRepositoryInterface;
 
 class LocalizedDataParser
@@ -14,8 +15,17 @@ class LocalizedDataParser
         'description' => 'FullDescription',
         'short_description' => 'ShortDescription'
     ];
+
+    /**
+     * @var StoreRepositoryInterface
+     */
     private StoreRepositoryInterface $storeRepository;
 
+    /**
+     * LocalizedDataParser constructor.
+     *
+     * @param StoreRepositoryInterface $storeRepository
+     */
     public function __construct(
         StoreRepositoryInterface $storeRepository
     ) {
@@ -29,7 +39,7 @@ class LocalizedDataParser
      * @param int $storeViewId
      * @param string $languageCode
      * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     public function parse(array $data, int $storeViewId, string $languageCode): array
     {
@@ -58,11 +68,12 @@ class LocalizedDataParser
             $output[$datum['Id']] = $itemData;
         }
 
-
         return $output;
     }
 
     /**
+     * Parse localization data
+     *
      * TODO: Make this more efficient (order data before looking for values..)
      *
      * @param array $datum

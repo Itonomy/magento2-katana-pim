@@ -12,11 +12,19 @@ class ConfigurableDataParser extends BasicDataParser
     public const PRODUCT_TYPE = 'configurable';
     public const VISIBILITY = 'Catalog, Search';
 
+    /**
+     * @var AttributeSetToAttributeRepository
+     */
     private AttributeSetToAttributeRepository $setToAttributeRepository;
 
+    /**
+     * @var array
+     */
     private array $configurableData = [];
 
     /**
+     * ConfigurableDataParser constructor.
+     *
      * @param AttributeSetToAttributeRepository $setToAttributeRepository
      */
     public function __construct(
@@ -26,6 +34,8 @@ class ConfigurableDataParser extends BasicDataParser
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $item
      * @param array $attributesMapping
      * @return array
@@ -48,6 +58,7 @@ class ConfigurableDataParser extends BasicDataParser
         $configurableAttributes = [];
 
         foreach ($item['Collections']['SpecificationGroups'] as $specificationGroups) {
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge
             $configurableAttributes = array_merge(
                 $configurableAttributes,
                 $this->setToAttributeRepository->getConfigurableVariationsCodes($specificationGroups['Id'])
@@ -97,6 +108,8 @@ class ConfigurableDataParser extends BasicDataParser
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $parsedData
      * @return $this
      */

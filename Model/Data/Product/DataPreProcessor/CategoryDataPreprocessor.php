@@ -11,6 +11,8 @@ class CategoryDataPreprocessor implements PreprocessorInterface
     private const DEFAULT_CATEGORY = 'Default Category';
 
     /**
+     * @inheritDoc
+     *
      * @param array $productData
      * @return array
      */
@@ -22,10 +24,12 @@ class CategoryDataPreprocessor implements PreprocessorInterface
     }
 
     /**
-     * @param $productData
+     * Process categories data
+     *
+     * @param array $productData
      * @return string|null
      */
-    private function processCategories($productData)
+    private function processCategories(array $productData): ?string
     {
         $categoriesPaths = [];
         $categoriesPaths[] = self::DEFAULT_CATEGORY;
@@ -38,19 +42,23 @@ class CategoryDataPreprocessor implements PreprocessorInterface
     }
 
     /**
-     * @param $categoryData
+     * Get full category names path
+     *
+     * @param array $categoryData
      * @return string
      */
-    private function getFullCategoryNamePath($categoryData)
+    private function getFullCategoryNamePath(array $categoryData): string
     {
         return self::DEFAULT_CATEGORY . '/' . $this->getCategoryPath($categoryData);
     }
 
     /**
-     * @param $categoryData
-     * @return mixed|string
+     * Get category path
+     *
+     * @param array $categoryData
+     * @return string
      */
-    private function getCategoryPath($categoryData)
+    private function getCategoryPath(array $categoryData): string
     {
         if (is_array($categoryData['ParentCategory'])) {
             return $this->getCategoryPath($categoryData['ParentCategory']) . '/' . $categoryData['Name'];

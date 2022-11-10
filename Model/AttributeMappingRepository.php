@@ -7,18 +7,25 @@ use Itonomy\Katanapim\Api\AttributeMappingRepositoryInterface;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterfaceFactory;
 use Itonomy\Katanapim\Model\ResourceModel\AttributeMapping as AttributeMappingResourceModel;
-
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Model\AbstractModel;
 
 class AttributeMappingRepository implements AttributeMappingRepositoryInterface
 {
+    /**
+     * @var AttributeMappingResourceModel
+     */
     private AttributeMappingResourceModel $attributeMappingResourceModel;
 
+    /**
+     * @var AttributeMappingInterfaceFactory
+     */
     private AttributeMappingInterfaceFactory $attributeMappingInterfaceFactory;
 
     /**
+     * AttributeMappingRepository constructor.
+     *
      * @param AttributeMappingResourceModel $attributeMappingResourceModel
      * @param AttributeMappingInterfaceFactory $attributeMappingInterfaceFactory
      */
@@ -31,11 +38,13 @@ class AttributeMappingRepository implements AttributeMappingRepositoryInterface
     }
 
     /**
-     * @param AbstractModel $attributeMapping
+     * @inheritDoc
+     *
+     * @param AttributeMapping $attributeMapping
      * @return AttributeMappingInterface
      * @throws CouldNotSaveException
      */
-    public function save(AbstractModel $attributeMapping): AttributeMappingInterface
+    public function save(AttributeMapping $attributeMapping): AttributeMappingInterface
     {
         try {
             $this->attributeMappingResourceModel->save($attributeMapping);
@@ -50,10 +59,12 @@ class AttributeMappingRepository implements AttributeMappingRepositoryInterface
     }
 
     /**
+     * Insert a table row with specified data
+     *
      * @param array $data Column-value pairs or array of column-value pairs.
      * @param array $fields update fields pairs or values
      * @return int The number of affected rows.
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws CouldNotSaveException
      */
     public function insertOnDuplicate(array $data, array $fields = []): int
     {
@@ -68,6 +79,8 @@ class AttributeMappingRepository implements AttributeMappingRepositoryInterface
     }
 
     /**
+     * Get attribute mapping by id
+     *
      * @param int $id
      * @return AttributeMappingInterface
      * @throws NoSuchEntityException
@@ -85,9 +98,11 @@ class AttributeMappingRepository implements AttributeMappingRepositoryInterface
     }
 
     /**
+     * Delete attribute mapping
+     *
      * @param array $savedIds
      * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function deleteMapping(array $savedIds = []): bool
     {

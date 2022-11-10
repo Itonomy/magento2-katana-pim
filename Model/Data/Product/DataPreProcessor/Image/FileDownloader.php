@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image;
 
 use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Io\File;
 
 /**
@@ -35,10 +36,11 @@ class FileDownloader
      *
      * @param array $filesInfo
      * @return array
-     * @throws FileSystemException
+     * @throws FileSystemException|LocalizedException
      */
     public function downloadBulk(array $filesInfo): array
     {
+        //phpcs:disable Magento2.Functions.DiscouragedFunction
         $handles = [];
         $downloadedFiles = [];
         $errors = [];
@@ -89,6 +91,7 @@ class FileDownloader
         }
 
         curl_multi_close($multihandle);
+        //phpcs:enable Magento2.Functions.DiscouragedFunction
 
         return [$downloadedFiles, $errors];
     }

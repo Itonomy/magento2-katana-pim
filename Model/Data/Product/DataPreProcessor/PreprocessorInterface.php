@@ -9,6 +9,8 @@ namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 interface PreprocessorInterface
 {
     /**
+     * Manipulate the api data before saving
+     *
      * @param array $productData
      * @return array
      */

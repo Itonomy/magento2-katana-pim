@@ -33,9 +33,14 @@ class BasicDataParser implements DataParserInterface
         'katana_attachments' => ['Collections','Attachments'],
     ];
 
+    /**
+     * @var array
+     */
     public array $parsedData = [];
 
     /**
+     * @inheritDoc
+     *
      * @param array $data
      * @return array
      */
@@ -49,6 +54,8 @@ class BasicDataParser implements DataParserInterface
     }
 
     /**
+     * Parse data
+     *
      * @param array $item
      * @param array $attributesMapping
      * @return array
@@ -76,11 +83,13 @@ class BasicDataParser implements DataParserInterface
     }
 
     /**
-     * @param $item
-     * @param $attributeLocation
+     * Find attribute value by its predefined location in the api data
+     *
+     * @param array $item
+     * @param array $attributeLocation
      * @return array|mixed
      */
-    protected function findValue($item, $attributeLocation)
+    protected function findValue(array $item, array $attributeLocation)
     {
         $current = $item;
 
@@ -92,6 +101,8 @@ class BasicDataParser implements DataParserInterface
     }
 
     /**
+     * @inheritDoc
+     *
      * @param array $parsedData
      * @return $this
      */

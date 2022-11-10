@@ -37,6 +37,15 @@ class CsvDataImporter
      */
     private ImageDirectoryProvider $imagesDirectoryProvider;
 
+    /**
+     * CsvDataImporter constructor.
+     *
+     * @param DirectoryList $directoryList
+     * @param MagentoImport $importModel
+     * @param DateTime $dateTime
+     * @param FileSystem $fileSystem
+     * @param ImageDirectoryProvider $imagesDirectoryProvider
+     */
     public function __construct(
         DirectoryList $directoryList,
         MagentoImport $importModel,
@@ -52,19 +61,19 @@ class CsvDataImporter
     }
 
     /**
-     * Import product data from csv
+     * Import product data from a csv file
      *
-     * @param $filePath
+     * @param string $filePath
      * @throws FileSystemException
      */
-    public function importData($filePath): void
+    public function importData(string $filePath): void
     {
         $dirPath = $this->directoryList->getPath($this->directoryList::VAR_DIR)
             . '/' . CsvFileGenerator::CSV_FILE_DIRECTORY;
-        $totalLinesOfCsv = $this->getTotalLinesOfCsv($dirPath . $filePath);
         $start = $this->dateTime->timestamp();
 
         try {
+            //phpcs:ignore Magento2.Functions.DiscouragedFunction
             if (is_dir($dirPath)) {
                 $this->importModel->setData(
                     [
@@ -100,6 +109,7 @@ class CsvDataImporter
                     );
                 }
 
+                // phpcs:disable Magento2.Security.LanguageConstruct
                 echo 'Validation passed!' . PHP_EOL;
                 $this->importModel->importSource();
                 $created = (int)$this->importModel->getCreatedItemsCount();
@@ -113,11 +123,6 @@ class CsvDataImporter
                 echo 'Deleted Items: ' . $deleted . PHP_EOL;
                 echo 'Total Items Handled: ' . $total . PHP_EOL;
 
-//                if ($total < $totalLinesOfCsv) {
-//                    $this->stripDone($dirPath . $filePath, $total);
-//                    $this->importData($filePath);
-//                }
-
                 $this->importModel->invalidateIndex();
             }
         } catch (\Exception $e) {
@@ -125,54 +130,6 @@ class CsvDataImporter
         } finally {
             echo 'Run time: ' . ($this->dateTime->timestamp() - $start) . PHP_EOL;
         }
-    }
-
-    /**
-     * @param $fileName
-     * @return int
-     */
-    public function getTotalLinesOfCsv($fileName): int
-    {
-        $products = \fopen($fileName, "r");
-
-        $output = [];
-
-        while (($product = \fgetcsv($products, null, ',')) !== false) {
-            $output[] = $product;
-        }
-
-        return \count($output) -1;
-    }
-
-    /**
-     * @param $fileName
-     * @param $toRemove
-     * @throws FileSystemException
-     */
-    public function stripDone($fileName, $toRemove): void
-    {
-        $count = 0;
-        //phpcs:ignore Generic.Files.LineLength.TooLong
-        $tempCSV = \fopen($this->directoryList->getPath($this->directoryList::VAR_DIR) . '/importcsv/tempoutput.csv', "a+");
-
-        if (($handle = \fopen($fileName, "r")) !== false) {
-            while (($data = \fgetcsv($handle)) !== false) {
-                if ($count === 0) {
-                    \fputcsv($tempCSV, $data);
-                }
-
-                if ($count > $toRemove) {
-                    \fputcsv($tempCSV, $data);
-                }
-
-                $count++;
-            }
-
-            \fclose($handle);
-            \fclose($tempCSV);
-            \unlink($fileName);
-            //phpcs:ignore Generic.Files.LineLength.TooLong
-            \rename($this->directoryList->getPath($this->directoryList::VAR_DIR) . '/importcsv/tempoutput.csv', $fileName);
-        }
+        // phpcs:enable Magento2.Security.LanguageConstruct
     }
 }

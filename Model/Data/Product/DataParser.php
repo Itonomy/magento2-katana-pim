@@ -5,9 +5,6 @@ namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Itonomy\Katanapim\Model\Data\Product\DataParser\DataParserInterface;
 
-/**
- * Class DataParser
- */
 class DataParser
 {
     /**

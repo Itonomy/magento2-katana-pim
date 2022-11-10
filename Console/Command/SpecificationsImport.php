@@ -3,17 +3,28 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\Process\Entity\Specifications;
 use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
+use Itonomy\Katanapim\Model\Process\Entity\Specifications;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBarFactory;
 
 class SpecificationsImport extends Command
 {
+    /**
+     * @var Specifications
+     */
     private Specifications $specifications;
+
+    /**
+     * @var SpecificationGroup
+     */
     private SpecificationGroup $specificationGroup;
+
+    /**
+     * @var ProgressBarFactory
+     */
     private ProgressBarFactory $progressBarFactory;
 
     /**
@@ -38,7 +49,7 @@ class SpecificationsImport extends Command
     /**
      * Set the name and description
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('katana:import:specifications')
             ->setDescription('Import product\'s specifications');
@@ -46,6 +57,8 @@ class SpecificationsImport extends Command
     }
 
     /**
+     * @inheritDoc
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int

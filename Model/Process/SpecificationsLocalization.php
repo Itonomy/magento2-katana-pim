@@ -25,16 +25,44 @@ class SpecificationsLocalization
 {
     private const URL_PART = 'Specifications';
 
+    /**
+     * @var RestClient
+     */
     private RestClient $rest;
+
+    /**
+     * @var array
+     */
     private array $attributeMapping;
+
+    /**
+     * @var ProgressBar|null
+     */
     private ?ProgressBar $progressBar = null;
+
+    /**
+     * @var CollectionFactory
+     */
     private CollectionFactory $mappingCollectionFactory;
+
+    /**
+     * @var ProductAttributeRepositoryInterface
+     */
     private ProductAttributeRepositoryInterface $attributeRepository;
+
+    /**
+     * @var SpecificationTranslation
+     */
     private SpecificationTranslation $specificationTranslationProcessor;
+
+    /**
+     * @var SpecificationOptions
+     */
     private SpecificationOptions $specificationOptionsProcessor;
 
     /**
      * SpecificationsLocalization constructor.
+     *
      * @param RestClient $rest
      * @param CollectionFactory $mappingCollectionFactory
      * @param ProductAttributeRepositoryInterface $attributeRepository
@@ -57,6 +85,8 @@ class SpecificationsLocalization
     }
 
     /**
+     * Execute specifications localization import
+     *
      * @return int
      * @throws RuntimeException
      * @throws \Magento\Framework\Exception\CouldNotSaveException
@@ -93,6 +123,8 @@ class SpecificationsLocalization
     }
 
     /**
+     * Process specifications localization
+     *
      * @param array $apiSpecifications
      * @throws NoSuchEntityException
      * @throws RuntimeException
@@ -105,12 +137,11 @@ class SpecificationsLocalization
             $id = $apiSpecification['Id'];
             $mappedSpecification = $existingMappedSpecs[$id] ?? null;
 
-            if (is_null($mappedSpecification)) {
+            if ($mappedSpecification === null) {
                 continue;
             }
 
             $attributeCode = $mappedSpecification[AttributeMappingInterface::MAGENTO_ATTRIBUTE_CODE];
-
 
             $productAttribute = $this->attributeRepository->get($attributeCode);
 
@@ -149,6 +180,8 @@ class SpecificationsLocalization
     }
 
     /**
+     * Set progress bar
+     *
      * @param ProgressBar $progressBar
      * @return SpecificationsLocalization
      */
@@ -160,6 +193,8 @@ class SpecificationsLocalization
     }
 
     /**
+     * Get specifications that have a magento attribute code assigned to them
+     *
      * @return array
      */
     private function getSpecificationsMapping(): array

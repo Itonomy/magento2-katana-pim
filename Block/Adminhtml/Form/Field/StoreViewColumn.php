@@ -7,9 +7,6 @@ use Magento\Framework\View\Element\Context;
 use Magento\Framework\View\Element\Html\Select;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class StoreViewColumn
- */
 class StoreViewColumn extends Select
 {
     /**
@@ -17,6 +14,13 @@ class StoreViewColumn extends Select
      */
     private StoreManagerInterface $storeManager;
 
+    /**
+     * StoreViewColumn constructor.
+     *
+     * @param StoreManagerInterface $storeManager
+     * @param Context $context
+     * @param array $data
+     */
     public function __construct(StoreManagerInterface $storeManager, Context $context, array $data = [])
     {
         $this->storeManager = $storeManager;
@@ -29,7 +33,7 @@ class StoreViewColumn extends Select
      * @param string $value
      * @return $this
      */
-    public function setInputName($value)
+    public function setInputName(string $value): StoreViewColumn
     {
         return $this->setName($value);
     }
@@ -37,10 +41,10 @@ class StoreViewColumn extends Select
     /**
      * Set "id" for <select> element
      *
-     * @param $value
+     * @param string|int $value
      * @return $this
      */
-    public function setInputId($value)
+    public function setInputId($value): StoreViewColumn
     {
         return $this->setId($value);
     }

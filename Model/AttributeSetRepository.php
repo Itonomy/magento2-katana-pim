@@ -10,9 +10,14 @@ use Magento\Framework\Exception\CouldNotSaveException;
 
 class AttributeSetRepository implements AttributeSetRepositoryInterface
 {
+    /**
+     * @var AttributeSetResourceModel
+     */
     private AttributeSetResourceModel $attributeSetResourceModel;
 
     /**
+     * AttributeSetRepository constructor.
+     *
      * @param AttributeSetResourceModel $attributeSetResourceModel
      */
     public function __construct(
@@ -22,10 +27,12 @@ class AttributeSetRepository implements AttributeSetRepositoryInterface
     }
 
     /**
+     * Insert a table row with specified data
+     *
      * @param array $data Column-value pairs or array of column-value pairs.
      * @param array $fields update fields pairs or values
      * @return int The number of affected rows.
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws CouldNotSaveException
      */
     public function insertOnDuplicate(array $data, array $fields = []): int
     {

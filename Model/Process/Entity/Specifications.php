@@ -31,6 +31,9 @@ class Specifications
      */
     private ?ProgressBar $progressBar = null;
 
+    /**
+     * @var string[]
+     */
     public array $type = [
         0 => 'select',
         10 => 'text', //more than 255
@@ -50,9 +53,11 @@ class Specifications
     }
 
     /**
+     * Execute specifications import
+     *
      * @return int
-     * @throws RuntimeException
      * @throws CouldNotSaveException
+     * @throws RuntimeException
      */
     public function execute(): int
     {
@@ -84,6 +89,8 @@ class Specifications
     }
 
     /**
+     * Process specification import
+     *
      * @param array $specifications
      * @return void
      * @throws CouldNotSaveException
@@ -121,6 +128,8 @@ class Specifications
     }
 
     /**
+     * Set progress bar
+     *
      * @param ProgressBar $progressBar
      * @return Specifications
      */
@@ -132,6 +141,8 @@ class Specifications
     }
 
     /**
+     * Get specification type by id
+     *
      * @param mixed $typeId
      * @return string
      */

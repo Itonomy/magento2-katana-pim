@@ -13,6 +13,7 @@ class UrlKeyGenerator
      *
      * @param string|int $sku
      * @return string
+     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function generateUrlKey($sku): string
     {

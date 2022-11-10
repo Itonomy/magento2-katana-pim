@@ -54,6 +54,8 @@ class SpecificationGroup
     }
 
     /**
+     * Execute specification group import
+     *
      * @return int
      * @throws RuntimeException
      * @throws \Magento\Framework\Exception\CouldNotSaveException

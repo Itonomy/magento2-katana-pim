@@ -87,7 +87,7 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
-        int $pageSize = 2000
+        int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;
@@ -128,7 +128,7 @@ class ProductImport
                     break;
                 }
 
-                $this->importItems($items);
+                $this->importItems($items, $page);
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
             $this->logger->critical('Error while trying to run katana product import. ' . $e->getMessage());
@@ -142,12 +142,16 @@ class ProductImport
      * Import products
      *
      * @param array $items
+     * @param int $page
      * @throws NoSuchEntityException
      */
-    private function importItems(array $items): void
+    private function importItems(array $items, int $page): void
     {
         //Global scope import
-        //TODO: carry all parsed data for all products due to configurable product creation
+        // phpcs:ignore Magento2.Security.LanguageConstruct
+        echo 'Processing page ' . $page . PHP_EOL;
+        // phpcs:ignore Magento2.Security.LanguageConstruct
+        echo 'Importing values in global scope' . PHP_EOL;
         $parsedData = $this->dataParser->parse($items);
         $preprocessedData = $this->dataPreprocessor->process($parsedData);
 
@@ -166,6 +170,8 @@ class ProductImport
             );
 
             if (!empty($parsedData)) {
+                // phpcs:ignore Magento2.Security.LanguageConstruct
+                echo 'Importing values in ' . $languageCode . ' scope.' . PHP_EOL;
                 $this->persistenceProcessor->save($parsedData);
             }
         }

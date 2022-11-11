@@ -8,6 +8,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\FileSystem;
 use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\ImportExport\Model\ImportFactory as MagentoImportFactory;
 use Magento\ImportExport\Model\Import as MagentoImport;
 
 class CsvDataImporter
@@ -18,9 +19,9 @@ class CsvDataImporter
     private DirectoryList $directoryList;
 
     /**
-     * @var MagentoImport
+     * @var MagentoImportFactory
      */
-    private MagentoImport $importModel;
+    private MagentoImportFactory $importModelFactory;
 
     /**
      * @var DateTime
@@ -41,20 +42,20 @@ class CsvDataImporter
      * CsvDataImporter constructor.
      *
      * @param DirectoryList $directoryList
-     * @param MagentoImport $importModel
+     * @param MagentoImportFactory $importModelFactory
      * @param DateTime $dateTime
      * @param FileSystem $fileSystem
      * @param ImageDirectoryProvider $imagesDirectoryProvider
      */
     public function __construct(
         DirectoryList $directoryList,
-        MagentoImport $importModel,
+        MagentoImportFactory $importModelFactory,
         DateTime $dateTime,
         FileSystem $fileSystem,
         ImageDirectoryProvider $imagesDirectoryProvider
     ) {
         $this->directoryList = $directoryList;
-        $this->importModel = $importModel;
+        $this->importModelFactory = $importModelFactory;
         $this->dateTime = $dateTime;
         $this->fileSystem = $fileSystem;
         $this->imagesDirectoryProvider = $imagesDirectoryProvider;
@@ -75,7 +76,8 @@ class CsvDataImporter
         try {
             //phpcs:ignore Magento2.Functions.DiscouragedFunction
             if (is_dir($dirPath)) {
-                $this->importModel->setData(
+                $importModel = $this->importModelFactory->create();
+                $importModel->setData(
                     [
                         'entity' => 'catalog_product',
                         'behavior' => MagentoImport::BEHAVIOR_APPEND,
@@ -88,13 +90,13 @@ class CsvDataImporter
                     ]
                 );
 
-                $errorAggregator = $this->importModel->getErrorAggregator();
+                $errorAggregator = $importModel->getErrorAggregator();
                 $errorAggregator->initValidationStrategy(
-                    $this->importModel->getData(MagentoImport::FIELD_NAME_VALIDATION_STRATEGY),
-                    $this->importModel->getData(MagentoImport::FIELD_NAME_ALLOWED_ERROR_COUNT)
+                    $importModel->getData(MagentoImport::FIELD_NAME_VALIDATION_STRATEGY),
+                    $importModel->getData(MagentoImport::FIELD_NAME_ALLOWED_ERROR_COUNT)
                 );
 
-                $validate = $this->importModel->validateSource(
+                $validate = $importModel->validateSource(
                     \Magento\ImportExport\Model\Import\Adapter::findAdapterFor(
                         $dirPath . $filePath,
                         $this->fileSystem->getDirectoryWrite(DirectoryList::VAR_DIR)
@@ -105,30 +107,28 @@ class CsvDataImporter
                     throw new \Exception(
                         'Unable to validate the CSV: ' .
                         //phpcs:ignore Generic.Files.LineLength.TooLong
-                        \json_encode($this->importModel->getOperationResultMessages($this->importModel->getErrorAggregator()))
+                        \json_encode($importModel->getOperationResultMessages($importModel->getErrorAggregator()))
                     );
                 }
 
                 // phpcs:disable Magento2.Security.LanguageConstruct
                 echo 'Validation passed!' . PHP_EOL;
-                $this->importModel->importSource();
-                $created = (int)$this->importModel->getCreatedItemsCount();
-                $updated = (int)$this->importModel->getUpdatedItemsCount();
-                $deleted = (int)$this->importModel->getDeletedItemsCount();
-                $total = $created + $updated + $deleted;
+                $importModel->importSource();
+                $created = (int)$importModel->getCreatedItemsCount();
+                $updated = (int)$importModel->getUpdatedItemsCount();
+                $deleted = (int)$importModel->getDeletedItemsCount();
 
                 echo 'Import Complete' . PHP_EOL;
                 echo 'New Items: ' . $created . PHP_EOL;
                 echo 'Updated Items: ' . $updated . PHP_EOL;
                 echo 'Deleted Items: ' . $deleted . PHP_EOL;
-                echo 'Total Items Handled: ' . $total . PHP_EOL;
 
-                $this->importModel->invalidateIndex();
+                $importModel->invalidateIndex();
             }
         } catch (\Exception $e) {
             echo($e->getMessage());
         } finally {
-            echo 'Run time: ' . ($this->dateTime->timestamp() - $start) . PHP_EOL;
+            echo 'Run time: ' . ($this->dateTime->timestamp() - $start) . 's' . PHP_EOL;
         }
         // phpcs:enable Magento2.Security.LanguageConstruct
     }

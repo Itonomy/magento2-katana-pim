@@ -57,6 +57,9 @@
                 <field id="specifications" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Specifications Import</label>
                 </field>
+                <field id="specification_localization" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Specification Options and Localization</label>
+                </field>
                 <field id="products" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Products Import</label>
                 </field>

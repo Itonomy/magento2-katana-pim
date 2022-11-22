@@ -2,7 +2,7 @@
   "name": "itonomy/katanapim",
   "description": "Itonomy KatanaPim Module",
   "type": "magento2-module",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "require": {
     "php": ">=7.4"
   },

@@ -99,7 +99,7 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
-        int $pageSize = 400
+        int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;

@@ -7,6 +7,7 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Itonomy\Katanapim\Model\AttributeMappingFactory;
 use Itonomy\Katanapim\Model\AttributeMappingRepository;
+use Psr\Log\LoggerInterface;
 
 class Save extends Action
 {
@@ -24,6 +25,7 @@ class Save extends Action
      * @var AttributeMappingRepository
      */
     private AttributeMappingRepository $attributeMappingRepository;
+    private LoggerInterface $logger;
 
     /**
      * @param Context $context
@@ -33,11 +35,13 @@ class Save extends Action
     public function __construct(
         Context $context,
         AttributeMappingFactory $attributeMapping,
-        AttributeMappingRepository $attributeMappingRepository
+        AttributeMappingRepository $attributeMappingRepository,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->attributeMapping = $attributeMapping;
         $this->attributeMappingRepository = $attributeMappingRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,6 +49,7 @@ class Save extends Action
      */
     public function execute()
     {
+        $this->logger->info(json_encode($this->getRequest()->getParams()));
         try {
             $data = $this->getRequest()->getParam('itonomy_katanapim_dynamic_rows_container');
 

@@ -41,14 +41,14 @@ class CsvProcessor implements PersistenceProcessorInterface
      * @param array $data
      * @throws CouldNotSaveException|FileSystemException
      */
-    public function save(array $data): void
+    public function save(array $data): PersistenceResult
     {
         $fileName = $this->csvFileGenerator->generateFile($data);
 
-        if ($fileName) {
-            $this->csvDataImporter->importData($fileName);
-        } else {
+        if (!$fileName) {
             throw new CouldNotSaveException(__('Failed to generate product import csv file.'));
         }
+
+        return $this->csvDataImporter->importData($fileName);
     }
 }

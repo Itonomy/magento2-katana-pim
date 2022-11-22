@@ -77,6 +77,7 @@ class ImportProducts extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
+        $this->importer->setCliOutput($output);
         $this->importer->import();
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');

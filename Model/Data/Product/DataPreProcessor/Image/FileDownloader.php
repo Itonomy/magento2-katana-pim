@@ -62,7 +62,7 @@ class FileDownloader
             curl_setopt($handles[$key]['curl'], CURLOPT_URL, $fileInfo['url']);
             curl_setopt($handles[$key]['curl'], CURLOPT_HEADER, 0);
             curl_setopt($handles[$key]['curl'], CURLOPT_FILE, $handles[$key]['file']);
-            curl_setopt($handles[$key]['curl'], CURLOPT_TIMEOUT, 10);
+            curl_setopt($handles[$key]['curl'], CURLOPT_TIMEOUT, 30);
 
             curl_multi_add_handle($multihandle, $handles[$key]['curl']);
         }

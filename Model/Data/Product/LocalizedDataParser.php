@@ -72,7 +72,7 @@ class LocalizedDataParser
     }
 
     /**
-     * Parse localization data
+     * Find localized attribute values which match a certain language
      *
      * TODO: Make this more efficient (order data before looking for values..)
      *

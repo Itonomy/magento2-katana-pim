@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataParser;
 
+use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
+
 class BasicDataParser implements DataParserInterface
 {
     public const KATANA_PRODUCT_TYPE = 5;
@@ -29,7 +31,7 @@ class BasicDataParser implements DataParserInterface
 //Categories Data
         'categories' => ['Collections', 'Categories'],
 //Misc
-        'katana_pim_id' => ['Id'],
+        AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE => ['Id'],
         'katana_attachments' => ['Collections','Attachments'],
     ];
 

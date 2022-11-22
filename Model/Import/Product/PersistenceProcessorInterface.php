@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Import\Product;
 
+use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
+
 interface PersistenceProcessorInterface
 {
     /**
@@ -10,5 +12,5 @@ interface PersistenceProcessorInterface
      *
      * @param array $data
      */
-    public function save(array $data): void;
+    public function save(array $data): PersistenceResult;
 }

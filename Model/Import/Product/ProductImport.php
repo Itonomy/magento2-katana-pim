@@ -7,18 +7,25 @@ use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
+use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
+use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
 use Itonomy\Katanapim\Model\Logger;
 use Itonomy\Katanapim\Model\RestClient;
+use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
 use Laminas\Http\Request;
 use Laminas\Stdlib\Parameters;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ProductImport
 {
     private const URL_PART = 'Product';
     private const REQUEST_PAGE_INDEX_KEY = 'filterModel.paging.pageIndex';
     private const REQUEST_PAGE_SIZE_KEY = 'filterModel.paging.pageSize';
+
+    public const IMPORT_ERROR = 'error';
+    public const IMPORT_INFO = 'info';
 
     /**
      * @var RestClient
@@ -66,6 +73,11 @@ class ProductImport
     private Katana $katanaConfig;
 
     /**
+     * @var OutputInterface|null
+     */
+    private ?OutputInterface $cliOutput;
+
+    /**
      * ProductImport constructor.
      *
      * @param RestClient $restClient
@@ -87,7 +99,7 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
-        int $pageSize = 1000
+        int $pageSize = 400
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;
@@ -98,12 +110,14 @@ class ProductImport
         $this->logger = $logger;
         $this->katanaConfig = $katanaConfig;
         $this->pageSize = $pageSize;
+        $this->cliOutput = null;
     }
 
     /**
      * Import products from Katana PIM
      *
      * @return void
+     * @throws NoSuchEntityException
      * @throws \Throwable
      */
     public function import(): void
@@ -112,7 +126,6 @@ class ProductImport
         $parameters = $this->prepareRequestArray();
 
         try {
-            //TODO: think about getting all products data before processing raw data
             do {
                 $parameters->set(self::REQUEST_PAGE_INDEX_KEY, $page++);
 
@@ -148,31 +161,60 @@ class ProductImport
     private function importItems(array $items, int $page): void
     {
         //Global scope import
-        // phpcs:ignore Magento2.Security.LanguageConstruct
-        echo 'Processing page ' . $page . PHP_EOL;
-        // phpcs:ignore Magento2.Security.LanguageConstruct
-        echo 'Importing values in global scope' . PHP_EOL;
+        $this->log(PHP_EOL . 'Processing page ' . $page);
+        $this->log('Importing values in global scope');
         $parsedData = $this->dataParser->parse($items);
         $preprocessedData = $this->dataPreprocessor->process($parsedData);
 
-        if (!empty($preprocessedData)) {
-            $this->persistenceProcessor->save($preprocessedData);
+        if (empty($preprocessedData)) {
+            return;
+        }
+
+        $saveResult = $this->persistenceProcessor->save($preprocessedData);
+        $this->log('Created: ' . $saveResult->getCreatedCount());
+        $this->log('Updated: ' . $saveResult->getUpdatedCount());
+        $this->log('Deleted: ' . $saveResult->getDeletedCount());
+        /** @var Error $error */
+        foreach ($saveResult->getErrors() as $error) {
+            $this->log(sprintf(
+                "Error: %s SKU = %s KatanaPIM ID = %s",
+                $error->getMessage(),
+                $error->getitemData()['sku'] ?? '',
+                $error->getitemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
+            ), self::IMPORT_ERROR);
         }
 
         //Store scope import
         $languageMapping = $this->katanaConfig->getLanguageMapping();
+        $validItems = $this->filterOutInvalidItems($items, $saveResult);
+
+        if (empty($validItems)) {
+            return;
+        }
 
         foreach ($languageMapping as $storeViewId => $languageCode) {
+            $this->log('Starting import for ' . $languageCode . ' language in store ' . $storeViewId);
+
             $parsedData = $this->localizedDataParser->parse(
-                $items,
+                $validItems,
                 $storeViewId,
                 $languageCode
             );
 
             if (!empty($parsedData)) {
-                // phpcs:ignore Magento2.Security.LanguageConstruct
-                echo 'Importing values in ' . $languageCode . ' scope.' . PHP_EOL;
-                $this->persistenceProcessor->save($parsedData);
+                $saveResult = $this->persistenceProcessor->save($parsedData);
+                $this->log('Created: ' . $saveResult->getCreatedCount());
+                $this->log('Updated: ' . $saveResult->getUpdatedCount());
+                $this->log('Deleted: ' . $saveResult->getDeletedCount());
+
+                foreach ($saveResult->getErrors() as $error) {
+                    $this->log(sprintf(
+                        "Error: %s. SKU = %s KatanaPIM ID = %s",
+                        $error->getMessage(),
+                        $error->getitemData()['sku'] ?? '',
+                        $error->getitemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
+                    ), self::IMPORT_ERROR);
+                }
             }
         }
     }
@@ -190,5 +232,69 @@ class ProductImport
         ]);
 
         return $parameters;
+    }
+
+    /**
+     * Filter out items which threw errors during import
+     *
+     * @param array $items
+     * @param PersistenceResult $saveResult
+     * @return array
+     */
+    private function filterOutInvalidItems(array $items, PersistenceResult $saveResult): array
+    {
+        $invalidIds = [];
+        foreach ($saveResult->getErrors() as $error) {
+            $katanaId = $error->getItemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? null;
+            if ($katanaId) {
+                $invalidIds[$katanaId] = $katanaId;
+            }
+        }
+
+        if (empty($invalidIds)) {
+            return $items;
+        }
+
+        return array_filter(
+            $items,
+            function ($item) use ($invalidIds) {
+                return !in_array($item['Id'], $invalidIds);
+            }
+        );
+    }
+
+    /**
+     * Set the cli output
+     *
+     * @param OutputInterface $cliOutput
+     * @return void
+     */
+    public function setCliOutput(OutputInterface $cliOutput)
+    {
+        $this->cliOutput = $cliOutput;
+    }
+
+    /**
+     * Log some information to the available output streams
+     *
+     * TODO: Move Output Stream handler / Logger outside this class.
+     *
+     * @param string $string
+     * @param string $level
+     * @return void
+     */
+    private function log(string $string, string $level = self::IMPORT_INFO): void
+    {
+        if ($level === self::IMPORT_ERROR) {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<error>' . $string . '</error>');
+            }
+            $this->logger->error($string);
+        } else {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<info>' . $string . '</info>');
+            }
+            $this->logger->info($string);
+        }
     }
 }

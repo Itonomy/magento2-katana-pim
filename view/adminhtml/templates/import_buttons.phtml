@@ -20,7 +20,6 @@ $permissions = $block->getData('permissions');
                         'setLocation(\'' . $block->escapeJs($block->getImportSpecificationsUrl()) . '\')',
                         'button#importSpecifications'
                     ) ?>
-                    'onclick' => 'confirmSetLocation(\'' . $message . '\', \'' . $this->getFlushStorageUrl() . '\')',
 
                 <?php endif; ?>
                 <?php if ($block->hasAccessToSpecificationTranslationsImport()): ?>

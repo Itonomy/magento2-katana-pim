@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <referenceBlock name="page.title">
+        <action method="setPageTitle">
+            <argument name="title" xsi:type="string">KatanaPim Imports</argument>
+        </action>
+    </referenceBlock>
+    <body>
+        <referenceContainer name="content">
+            <block class="Itonomy\Katanapim\Block\Adminhtml\Imports\Buttons" name="katanapim.import.buttons" template="Itonomy_Katanapim::import_buttons.phtml"/>
+            <block class="Magento\Backend\Block\Template" name="katanapim.import.log" template="Itonomy_Katanapim::imports_log.phtml">
+                <arguments>
+                    <argument name="log_provider" xsi:type="object">Itonomy\Katanapim\ViewModel\ImportScheduleProvider</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

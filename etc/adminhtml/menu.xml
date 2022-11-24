@@ -4,7 +4,7 @@
     <menu>
         <add id="Itonomy_Katanapim::base" title="Katana PIM"
              module="Itonomy_Katanapim" sortOrder="30"
-             resource="Itonomy_Katanapim::base" />
+             resource="Itonomy_Katanapim::base"/>
 
         <add id="Itonomy_Katanapim::attributes" title="Attributes Mapping"
              module="Itonomy_Katanapim" sortOrder="35"
@@ -15,5 +15,10 @@
              module="Itonomy_Katanapim" sortOrder="40"
              parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::base"
              action="adminhtml/system_config/edit/section/katanapim_general"/>
+
+        <add id="Itonomy_Katanapim::imports" title="Import Jobs"
+             module="Itonomy_Katanapim" sortOrder="45"
+             parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::base"
+             action="katanapim/imports"/>
     </menu>
 </config>

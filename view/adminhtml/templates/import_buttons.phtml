@@ -1,0 +1,48 @@
+<?php
+
+/** @var \Magento\Backend\Block\Cache\Permissions|null $permissions */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+/** @var \Itonomy\Katanapim\Block\Adminhtml\Imports\Buttons $block */
+
+$permissions = $block->getData('permissions');
+?>
+<div class="page-main-actions">
+    <div class="page-actions">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <?php if ($block->hasAccessToSpecificationsImport()): ?>
+                    <button id="importSpecifications" type="button" class="action-default scalable primary">
+                        <span><?= $block->escapeHtml(__('Import Specifications')); ?></span>
+                    </button>
+                    <?= /* @noEscape */
+                    $secureRenderer->renderEventListenerAsTag(
+                        'onclick',
+                        'setLocation(\'' . $block->escapeJs($block->getImportSpecificationsUrl()) . '\')',
+                        'button#importSpecifications'
+                    ) ?>
+                    'onclick' => 'confirmSetLocation(\'' . $message . '\', \'' . $this->getFlushStorageUrl() . '\')',
+
+                <?php endif; ?>
+                <?php if ($block->hasAccessToSpecificationTranslationsImport()): ?>
+                    <?= /* @noEscape */
+                    $secureRenderer->renderEventListenerAsTag(
+                        'onclick',
+                        'setLocation(\'' . $block->escapeJs($block->getImportSpecificationTranslationsUrl()) . '\')',
+                        'button#importSpecificationTranslations'
+                    ) ?>
+                <?php endif; ?>
+                <?php if ($block->hasAccessToProductsImport()): ?>
+                    <button id="importProducts" type="button" class="action-default scalable primary">
+                        <span><?= $block->escapeHtml(__('Import Products')); ?></span>
+                    </button>
+                    <?= /* @noEscape */
+                    $secureRenderer->renderEventListenerAsTag(
+                        'onclick',
+                        'setLocation(\'' . $block->escapeJs($block->getImportProductsUrl()) . '\')',
+                        'button#importProducts'
+                    ) ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

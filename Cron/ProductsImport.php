@@ -10,6 +10,7 @@ use Itonomy\Katanapim\Model\Import\Product\ProductImport;
  */
 class ProductsImport
 {
+    public const JOB_CODE = 'itonomy_katanapim_products_import';
     /**
      * @var ProductImport
      */

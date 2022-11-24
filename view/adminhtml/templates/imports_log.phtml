@@ -1,0 +1,39 @@
+<?php
+
+/** @var \Itonomy\Katanapim\Block\Adminhtml\Imports\Log $block */
+/** @var \Itonomy\Katanapim\ViewModel\ImportScheduleProvider $logProvider */
+
+$logProvider = $block->getlogProvider();
+$logs = $logProvider->getImportJobs();
+?>
+
+<h2>
+    <span><?= $block->escapeHtml(__('Recent imports')); ?></span>
+</h2>
+
+<div>
+    <table class="data-grid">
+        <thead>
+        <tr class="headings">
+            <th class="data-grid-th"><?= $block->escapeHtml(__('Job Name')) ?></th>
+            <th class="data-grid-th"><?= $block->escapeHtml(__('Cron Job Messages')) ?></th>
+            <th class="data-grid-th"><?= $block->escapeHtml(__('Scheduled At ')) ?></th>
+            <th class="data-grid-th"><?= $block->escapeHtml(__('Status')) ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($logs as $log): ?>
+            <tr>
+                <td data-th="<?= $block->escapeHtmlAttr(__('Job Name')) ?>"
+                    class="row"><?= $block->escapeHtml($logProvider->getImportJobName($log->getJobCode())) ?></td>
+                <td data-th="<?= $block->escapeHtmlAttr(__('CronJob Messages')) ?>"
+                    class="row"><?= $block->escapeHtml($log->getMessages()) ?></td>
+                <td data-th="<?= $block->escapeHtmlAttr(__('Scheduled At')) ?>"
+                    class="row"><?= $block->escapeHtml($log->getScheduledAt()) ?></td>
+                <td data-th="<?= $block->escapeHtmlAttr(__('Status')) ?>"
+                    class="row"><?= $block->escapeHtml($log->getStatus()) ?></td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+</div>

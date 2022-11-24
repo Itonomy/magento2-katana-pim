@@ -11,6 +11,8 @@ use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
  */
 class SpecificationsImport
 {
+    public const JOB_CODE = 'itonomy_katanapim_specifications_import';
+
     /**
      * @var Specifications
      */

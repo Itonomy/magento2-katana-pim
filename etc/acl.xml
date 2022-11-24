@@ -5,7 +5,10 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Itonomy_Katanapim::base" title="Katana PIM" sortOrder="1300">
-                    <resource id="Itonomy_Katanapim::attributes" title="Attributes Mapping" />
+                    <resource id="Itonomy_Katanapim::attributes" title="Attributes Mapping" translate="title" sortOrder="10" />
+                    <resource id="Itonomy_Katanapim::import_products" title="Import Products" translate="title" sortOrder="20" />
+                    <resource id="Itonomy_Katanapim::import_specifications" title="Import Specifications" translate="title" sortOrder="30" />
+                    <resource id="Itonomy_Katanapim::import_specification_translations" title="Import Specification Translations" translate="title" sortOrder="40" />
                 </resource>
             </resource>
         </resources>

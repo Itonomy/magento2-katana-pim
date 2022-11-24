@@ -12,6 +12,8 @@ use Magento\Framework\Exception\RuntimeException;
  */
 class SpecificationsLocalizationImport
 {
+    public const JOB_CODE = 'itonomy_katanapim_specifications_localization_import';
+
     /**
      * @var SpecificationsLocalization
      */

@@ -144,7 +144,7 @@ class ProductImport
                 $this->importItems($items, $page);
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
-            $this->logger->critical('Error while trying to run katana product import. ' . $e->getMessage());
+            $this->log('Error while trying to run katana product import. ' . $e->getMessage(), self::IMPORT_ERROR);
             throw $e;
         }
 

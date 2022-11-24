@@ -20,9 +20,12 @@ $permissions = $block->getData('permissions');
                         'setLocation(\'' . $block->escapeJs($block->getImportSpecificationsUrl()) . '\')',
                         'button#importSpecifications'
                     ) ?>
-
                 <?php endif; ?>
+
                 <?php if ($block->hasAccessToSpecificationTranslationsImport()): ?>
+                    <button id="importSpecificationTranslations" type="button" class="action-default scalable primary">
+                        <span><?= $block->escapeHtml(__('Import Specification Options & Translations')); ?></span>
+                    </button>
                     <?= /* @noEscape */
                     $secureRenderer->renderEventListenerAsTag(
                         'onclick',
@@ -30,6 +33,7 @@ $permissions = $block->getData('permissions');
                         'button#importSpecificationTranslations'
                     ) ?>
                 <?php endif; ?>
+
                 <?php if ($block->hasAccessToProductsImport()): ?>
                     <button id="importProducts" type="button" class="action-default scalable primary">
                         <span><?= $block->escapeHtml(__('Import Products')); ?></span>

@@ -13,22 +13,22 @@ class PersistenceResult
     /**
      * @var int|null
      */
-    private ?int $created;
+    private int $created = 0;
 
     /**
      * @var int|null
      */
-    private ?int $deleted;
+    private int $deleted = 0;
 
     /**
      * @var int|null
      */
-    private ?int $updated;
+    private int $updated = 0;
 
     /**
      * @var array|null
      */
-    private ?array $errors;
+    private array $errors = [];
 
     /**
      * Set count of created items
@@ -44,9 +44,9 @@ class PersistenceResult
     /**
      * Get count of created items
      *
-     * @return int|null
+     * @return int
      */
-    public function getCreatedCount(): ?int
+    public function getCreatedCount(): int
     {
         return $this->created;
     }
@@ -65,9 +65,9 @@ class PersistenceResult
     /**
      * Get count of deleted items
      *
-     * @return int|null
+     * @return int
      */
-    public function getDeletedCount(): ?int
+    public function getDeletedCount(): int
     {
         return $this->deleted;
     }
@@ -86,9 +86,9 @@ class PersistenceResult
     /**
      * Get count of updated items
      *
-     * @return int|null
+     * @return int
      */
-    public function getUpdatedCount(): ?int
+    public function getUpdatedCount(): int
     {
         return $this->updated;
     }
@@ -120,10 +120,10 @@ class PersistenceResult
     /**
      * Get errors
      *
-     * @return array|null
+     * @return array
      */
     public function getErrors(): ?array
     {
-        return $this->errors ?? [];
+        return $this->errors;
     }
 }

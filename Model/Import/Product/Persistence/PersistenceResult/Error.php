@@ -8,12 +8,12 @@ class Error
     /**
      * @var string|null
      */
-    private ?string $message;
+    private string $message = '';
 
     /**
      * @var array|null
      */
-    private ?array $itemData;
+    private array $itemData = [];
 
     /**
      * Set error message
@@ -30,9 +30,9 @@ class Error
     /**
      * Get error message
      *
-     * @return string|null
+     * @return string
      */
-    public function getMessage(): ?string
+    public function getMessage(): string
     {
         return $this->message;
     }
@@ -52,9 +52,9 @@ class Error
     /**
      * Get data on the items related to the error
      *
-     * @return array|null
+     * @return array
      */
-    public function getitemData(): ?array
+    public function getitemData(): array
     {
         return $this->itemData;
     }

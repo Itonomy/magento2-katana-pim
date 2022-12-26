@@ -103,7 +103,7 @@ class SpecificationsDataParser implements DataParserInterface
 
         foreach ($attributesMapping as $magentoCode => $attributeMapping) {
             $katanaCode = $attributeMapping['katana_attribute_code'];
-            $value = $productSpecs[$katanaCode]['value'] ?? null;
+            $value = \trim($productSpecs[$katanaCode]['value']) ?? null;
 
             if ($value !== null) {
                 $attribute = $this->productAttributeRepository->get($magentoCode);

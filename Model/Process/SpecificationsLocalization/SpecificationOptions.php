@@ -225,8 +225,8 @@ class SpecificationOptions
         $encoding = \mb_internal_encoding();
 
         return \strcmp(
-            \mb_strtoupper($str1, $encoding),
-            \mb_strtoupper($str2, $encoding)
+            \trim(\mb_strtoupper($str1, $encoding)),
+            \trim(\mb_strtoupper($str2, $encoding))
         );
     }
 }

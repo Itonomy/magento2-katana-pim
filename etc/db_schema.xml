@@ -15,23 +15,24 @@
                 comment="Katana Attribute Type"/>
         <column xsi:type="varchar" name="katana_attribute_type_id" nullable="false" length="255"
                 comment="Katana Attribute Type Id"/>
-        <column xsi:type="int" name="magento_attribute_id" padding="10" unsigned="true" nullable="false" default="0"
+        <column xsi:type="int" name="magento_attribute_id" padding="10" unsigned="true" nullable="true"
                 comment="Magento Attribute Id"/>
-        <column xsi:type="varchar" name="magento_attribute_code" nullable="false" length="255"
+        <column xsi:type="varchar" name="magento_attribute_code" nullable="true" length="255"
                 comment="Magento Attribute Code"/>
         <column xsi:type="smallint" name="is_configurable" nullable="false" default="0"
-                comment="Magento Attribute Code"/>
+                comment="Is Configurable"/>
         <column xsi:type="int" name="store" padding="10" unsigned="true" nullable="false" default="0"
                 comment="store"/>
-
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
         </constraint>
-
-        <constraint xsi:type="unique" referenceId="KATANA_MAGENTO_CODE">
+        <constraint xsi:type="unique" referenceId="KATANA_CODE">
             <column name="katana_attribute_code"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="MAGENTO_CODE">
             <column name="magento_attribute_code"/>
         </constraint>
+
     </table>
     <table name="katanapim_attribute_set" resource="default" engine="innodb"
            comment="Katana PIM Characteristic Group">

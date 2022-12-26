@@ -14,7 +14,8 @@
         },
         "constraint": {
             "PRIMARY": true,
-            "KATANA_MAGENTO_CODE": true
+            "KATANA_CODE": true,
+            "MAGENTO_CODE": true
         }
     },
     "katanapim_attribute_set": {

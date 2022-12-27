@@ -103,9 +103,10 @@ class SpecificationsDataParser implements DataParserInterface
 
         foreach ($attributesMapping as $magentoCode => $attributeMapping) {
             $katanaCode = $attributeMapping['katana_attribute_code'];
-            $value = \trim($productSpecs[$katanaCode]['value']) ?? null;
+            $value = $productSpecs[$katanaCode]['value'] ?? null;
 
             if ($value !== null) {
+                $value = \trim($value);
                 $attribute = $this->productAttributeRepository->get($magentoCode);
 
                 if ($attribute->getFrontendInput() === 'select') {

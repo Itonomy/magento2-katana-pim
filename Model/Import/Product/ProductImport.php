@@ -179,8 +179,8 @@ class ProductImport
             $this->log(sprintf(
                 "Error: %s SKU = %s KatanaPIM ID = %s",
                 $error->getMessage(),
-                $error->getitemData()['sku'] ?? '',
-                $error->getitemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
+                $error->getItemData()['sku'] ?? '',
+                $error->getItemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
             ), self::IMPORT_ERROR);
         }
 
@@ -211,8 +211,8 @@ class ProductImport
                     $this->log(sprintf(
                         "Error: %s. SKU = %s KatanaPIM ID = %s",
                         $error->getMessage(),
-                        $error->getitemData()['sku'] ?? '',
-                        $error->getitemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
+                        $error->getItemData()['sku'] ?? '',
+                        $error->getItemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
                     ), self::IMPORT_ERROR);
                 }
             }

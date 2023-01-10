@@ -15,12 +15,18 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class for importing specification (attribute) options
  */
 class SpecificationOptions
 {
+    /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
     /**
      * @var AttributeOptionInterfaceFactory
      */
@@ -54,6 +60,7 @@ class SpecificationOptions
     /**
      * SpecificationOptions constructor.
      *
+     * @param StoreManagerInterface $storeManager
      * @param AttributeOptionInterfaceFactory $attributeOptionInterfaceFactory
      * @param AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory
      * @param AttributeOptionManagementInterface $attributeOptionManagement
@@ -61,12 +68,14 @@ class SpecificationOptions
      * @param Katana $katanaConfig
      */
     public function __construct(
+        StoreManagerInterface $storeManager,
         AttributeOptionInterfaceFactory $attributeOptionInterfaceFactory,
         AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory,
         AttributeOptionManagementInterface $attributeOptionManagement,
         AttributeOptionUpdateInterface $attributeOptionUpdate,
         Katana $katanaConfig
     ) {
+        $this->storeManager = $storeManager;
         $this->attributeOptionInterfaceFactory = $attributeOptionInterfaceFactory;
         $this->attributeOptionManagement = $attributeOptionManagement;
         $this->attributeOptionLabelInterfaceFactory = $attributeOptionLabelInterfaceFactory;
@@ -84,7 +93,7 @@ class SpecificationOptions
      * @throws StateException
      * @throws NoSuchEntityException
      */
-    public function process(array $optionsData, ProductAttributeInterface $productAttribute)
+    public function process(array $optionsData, ProductAttributeInterface $productAttribute): void
     {
         $existingOptions = $productAttribute->setStoreId(Store::DEFAULT_STORE_ID)->getOptions();
 
@@ -177,6 +186,16 @@ class SpecificationOptions
     private function createStoreLabels(array $optionData): array
     {
         $storeLabels = [];
+
+        $defaultStore = $this->storeManager->getDefaultStoreView();
+
+        if ($defaultStore === null) {
+            throw new \LogicException('Default Store View not found while setting attribute option values.');
+        }
+
+        $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
+        $optionLabel->setStoreId($defaultStore->getId())->setLabel($optionData['Name']);
+        $storeLabels[] = $optionLabel;
 
         foreach ($optionData['LocalizedProperties'] as $prop) {
             if ($prop['LocaleKey'] !== 'Name') {

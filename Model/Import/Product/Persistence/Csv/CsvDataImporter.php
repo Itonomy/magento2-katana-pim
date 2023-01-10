@@ -139,8 +139,11 @@ class CsvDataImporter
                     foreach ($errorAggregator->getAllErrors() as $error) {
                         $data = $importedData[$error->getRowNumber()] ?? null;
                         $error = $this->errorFactory->create()
-                            ->setMessage($error->getErrorMessage())
-                            ->setItemData($data);
+                            ->setMessage($error->getErrorMessage());
+
+                        if ($data) {
+                            $error->setItemData($data);
+                        }
                         $result->addError($error);
                     }
                 }

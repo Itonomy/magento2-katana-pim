@@ -112,6 +112,10 @@ class ImageDataPreprocessor implements PreprocessorInterface
         }
 
         foreach ($productData['images'] as $image) {
+            if (empty($image['Url'])) {
+                continue;
+            }
+
             $filePath = $this->getFilePath($image['Url']);
 
             if ($this->fileExists($filePath)) {

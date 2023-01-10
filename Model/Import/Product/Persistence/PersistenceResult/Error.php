@@ -52,9 +52,9 @@ class Error
     /**
      * Get data on the items related to the error
      *
-     * @return array
+     * @return array|null
      */
-    public function getitemData(): array
+    public function getItemData(): ?array
     {
         return $this->itemData;
     }

@@ -8,9 +8,11 @@ use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Api\ProductAttributeOptionManagementInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterfaceFactory;
+use Magento\Eav\Api\Data\AttributeOptionLabelInterfaceFactory;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
+use Magento\Store\Model\StoreManagerInterface;
 
 class SpecificationsDataParser implements DataParserInterface
 {
@@ -35,6 +37,16 @@ class SpecificationsDataParser implements DataParserInterface
     private AttributeOptionInterfaceFactory $attributeOptionFactory;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
+    /**
+     * @var AttributeOptionLabelInterfaceFactory
+     */
+    private AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory;
+
+    /**
      * @var array
      */
     private array $attributeMapping;
@@ -51,17 +63,23 @@ class SpecificationsDataParser implements DataParserInterface
      * @param CollectionFactory $mappingCollectionFactory
      * @param ProductAttributeOptionManagementInterface $attributeOptionManagement
      * @param AttributeOptionInterfaceFactory $attributeOptionFactory
+     * @param StoreManagerInterface $storeManager
+     * @param AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory
      */
     public function __construct(
         ProductAttributeRepositoryInterface $productAttributeRepository,
         CollectionFactory $mappingCollectionFactory,
         ProductAttributeOptionManagementInterface $attributeOptionManagement,
-        AttributeOptionInterfaceFactory $attributeOptionFactory
+        AttributeOptionInterfaceFactory $attributeOptionFactory,
+        StoreManagerInterface $storeManager,
+        AttributeOptionLabelInterfaceFactory $attributeOptionLabelInterfaceFactory
     ) {
         $this->productAttributeRepository = $productAttributeRepository;
         $this->mappingCollectionFactory = $mappingCollectionFactory;
         $this->attributeOptionManagement = $attributeOptionManagement;
         $this->attributeOptionFactory = $attributeOptionFactory;
+        $this->storeManager = $storeManager;
+        $this->attributeOptionLabelInterfaceFactory = $attributeOptionLabelInterfaceFactory;
         $this->attributeMapping = [];
     }
 
@@ -111,7 +129,12 @@ class SpecificationsDataParser implements DataParserInterface
 
                 if ($attribute->getFrontendInput() === 'select') {
                     if ($attributeMapping['katana_attribute_type'] !== 'select') {
-                        throw new \RuntimeException('Katana and magento attribute types do not match.');
+                        throw new \RuntimeException(sprintf(
+                            "Magento select type attribute mapped to a KatanaPim non-select type attribute.
+                            Magento attribute code: %s Katana code: %s",
+                            $magentoCode,
+                            $katanaCode
+                        ));
                     }
 
                     if (!$this->isSelectAttributeValueExists($value, $attribute)) {
@@ -119,6 +142,7 @@ class SpecificationsDataParser implements DataParserInterface
                     }
                 }
             }
+
             $output[$magentoCode] = $value;
         }
 
@@ -204,6 +228,18 @@ class SpecificationsDataParser implements DataParserInterface
         $option = $this->attributeOptionFactory->create();
         $option->setValue($value);
         $option->setLabel($value);
+
+        $defaultStore = $this->storeManager->getDefaultStoreView();
+
+        if ($defaultStore === null) {
+            throw new \LogicException(
+                'Default Store View not found while setting product attribute option value.'
+            );
+        }
+
+        $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
+        $optionLabel->setStoreId($defaultStore->getId())->setLabel($value);
+        $option->setStoreLabels([$optionLabel]);
 
         $attributeCode = $attribute->getAttributeCode();
         $this->attributeOptionManagement->add($attributeCode, $option);

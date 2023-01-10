@@ -28,20 +28,28 @@ class Options implements OptionSourceInterface
     private SortOrderBuilder $sortOrderBuilder;
 
     /**
+     * @var array
+     */
+    private array $excludedAttributes;
+
+    /**
      * Options constructor.
      *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param SortOrderBuilder $sortOrderBuilder
      * @param AttributeRepositoryInterface $attributeRepository
+     * @param array $excludedAttributes
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SortOrderBuilder $sortOrderBuilder,
-        AttributeRepositoryInterface $attributeRepository
+        AttributeRepositoryInterface $attributeRepository,
+        array $excludedAttributes
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->sortOrderBuilder = $sortOrderBuilder;
         $this->attributeRepository = $attributeRepository;
+        $this->excludedAttributes = $excludedAttributes;
     }
 
     /**
@@ -58,6 +66,7 @@ class Options implements OptionSourceInterface
 
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter('is_visible', 1)
+            ->addFilter('attribute_code', $this->excludedAttributes, 'nin')
             ->addSortOrder($sortOrder)
             ->create();
 

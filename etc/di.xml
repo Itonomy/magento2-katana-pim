@@ -6,6 +6,16 @@
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
+
+    <type name="\Itonomy\Katanapim\Ui\Options">
+        <arguments>
+            <argument name="excludedAttributes" xsi:type="array">
+                <item name="country_of_manufacture" xsi:type="string">country_of_manufacture</item>
+                <item name="gallery" xsi:type="string">gallery</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Itonomy\Katanapim\Model\Logger">
         <arguments>
             <argument name="name" xsi:type="string">katana</argument>

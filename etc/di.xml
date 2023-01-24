@@ -41,6 +41,7 @@
                 <item name="simple" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser</item>
                 <item name="configurable" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\ConfigurableDataParser</item>
                 <item name="specifications" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\SpecificationsDataParser</item>
+                <item name="scope" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\ScopeDataParser</item>
             </argument>
         </arguments>
     </type>

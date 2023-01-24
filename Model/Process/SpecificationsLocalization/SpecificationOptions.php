@@ -98,12 +98,14 @@ class SpecificationOptions
         $existingOptions = $productAttribute->setStoreId(Store::DEFAULT_STORE_ID)->getOptions();
 
         foreach ($optionsData as $optionData) {
-            $option = $this->findExistingOption($existingOptions, $optionData['Name']);
+            $defaultScopeName = \trim($optionData['Name']);
+
+            $option = $this->findExistingOption($existingOptions, $defaultScopeName);
 
             if ($option) {
                 $this->updateExistingOption($productAttribute, $option, $optionData);
             } else {
-                $this->createOption($productAttribute, $optionData['Name'], $optionData);
+                $this->createOption($productAttribute, $defaultScopeName, $optionData);
             }
         }
     }
@@ -194,7 +196,8 @@ class SpecificationOptions
         }
 
         $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
-        $optionLabel->setStoreId($defaultStore->getId())->setLabel($optionData['Name']);
+        $defaultName = \trim($optionData['Name']);
+        $optionLabel->setStoreId($defaultStore->getId())->setLabel($defaultName);
         $storeLabels[] = $optionLabel;
 
         foreach ($optionData['LocalizedProperties'] as $prop) {
@@ -203,7 +206,11 @@ class SpecificationOptions
             }
 
             $storeIds = $this->findLanguageStoreIds($prop['LanguageCulture']);
-            $label = $prop['LocaleValue'];
+            $label = \trim($prop['LocaleValue']);
+
+            if (empty($label)) {
+                continue;
+            }
 
             foreach ($storeIds as $storeId) {
                 $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();

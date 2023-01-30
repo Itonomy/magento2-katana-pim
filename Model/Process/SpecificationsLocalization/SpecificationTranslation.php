@@ -7,9 +7,7 @@ use Itonomy\Katanapim\Model\Config\Katana;
 use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\StateException;
+use Magento\Framework\Exception\CouldNotSaveException;
 
 class SpecificationTranslation
 {
@@ -50,9 +48,7 @@ class SpecificationTranslation
      *
      * @param array $localizationData
      * @param ProductAttributeInterface $productAttribute
-     * @throws NoSuchEntityException
-     * @throws StateException
-     * @throws InputException
+     * @throws CouldNotSaveException
      */
     public function process(array $localizationData, ProductAttributeInterface $productAttribute): void
     {
@@ -73,7 +69,14 @@ class SpecificationTranslation
         }
 
         $productAttribute->setFrontendLabels($attributeLabels);
-        $this->attributeRepository->save($productAttribute);
+        try {
+            $this->attributeRepository->save($productAttribute);
+        } catch (\Throwable $exception) {
+            throw new CouldNotSaveException(__(
+                'Error while trying to saving translation for product attribute with code %1',
+                $productAttribute->getAttributeCode()
+            ));
+        }
     }
 
     /**

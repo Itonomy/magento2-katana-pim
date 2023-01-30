@@ -22,6 +22,7 @@ class BasicDataParser implements DataParserInterface
         'meta_title' => ['TextFieldsModel', 'MetaTitle'],
         'meta_keywords' => ['TextFieldsModel', 'MetaKeywords'],
         'meta_description' => ['TextFieldsModel', 'MetaDescription'],
+        'url_key' => ['TextFieldsModel', 'Slug'],
 //Price Data
         'price' => ['Prices','CurrentPriceBookItem','Price'],
 //Images Data

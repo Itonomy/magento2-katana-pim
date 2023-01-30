@@ -8,6 +8,19 @@ use Itonomy\Katanapim\Model\Helper\UrlKeyGenerator;
 class MissingDataPreprocessor implements PreprocessorInterface
 {
     /**
+     * @var UrlKeyGenerator
+     */
+    private UrlKeyGenerator $urlKeyGenerator;
+
+    /**
+     * @param UrlKeyGenerator $urlKeyGenerator
+     */
+    public function __construct(UrlKeyGenerator $urlKeyGenerator)
+    {
+        $this->urlKeyGenerator = $urlKeyGenerator;
+    }
+
+    /**
      * @inheritDoc
      *
      * @param array $productData
@@ -54,7 +67,7 @@ class MissingDataPreprocessor implements PreprocessorInterface
         }
 
         if (empty($productData['url_key'])) {
-            $productData['url_key'] = UrlKeyGenerator::generateUrlKey($productData['sku']);
+            $productData['url_key'] = $this->urlKeyGenerator->generateUrlKey($productData['sku']);
         }
 
         if ($productData['qty'] > 99999999) {

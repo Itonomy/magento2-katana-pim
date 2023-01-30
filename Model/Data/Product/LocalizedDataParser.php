@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser;
-use Itonomy\Katanapim\Model\Helper\UrlKeyGenerator;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\StoreRepositoryInterface;
 
@@ -13,7 +12,8 @@ class LocalizedDataParser
     private const ATTRIBUTES_MAP = [
         'name' => 'Name',
         'description' => 'FullDescription',
-        'short_description' => 'ShortDescription'
+        'short_description' => 'ShortDescription',
+        'url_key' => 'Slug'
     ];
 
     /**
@@ -63,7 +63,6 @@ class LocalizedDataParser
                 $datum['Id'] :
                 $datum['TextFieldsModel']['Sku'];
             $itemData['store_view_code'] = $storeViewCode;
-            $itemData['url_key'] = UrlKeyGenerator::generateUrlKey($itemData['sku']);
 
             $output[$datum['Id']] = $itemData;
         }

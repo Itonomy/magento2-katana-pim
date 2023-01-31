@@ -136,8 +136,6 @@ class SpecificationOptions
      * @param AttributeOptionInterface $option
      * @param array $optionData
      * @throws InputException
-     * @throws StateException
-     * @throws NoSuchEntityException
      */
     private function updateExistingOption(
         AttributeInterface $attribute,
@@ -147,12 +145,20 @@ class SpecificationOptions
         $storeLabels = $this->createStoreLabels($optionData);
         if (!empty($storeLabels)) {
             $option->setStoreLabels($storeLabels);
-            $this->attributeOptionUpdate->update(
-                ProductAttributeInterface::ENTITY_TYPE_CODE,
-                $attribute->getAttributeCode(),
-                (int)$option->getValue(),
-                $option
-            );
+            try {
+                $this->attributeOptionUpdate->update(
+                    ProductAttributeInterface::ENTITY_TYPE_CODE,
+                    $attribute->getAttributeCode(),
+                    (int)$option->getValue(),
+                    $option
+                );
+            } catch (\Throwable $exception) {
+                throw new InputException(__(
+                    'Error while trying to update product attribute %1 with option %2',
+                    $attribute->getAttributeCode(),
+                    $option->getLabel()
+                ));
+            }
         }
     }
 
@@ -172,11 +178,19 @@ class SpecificationOptions
         $option->setLabel($label);
         $storeLabels = $this->createStoreLabels($optionData);
         $option->setStoreLabels($storeLabels);
-        $this->attributeOptionManagement->add(
-            ProductAttributeInterface::ENTITY_TYPE_CODE,
-            $attribute->getAttributeCode(),
-            $option
-        );
+        try {
+            $this->attributeOptionManagement->add(
+                ProductAttributeInterface::ENTITY_TYPE_CODE,
+                $attribute->getAttributeCode(),
+                $option
+            );
+        } catch (\Throwable $exception) {
+            throw new InputException(__(
+                'Error while trying to create product attribute %1 with option %2',
+                $attribute->getAttributeCode(),
+                $label
+            ));
+        }
     }
 
     /**

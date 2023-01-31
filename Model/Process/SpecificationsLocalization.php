@@ -89,7 +89,6 @@ class SpecificationsLocalization
      *
      * @return int
      * @throws RuntimeException
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     public function execute(): int
     {
@@ -114,7 +113,13 @@ class SpecificationsLocalization
 
             $apiSpecifications = $this->reindexApiSpecs($apiData['Items']);
 
-            $this->processSpecificationLocalization($apiSpecifications);
+            try {
+                $this->processSpecificationLocalization($apiSpecifications);
+            } catch (Throwable $e) {
+                throw new RuntimeException(__(
+                    'Error while trying to import specifications translations. ' . $e->getMessage()
+                ));
+            }
 
             $i++;
         } while ($i < $apiData['TotalPages']);

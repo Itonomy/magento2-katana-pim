@@ -36,7 +36,7 @@ class DataPreprocessor
     {
         foreach ($data as $productId => &$productData) {
             //TODO: Generate sku for configurable products
-            if ($productData['sku'] === null) {
+            if (!isset($productData['sku'])) {
                 unset($data[$productId]);
                 continue;
             }

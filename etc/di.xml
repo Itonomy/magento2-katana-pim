@@ -57,6 +57,14 @@
         </arguments>
     </type>
 
+    <type name="Itonomy\Katanapim\Model\Data\Product\DataValidator">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="url_key" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\UrlKeyValidator</item>
+            </argument>
+        </arguments>
+    </type>
+
     <preference for="Itonomy\Katanapim\Api\Data\AttributeMappingInterface"
                 type="Itonomy\Katanapim\Model\AttributeMapping"/>
     <preference for="Itonomy\Katanapim\Api\Data\AttributeSetInterface"

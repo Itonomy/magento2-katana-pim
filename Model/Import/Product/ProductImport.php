@@ -5,6 +5,7 @@ namespace Itonomy\Katanapim\Model\Import\Product;
 
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
+use Itonomy\Katanapim\Model\Data\Product\DataValidator;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
@@ -76,6 +77,7 @@ class ProductImport
      * @var OutputInterface|null
      */
     private ?OutputInterface $cliOutput;
+    private DataValidator $dataValidator;
 
     /**
      * ProductImport constructor.
@@ -84,6 +86,7 @@ class ProductImport
      * @param DataParser $dataParser
      * @param LocalizedDataParser $localizedDataParser
      * @param DataPreprocessor $dataPreprocessor
+     * @param DataValidator $dataValidator
      * @param PersistenceProcessorInterface $persistenceProcessor
      * @param ManagerInterface $eventManager
      * @param Logger $logger
@@ -95,6 +98,7 @@ class ProductImport
         DataParser $dataParser,
         LocalizedDataParser $localizedDataParser,
         DataPreprocessor $dataPreprocessor,
+        DataValidator $dataValidator,
         PersistenceProcessorInterface $persistenceProcessor,
         ManagerInterface $eventManager,
         Logger $logger,
@@ -111,6 +115,7 @@ class ProductImport
         $this->katanaConfig = $katanaConfig;
         $this->pageSize = $pageSize;
         $this->cliOutput = null;
+        $this->dataValidator = $dataValidator;
     }
 
     /**
@@ -170,7 +175,8 @@ class ProductImport
             return;
         }
 
-        $saveResult = $this->persistenceProcessor->save($preprocessedData);
+        $validatedData = $this->dataValidator->execute($preprocessedData);
+        $saveResult = $this->persistenceProcessor->save($validatedData);
         $this->log('Created: ' . $saveResult->getCreatedCount());
         $this->log('Updated: ' . $saveResult->getUpdatedCount());
         $this->log('Deleted: ' . $saveResult->getDeletedCount());

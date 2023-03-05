@@ -75,4 +75,5 @@
                 type="Itonomy\Katanapim\Model\AttributeSetToAttributeRepository"/>
     <preference for="Itonomy\Katanapim\Model\Import\Product\PersistenceProcessorInterface"
                 type="Itonomy\Katanapim\Model\Import\Product\Persistence\CsvProcessor"/>
+    <preference for="Magento\UrlRewrite\Model\Storage\DbStorage" type="Itonomy\Katanapim\Model\Storage\DbStorage"/>
 </config>

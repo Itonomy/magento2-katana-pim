@@ -71,22 +71,22 @@ class ImageDataPreprocessor implements PreprocessorInterface
      */
     public function process(array $productData): array
     {
-//        $fileNames = $this->downloadImages($productData);
-//
-//        if (!empty($fileNames)) {
-//            foreach ($fileNames as &$file) {
-//                if (stristr($file, $this->getDownloadDir())) {
-//                    $file = substr($file, strlen($this->getDownloadDir()) + 1);
-//                }
-//            }
-//        }
+        $fileNames = $this->downloadImages($productData);
 
-//        $firstImage = array_shift($fileNames);
-        $productData['base_image'] = '';
-        $productData['small_image'] = '';
-        $productData['thumbnail_image'] = '';
-        $productData['swatch_image'] = '';
-//        $productData['additional_images'] = empty($fileNames) ? null : implode(",", $fileNames);
+        if (!empty($fileNames)) {
+            foreach ($fileNames as &$file) {
+                if (stristr($file, $this->getDownloadDir())) {
+                    $file = substr($file, strlen($this->getDownloadDir()) + 1);
+                }
+            }
+        }
+
+        $firstImage = array_shift($fileNames);
+        $productData['base_image'] = $firstImage;
+        $productData['small_image'] = $firstImage;
+        $productData['thumbnail_image'] = $firstImage;
+        $productData['swatch_image'] = $firstImage;
+        $productData['additional_images'] = empty($fileNames) ? null : implode(",", $fileNames);
 
         unset($productData['images']);
         return $productData;

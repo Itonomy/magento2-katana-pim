@@ -63,6 +63,7 @@ class LocalizedDataParser
                 $datum['Id'] :
                 $datum['TextFieldsModel']['Sku'];
             $itemData['store_view_code'] = $storeViewCode;
+            $itemData['_store'] = $storeViewId;
 
             $output[$datum['Id']] = $itemData;
         }

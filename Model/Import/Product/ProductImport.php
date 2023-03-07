@@ -5,9 +5,9 @@ namespace Itonomy\Katanapim\Model\Import\Product;
 
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
+use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
 use Itonomy\Katanapim\Model\Data\Product\DataValidator;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
-use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
 use Itonomy\Katanapim\Model\Logger;
@@ -207,8 +207,9 @@ class ProductImport
                 $languageCode
             );
 
-            if (!empty($parsedData)) {
-                $saveResult = $this->persistenceProcessor->save($parsedData);
+            $validatedData = $this->dataValidator->execute($parsedData, true);
+            if (!empty($validatedData)) {
+                $saveResult = $this->persistenceProcessor->save($validatedData);
                 $this->log('Created: ' . $saveResult->getCreatedCount());
                 $this->log('Updated: ' . $saveResult->getUpdatedCount());
                 $this->log('Deleted: ' . $saveResult->getDeletedCount());

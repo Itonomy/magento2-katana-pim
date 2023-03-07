@@ -15,5 +15,5 @@ interface ValidatorInterface
      * @param array $productData
      * @return bool
      */
-    public function validate(array $productData): bool;
+    public function validate(array &$productData): bool;
 }

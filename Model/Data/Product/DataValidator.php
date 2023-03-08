@@ -6,9 +6,6 @@ namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Itonomy\Katanapim\Model\Data\Product\DataValidator\ValidatorInterface;
 
-/**
- * Class DataValidator
- */
 class DataValidator
 {
     /**
@@ -76,6 +73,8 @@ class DataValidator
     }
 
     /**
+     * Set validators
+     *
      * @return void
      */
     private function setValidators(): void

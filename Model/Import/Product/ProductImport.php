@@ -77,6 +77,10 @@ class ProductImport
      * @var OutputInterface|null
      */
     private ?OutputInterface $cliOutput;
+
+    /**
+     * @var DataValidator
+     */
     private DataValidator $dataValidator;
 
     /**

@@ -13,6 +13,7 @@ use Magento\ImportExport\Model\Import\Adapter;
 use Magento\ImportExport\Model\Import as MagentoImport;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 use Magento\ImportExport\Model\ImportFactory as MagentoImportFactory;
+use Magento\UrlRewrite\Model\Exception\UrlAlreadyExistsException;
 
 class CsvDataImporter
 {
@@ -149,6 +150,20 @@ class CsvDataImporter
                 }
 
                 $importModel->invalidateIndex();
+            }
+        } catch (UrlAlreadyExistsException $e) {
+            foreach ($e->getUrls() as $url) {
+                $error = $this->errorFactory->create()
+                    ->setMessage(
+                        \sprintf(
+                            'URL key for specified store already exists. store_id: %s entity_id: %s entity_type: %s request_path: %s',
+                            (string) $url['store_id'],
+                            (string) $url['entity_id'],
+                            (string) $url['entity_type'],
+                            (string) $url['request_path']
+                        )
+                    );
+                $result->addError($error);
             }
         } catch (\Exception $e) {
             $result->addError(

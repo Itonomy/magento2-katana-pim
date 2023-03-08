@@ -207,7 +207,7 @@ class SpecificationsDataParser implements DataParserInterface
         $options = $attribute->getOptions();
 
         foreach ($options as $option) {
-            if ($option->getLabel() === $value) {
+            if ($this->mbStrcasecmp($option->getLabel(), $value) === 0) {
                 return true;
             }
         }
@@ -256,5 +256,21 @@ class SpecificationsDataParser implements DataParserInterface
         $this->parsedData = $parsedData;
 
         return $this;
+    }
+
+    /**
+     * Multibyte support strcasecmp function version.
+     *
+     * @param string $str1
+     * @param string $str2
+     * @return int
+     */
+    private function mbStrcasecmp($str1, $str2)
+    {
+        $encoding = mb_internal_encoding();
+        return strcmp(
+            mb_strtoupper($str1, $encoding),
+            mb_strtoupper($str2, $encoding)
+        );
     }
 }

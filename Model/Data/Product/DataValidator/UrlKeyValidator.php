@@ -39,13 +39,13 @@ class UrlKeyValidator implements ValidatorInterface
      */
     public function validate(array &$productData): bool
     {
-        $urlKey = $productData['url_key'];
-        if (!$urlKey) {
+        $urlKey = null;
+        if (array_key_exists(self::URL_KEY, $productData)) {
             $urlKey = $this->getUrlKey($productData);
         }
 
         if ($urlKey) {
-            $productData['url_key'] = $urlKey;
+            $productData[self::URL_KEY] = $urlKey;
         } else {
             return false;
         }
@@ -66,8 +66,7 @@ class UrlKeyValidator implements ValidatorInterface
             return $this->productUrl->formatUrlKey($urlKey);
         }
 
-        if (!empty($productData[self::COL_SKU])
-            && (array_key_exists(self::URL_KEY, $productData))) {
+        if (!empty($productData[self::COL_SKU])) {
             return $this->productUrl->formatUrlKey($productData[self::COL_SKU]);
         }
 

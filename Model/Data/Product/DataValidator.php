@@ -82,7 +82,7 @@ class DataValidator
         $defaultValidators = array_filter(
             $this->validators,
             function ($item) {
-                return !isset($item['scope']);
+                return !isset($item['scope']) || $item['scope'] === false;
             }
         );
         $this->defaultValidators = array_column($defaultValidators, 'object');

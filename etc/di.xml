@@ -64,6 +64,10 @@
                     <item name="scope" xsi:type="boolean">true</item>
                     <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\UrlKeyValidator</item>
                 </item>
+                <item name="url_key_unscoped" xsi:type="array">
+                    <item name="scope" xsi:type="boolean">false</item>
+                    <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\UrlKeyValidator</item>
+                </item>
             </argument>
         </arguments>
     </type>

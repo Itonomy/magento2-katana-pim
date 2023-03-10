@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser;
+use Itonomy\Katanapim\Model\Helper\UrlKeyGenerator;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\StoreRepositoryInterface;
 
@@ -22,14 +23,22 @@ class LocalizedDataParser
     private StoreRepositoryInterface $storeRepository;
 
     /**
+     * @var UrlKeyGenerator
+     */
+    private UrlKeyGenerator $urlKeyGenerator;
+
+    /**
      * LocalizedDataParser constructor.
      *
      * @param StoreRepositoryInterface $storeRepository
+     * @param UrlKeyGenerator $urlKeyGenerator
      */
     public function __construct(
-        StoreRepositoryInterface $storeRepository
+        StoreRepositoryInterface $storeRepository,
+        UrlKeyGenerator $urlKeyGenerator
     ) {
         $this->storeRepository = $storeRepository;
+        $this->urlKeyGenerator = $urlKeyGenerator;
     }
 
     /**
@@ -59,10 +68,14 @@ class LocalizedDataParser
                 continue;
             }
 
+            if (!isset($itemData['url_key'])) {
+                $itemData['url_key'] = $this->urlKeyGenerator->generateUrlKey($datum);
+            }
             $itemData['sku'] = empty($datum['TextFieldsModel']['Sku']) ?
                 $datum['Id'] :
                 $datum['TextFieldsModel']['Sku'];
             $itemData['store_view_code'] = $storeViewCode;
+            $itemData['_store'] = $storeViewId;
 
             $output[$datum['Id']] = $itemData;
         }

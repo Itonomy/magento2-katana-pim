@@ -11,12 +11,18 @@ class UrlKeyGenerator
     /**
      * Generate url key
      *
-     * @param string|int $sku
+     * @param array $productData
      * @return string
      * phpcs:disable Magento2.Functions.StaticFunction
      */
-    public function generateUrlKey($sku): string
+    public function generateUrlKey(array $productData): string
     {
-        return str_replace(' ', '-', strtolower((string)$sku));
+        $urlKey = $productData['TextFieldsModel']['Slug'] ?? null;
+
+        if (!$urlKey) {
+            $urlKey = str_replace(' ', '-', strtolower((string) $productData['TextFieldsModel']['Sku'] ));
+        }
+
+        return $urlKey;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Data\Product\DataValidator;
 
 use Magento\Catalog\Model\Product\Url;
+use Itonomy\Katanapim\Model\Logger;
 
 class UrlKeyValidator implements ValidatorInterface
 {
@@ -24,11 +25,20 @@ class UrlKeyValidator implements ValidatorInterface
     private Url $productUrl;
 
     /**
-     * @param Url $productUrl
+     * @var Logger
      */
-    public function __construct(Url $productUrl)
-    {
+    private Logger $logger;
+
+    /**
+     * @param Url $productUrl
+     * @param Logger $logger
+     */
+    public function __construct(
+        Url $productUrl,
+        Logger $logger
+    ) {
         $this->productUrl = $productUrl;
+        $this->logger = $logger;
     }
 
     /**
@@ -47,6 +57,15 @@ class UrlKeyValidator implements ValidatorInterface
         if ($urlKey) {
             $productData[self::URL_KEY] = $urlKey;
         } else {
+            if (!empty($productData[self::COL_SKU])) {
+                $this->logger->info(
+                    'Skipping product, url_key doesn\'t exist for product with SKU: ',
+                    [$productData[self::COL_SKU]]
+                );
+            } else {
+                $this->logger->info('Skipping product, url_key doesn\'t exist for product');
+            }
+
             return false;
         }
 

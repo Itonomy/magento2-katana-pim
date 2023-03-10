@@ -21,12 +21,17 @@ class LocalizedDataParser
      * @var StoreRepositoryInterface
      */
     private StoreRepositoryInterface $storeRepository;
+
+    /**
+     * @var UrlKeyGenerator
+     */
     private UrlKeyGenerator $urlKeyGenerator;
 
     /**
      * LocalizedDataParser constructor.
      *
      * @param StoreRepositoryInterface $storeRepository
+     * @param UrlKeyGenerator $urlKeyGenerator
      */
     public function __construct(
         StoreRepositoryInterface $storeRepository,
@@ -57,7 +62,15 @@ class LocalizedDataParser
                 continue;
             }
 
-            $itemData['url_key'] = $this->urlKeyGenerator->generateUrlKey($datum);
+            $itemData = $this->parseData($datum, $languageCode);
+
+            if (empty(array_filter($itemData))) {
+                continue;
+            }
+
+            if (!isset($itemData['url_key'])) {
+                $itemData['url_key'] = $this->urlKeyGenerator->generateUrlKey($datum);
+            }
             $itemData['sku'] = empty($datum['TextFieldsModel']['Sku']) ?
                 $datum['Id'] :
                 $datum['TextFieldsModel']['Sku'];
@@ -65,12 +78,6 @@ class LocalizedDataParser
             $itemData['_store'] = $storeViewId;
 
             $output[$datum['Id']] = $itemData;
-
-            $itemData = $this->parseData($datum, $languageCode);
-
-            if (empty(array_filter($itemData))) {
-                continue;
-            }
         }
 
         return $output;

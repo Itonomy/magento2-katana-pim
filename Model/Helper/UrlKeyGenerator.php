@@ -20,7 +20,11 @@ class UrlKeyGenerator
         $urlKey = $productData['TextFieldsModel']['Slug'] ?? null;
 
         if (!$urlKey) {
-            $urlKey = str_replace(' ', '-', strtolower((string) $productData['TextFieldsModel']['Sku'] ));
+            $urlKey = str_replace(
+                ' ',
+                '-',
+                strtolower((string) $productData['TextFieldsModel']['Sku'])
+            );
         }
 
         return $urlKey;

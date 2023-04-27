@@ -9,12 +9,12 @@ use Magento\Framework\App\ResourceConnection;
 /**
  * Class responsible for storing product-sku > attribute set name relationship
  */
-class ProductRegistry
+class AttributeSetProductRegistry
 {
     /**
      * @var array
      */
-    private array $skus = [];
+    private array $attributeSetBySku = [];
 
     /**
      * @var ResourceConnection
@@ -37,7 +37,7 @@ class ProductRegistry
      */
     public function fetchProducts(array $skus)
     {
-        $this->skus = $this->getProductsAttributeSetBySkus($skus);
+        $this->attributeSetBySku = $this->getProductsAttributeSetBySkus($skus);
     }
 
     /**
@@ -48,7 +48,7 @@ class ProductRegistry
      */
     public function getAttributeSet(string $sku): string
     {
-        return $this->skus[$sku];
+        return $this->attributeSetBySku[$sku];
     }
 
     /**
@@ -59,7 +59,7 @@ class ProductRegistry
      */
     public function productExists(string $sku): bool
     {
-        if (array_key_exists($sku, $this->skus)) {
+        if (array_key_exists($sku, $this->attributeSetBySku)) {
             return true;
         }
 
@@ -77,7 +77,7 @@ class ProductRegistry
         $connection = $this->resourceConnection->getConnection();
         $select = $connection->select()->from(
             ['cpe' => $this->resourceConnection->getTableName('catalog_product_entity')],
-            ['sku', 'attribute_set_id']
+            ['sku']
         )->joinLeft(
             ['eas' => $this->resourceConnection->getTableName('eav_attribute_set')],
             'eas.attribute_set_id = cpe.attribute_set_id',
@@ -87,10 +87,6 @@ class ProductRegistry
             $productSkuList
         );
 
-        $result = [];
-        foreach ($connection->fetchAll($select) as $row) {
-            $result[$row['sku']] = $row['attribute_set_name'];
-        }
-        return $result;
+        return $connection->fetchPairs($select);
     }
 }

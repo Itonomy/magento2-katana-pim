@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 
-use Itonomy\Katanapim\Model\Data\Product\ProductRegistry;
+use Itonomy\Katanapim\Model\Data\Product\AttributeSetProductRegistry;
 
 /**
  * Check if product already exists and get existing product attribute set name
@@ -12,16 +12,16 @@ use Itonomy\Katanapim\Model\Data\Product\ProductRegistry;
 class AttributeSetPreprocessor implements PreprocessorInterface
 {
     /**
-     * @var ProductRegistry
+     * @var AttributeSetProductRegistry
      */
-    private ProductRegistry $productRegistry;
+    private AttributeSetProductRegistry $attributeSetProductRegistry;
 
     /**
-     * @param ProductRegistry $productRegistry
+     * @param AttributeSetProductRegistry $attributeSetProductRegistry
      */
-    public function __construct(ProductRegistry $productRegistry)
+    public function __construct(AttributeSetProductRegistry $attributeSetProductRegistry)
     {
-        $this->productRegistry = $productRegistry;
+        $this->attributeSetProductRegistry = $attributeSetProductRegistry;
     }
 
     /**
@@ -32,8 +32,8 @@ class AttributeSetPreprocessor implements PreprocessorInterface
      */
     public function process(array $productData): array
     {
-        if ($this->productRegistry->productExists($productData['sku'])) {
-            $productData['attribute_set_code'] = $this->productRegistry->getAttributeSet($productData['sku']);
+        if ($this->attributeSetProductRegistry->productExists($productData['sku'])) {
+            $productData['attribute_set_code'] = $this->attributeSetProductRegistry->getAttributeSet($productData['sku']);
         } else {
             $productData['attribute_set_code'] = 'Default';
         }

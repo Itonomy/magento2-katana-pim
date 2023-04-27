@@ -8,5 +8,10 @@
                 <products>16 */4 * * *</products>
             </crons>
         </katanapim_crons>
+        <katanapim_product_import>
+            <general>
+                <import_categories>0</import_categories>
+            </general>
+        </katanapim_product_import>
     </default>
 </config>

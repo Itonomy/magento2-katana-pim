@@ -1,7 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
+
+use Itonomy\Katanapim\Model\Config\Katana;
 
 class CategoryDataPreprocessor implements PreprocessorInterface
 {
@@ -11,6 +14,19 @@ class CategoryDataPreprocessor implements PreprocessorInterface
     private const DEFAULT_CATEGORY = 'Default Category';
 
     /**
+     * @var Katana
+     */
+    private Katana $katanaConfig;
+
+    /**
+     * @param Katana $katanaConfig
+     */
+    public function __construct(Katana $katanaConfig)
+    {
+        $this->katanaConfig = $katanaConfig;
+    }
+
+    /**
      * @inheritDoc
      *
      * @param array $productData
@@ -18,7 +34,11 @@ class CategoryDataPreprocessor implements PreprocessorInterface
      */
     public function process(array $productData): array
     {
-        $productData['categories'] = $this->processCategories($productData);
+        if ($this->katanaConfig->isCategoryImportEnabled()) {
+            $productData['categories'] = $this->processCategories($productData);
+        } else {
+            $productData['categories'] = '';
+        }
 
         return $productData;
     }

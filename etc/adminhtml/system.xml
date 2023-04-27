@@ -29,6 +29,10 @@
                     <label>Enable Product Import</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="import_categories" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" type="select">
+                    <label>Import categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="delete_temporary_images" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" type="select">
                     <label>Delete image import folder after import</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

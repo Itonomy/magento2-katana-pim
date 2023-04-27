@@ -14,6 +14,8 @@ class Katana extends AbstractHelper
 
     private const PRODUCT_IMPORT_ENABLED = 'katanapim_product_import/general/enabled';
 
+    private const CATEGORY_IMPORT_ENABLED = 'katanapim_product_import/general/import_categories';
+
     private const CLEAN_IMAGES_AFTER_IMPORT = 'katanapim_product_import/general/delete_temporary_images';
 
     private const LANGUAGE_MAPPING = 'katanapim_product_import/store_languages/store_language_mapping';
@@ -36,6 +38,16 @@ class Katana extends AbstractHelper
     public function getApiKey(): string
     {
         return (string)$this->scopeConfig->getValue(self::API_KEY);
+    }
+
+    /**
+     * Is category import Enabled
+     *
+     * @return bool
+     */
+    public function isCategoryImportEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::CATEGORY_IMPORT_ENABLED);
     }
 
     /**

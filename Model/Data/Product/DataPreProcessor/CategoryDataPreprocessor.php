@@ -34,9 +34,10 @@ class CategoryDataPreprocessor implements PreprocessorInterface
      */
     public function process(array $productData): array
     {
-        $productData['categories'] = '';
         if ($this->katanaConfig->isCategoryImportEnabled()) {
             $productData['categories'] = $this->processCategories($productData);
+        } else {
+            $productData['categories'] = '';
         }
 
         return $productData;

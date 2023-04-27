@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Itonomy\Katanapim\Model\Data\Product;
 
 use Magento\Framework\App\ResourceConnection;
@@ -30,10 +32,10 @@ class ProductRegistry
     /**
      * Get products attribute sets by skus
      *
-     * @param $skus
+     * @param array $skus
      * @return void
      */
-    public function fetchProducts($skus)
+    public function fetchProducts(array $skus)
     {
         $this->skus = $this->getProductsAttributeSetBySkus($skus);
     }
@@ -41,10 +43,10 @@ class ProductRegistry
     /**
      * Get product attribute set name
      *
-     * @param $sku
+     * @param string $sku
      * @return string
      */
-    public function getAttributeSet($sku): string
+    public function getAttributeSet(string $sku): string
     {
         return $this->skus[$sku];
     }
@@ -52,10 +54,10 @@ class ProductRegistry
     /**
      * Check if product exists in Magento
      *
-     * @param $sku
+     * @param string $sku
      * @return bool
      */
-    public function productExists($sku): bool
+    public function productExists(string $sku): bool
     {
         if (array_key_exists($sku, $this->skus)) {
             return true;
@@ -87,26 +89,8 @@ class ProductRegistry
 
         $result = [];
         foreach ($connection->fetchAll($select) as $row) {
-            $result[$this->getResultKey($row['sku'], $productSkuList)] = $row['attribute_set_name'];
+            $result[$row['sku']] = $row['attribute_set_name'];
         }
         return $result;
-    }
-
-    /**
-     * Return correct key for result array in getProductsAttributeSetBySkus
-     * Allows for different case sku to be passed in search array
-     * with original cased sku to be passed back in result array
-     *
-     * @param string $sku
-     * @param array $productSkuList
-     * @return string
-     */
-    private function getResultKey(string $sku, array $productSkuList): string
-    {
-        $key = array_search(strtolower($sku), array_map('strtolower', $productSkuList));
-        if ($key !== false) {
-            $sku = $productSkuList[$key];
-        }
-        return $sku;
     }
 }

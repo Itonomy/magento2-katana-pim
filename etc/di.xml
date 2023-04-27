@@ -50,6 +50,7 @@
         <arguments>
             <argument name="processors" xsi:type="array">
                 <item name="missingData" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\MissingDataPreprocessor</item>
+                <item name="attributeSet" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\AttributeSetPreprocessor</item>
                 <item name="categories" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\CategoryDataPreprocessor</item>
                 <item name="images" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\ImageDataPreprocessor</item>
                 <item name="attachments" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\AttachmentsDataPreprocessor</item>

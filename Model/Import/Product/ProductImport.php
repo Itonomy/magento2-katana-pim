@@ -8,6 +8,7 @@ use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
 use Itonomy\Katanapim\Model\Data\Product\DataValidator;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
+use Itonomy\Katanapim\Model\Data\Product\ProductRegistry;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
 use Itonomy\Katanapim\Model\Logger;
@@ -84,6 +85,11 @@ class ProductImport
     private DataValidator $dataValidator;
 
     /**
+     * @var ProductRegistry
+     */
+    private ProductRegistry $productRegistry;
+
+    /**
      * ProductImport constructor.
      *
      * @param RestClient $restClient
@@ -95,6 +101,7 @@ class ProductImport
      * @param ManagerInterface $eventManager
      * @param Logger $logger
      * @param Katana $katanaConfig
+     * @param ProductRegistry $productRegistry
      * @param int $pageSize
      */
     public function __construct(
@@ -107,6 +114,7 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
+        ProductRegistry $productRegistry,
         int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
@@ -120,6 +128,7 @@ class ProductImport
         $this->pageSize = $pageSize;
         $this->cliOutput = null;
         $this->dataValidator = $dataValidator;
+        $this->productRegistry = $productRegistry;
     }
 
     /**
@@ -173,6 +182,8 @@ class ProductImport
         $this->log(PHP_EOL . 'Processing page ' . $page);
         $this->log('Importing values in global scope');
         $parsedData = $this->dataParser->parse($items);
+        $skus = \array_column($parsedData, 'sku');
+        $this->productRegistry->fetchProducts($skus);
         $preprocessedData = $this->dataPreprocessor->process($parsedData);
 
         if (empty($preprocessedData)) {

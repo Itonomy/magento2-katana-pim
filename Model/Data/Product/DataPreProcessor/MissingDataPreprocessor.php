@@ -22,7 +22,6 @@ class MissingDataPreprocessor implements PreprocessorInterface
         }
 
         $productData['is_decimal_divided'] = 0;
-        $productData['attribute_set_code'] = 'Default';
         //$productData['out_of_stock_qty'] = 0;
         //$productData['use_config_min_qty'] = 1;
         //$productData['is_qty_decimal'] = 0;

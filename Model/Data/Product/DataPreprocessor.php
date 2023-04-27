@@ -16,14 +16,22 @@ class DataPreprocessor
     private array $processors;
 
     /**
+     * @var AttributeSetProductRegistry
+     */
+    private AttributeSetProductRegistry $attributeSetProductRegistry;
+
+    /**
      * DataPreprocessor constructor.
      *
+     * @param AttributeSetProductRegistry $attributeSetProductRegistry
      * @param array $processors
      */
     public function __construct(
+        AttributeSetProductRegistry $attributeSetProductRegistry,
         array $processors
     ) {
         $this->processors = $processors;
+        $this->attributeSetProductRegistry = $attributeSetProductRegistry;
     }
 
     /**
@@ -34,6 +42,8 @@ class DataPreprocessor
      */
     public function process(array $data): array
     {
+        $skus = \array_column($data, 'sku');
+        $this->attributeSetProductRegistry->fetchProducts($skus);
         foreach ($data as $productId => &$productData) {
             //TODO: Generate sku for configurable products
             if (!isset($productData['sku'])) {

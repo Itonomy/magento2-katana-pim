@@ -10,7 +10,7 @@
         </katanapim_crons>
         <katanapim_product_import>
             <general>
-                <import_categories>0</import_categories>
+                <import_categories>1</import_categories>
             </general>
         </katanapim_product_import>
     </default>

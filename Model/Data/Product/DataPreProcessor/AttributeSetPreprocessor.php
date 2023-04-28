@@ -33,7 +33,9 @@ class AttributeSetPreprocessor implements PreprocessorInterface
     public function process(array $productData): array
     {
         if ($this->attributeSetProductRegistry->productExists($productData['sku'])) {
-            $productData['attribute_set_code'] = $this->attributeSetProductRegistry->getAttributeSet($productData['sku']);
+            $productData['attribute_set_code'] = $this->attributeSetProductRegistry->getAttributeSet(
+                $productData['sku']
+            );
         } else {
             $productData['attribute_set_code'] = 'Default';
         }

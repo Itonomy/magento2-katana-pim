@@ -156,7 +156,8 @@ class CsvDataImporter
                 $error = $this->errorFactory->create()
                     ->setMessage(
                         \sprintf(
-                            'URL key for specified store already exists. store_id: %s entity_id: %s entity_type: %s request_path: %s',
+                            'URL key for specified store already exists.
+                            store_id: %s entity_id: %s entity_type: %s request_path: %s',
                             (string) $url['store_id'],
                             (string) $url['entity_id'],
                             (string) $url['entity_type'],

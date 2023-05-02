@@ -14,8 +14,9 @@
         },
         "constraint": {
             "PRIMARY": true,
-            "KATANA_CODE": true,
-            "MAGENTO_CODE": true
+            "KATANAPIM_ATTRIBUTE_MAPPING_KATANA_ATTRIBUTE_CODE": true,
+            "KATANAPIM_ATTRIBUTE_MAPPING_MAGENTO_ATTRIBUTE_CODE": true,
+            "KATANAPIM_ATTR_MAPPING_KATANA_ATTR_CODE_MAGENTO_ATTR_CODE": true
         }
     },
     "katanapim_attribute_set": {
@@ -36,7 +37,7 @@
         },
         "constraint": {
             "PRIMARY": true,
-            "KATANA_SET_TO_ATTRIBUTE": true
+            "KATANAPIM_SET_TO_ATTRIBUTE_SET_ID_ATTRIBUTE_ID": true
         }
     }
 }

@@ -83,4 +83,8 @@
                 type="Itonomy\Katanapim\Model\AttributeSetToAttributeRepository"/>
     <preference for="Itonomy\Katanapim\Model\Import\Product\PersistenceProcessorInterface"
                 type="Itonomy\Katanapim\Model\Import\Product\Persistence\CsvProcessor"/>
+    <preference for="Itonomy\Katanapim\Api\Data\KatanaImportInterface"
+                type="Itonomy\Katanapim\Model\KatanaImport"/>
+    <preference for="Itonomy\Katanapim\Api\KatanaImportRepositoryInterface"
+                type="Itonomy\Katanapim\Model\KatanaImportRepository"/>
 </config>

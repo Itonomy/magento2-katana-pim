@@ -39,5 +39,17 @@
             "PRIMARY": true,
             "KATANAPIM_SET_TO_ATTRIBUTE_SET_ID_ATTRIBUTE_ID": true
         }
+    },
+    "katanapim_import": {
+        "column": {
+            "id": true,
+            "entity_type": true,
+            "start_time": true,
+            "finish_time": true,
+            "status": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
     }
 }

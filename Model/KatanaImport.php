@@ -14,8 +14,6 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     protected $_eventPrefix = 'katanapim_import_model';
 
     /**
-     * Initialize magento model.
-     *
      * @return void
      */
     protected function _construct()
@@ -24,9 +22,23 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Getter for EntityType.
-     *
-     * @return string
+     * @inheritDoc
+     */
+    public function getImportId(): ?int
+    {
+        return $this->getData(self::IMPORT_ID);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setImportId(?int $importId): void
+    {
+        $this->setData(self::IMPORT_ID, $importId);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getEntityType(): string
     {
@@ -34,11 +46,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Setter for EntityType.
-     *
-     * @param string $entityType
-     *
-     * @return void
+     * @inheritDoc
      */
     public function setEntityType(string $entityType): void
     {
@@ -46,9 +54,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Getter for StartTime.
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function getStartTime(): ?string
     {
@@ -56,11 +62,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Setter for StartTime.
-     *
-     * @param string|null $startTime
-     *
-     * @return void
+     * @inheritDoc
      */
     public function setStartTime(?string $startTime): void
     {
@@ -68,9 +70,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Getter for FinishTime.
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function getFinishTime(): ?string
     {
@@ -78,11 +78,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Setter for FinishTime.
-     *
-     * @param string|null $finishTime
-     *
-     * @return void
+     * @inheritDoc
      */
     public function setFinishTime(?string $finishTime): void
     {
@@ -90,9 +86,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Getter for Status.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getStatus(): string
     {
@@ -100,11 +94,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     }
 
     /**
-     * Setter for Status.
-     *
-     * @param string $status
-     *
-     * @return void
+     * @inheritDoc
      */
     public function setStatus(string $status): void
     {

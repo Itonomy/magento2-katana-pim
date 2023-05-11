@@ -9,10 +9,27 @@ interface KatanaImportInterface
     /**
      * String constants for property names
      */
+    public const IMPORT_ID = "import_id";
     public const ENTITY_TYPE = "entity_type";
     public const START_TIME = "start_time";
     public const FINISH_TIME = "finish_time";
     public const STATUS = "status";
+
+    /**
+     * Getter for ImportId.
+     *
+     * @return int
+     */
+    public function getImportId(): ?int;
+
+    /**
+     * Setter for ImportId.
+     *
+     * @param int|null $importId
+     *
+     * @return void
+     */
+    public function setImportId(?int $importId): void;
 
     /**
      * Getter for EntityType.

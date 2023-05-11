@@ -73,6 +73,16 @@
         </arguments>
     </type>
 
+    <type name="Itonomy\Katanapim\Model\ImportFactory">
+        <arguments>
+            <argument name="importTypes" xsi:type="array">
+                <item name="product" xsi:type="object">Itonomy\Katanapim\Cron\ProductsImport</item>
+                <item name="specifications" xsi:type="object">Itonomy\Katanapim\Cron\SpecificationsImport</item>
+                <item name="specifications_localization" xsi:type="object">Itonomy\Katanapim\Cron\SpecificationsLocalizationImport</item>
+            </argument>
+        </arguments>
+    </type>
+
     <preference for="Itonomy\Katanapim\Api\Data\AttributeMappingInterface"
                 type="Itonomy\Katanapim\Model\AttributeMapping"/>
     <preference for="Itonomy\Katanapim\Api\Data\AttributeSetInterface"

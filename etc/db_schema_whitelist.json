@@ -43,6 +43,7 @@
     "katanapim_import": {
         "column": {
             "id": true,
+            "import_id": true,
             "entity_type": true,
             "start_time": true,
             "finish_time": true,

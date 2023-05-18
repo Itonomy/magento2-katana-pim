@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
+        <katanapim_general>
+            <advanced>
+                <page_size>2000</page_size>
+            </advanced>
+        </katanapim_general>
         <katanapim_crons>
             <crons>
                 <specifications>4 */6 * * *</specifications>
@@ -10,6 +15,7 @@
         </katanapim_crons>
         <katanapim_product_import>
             <general>
+                <enabled>1</enabled>
                 <import_categories>1</import_categories>
             </general>
         </katanapim_product_import>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
+use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Import\Product\ProductImport;
 
 /**
@@ -17,14 +18,22 @@ class ProductsImport
     private ProductImport $importer;
 
     /**
+     * @var Katana
+     */
+    private Katana $config;
+
+    /**
      * ProductsImport constructor.
      *
      * @param ProductImport $importer
+     * @param Katana $config
      */
     public function __construct(
-        ProductImport $importer
+        ProductImport $importer,
+        Katana $config
     ) {
         $this->importer = $importer;
+        $this->config = $config;
     }
 
     /**
@@ -35,6 +44,8 @@ class ProductsImport
      */
     public function execute(): void
     {
-        $this->importer->import();
+        if ($this->config->isProductImportEnabled()) {
+            $this->importer->import();
+        }
     }
 }

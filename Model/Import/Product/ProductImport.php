@@ -59,11 +59,6 @@ class ProductImport
     private Logger $logger;
 
     /**
-     * @var int
-     */
-    private int $pageSize;
-
-    /**
      * @var LocalizedDataParser
      */
     private LocalizedDataParser $localizedDataParser;
@@ -95,7 +90,6 @@ class ProductImport
      * @param ManagerInterface $eventManager
      * @param Logger $logger
      * @param Katana $katanaConfig
-     * @param int $pageSize
      */
     public function __construct(
         RestClient $restClient,
@@ -107,7 +101,6 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
-        int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;
@@ -117,7 +110,6 @@ class ProductImport
         $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->katanaConfig = $katanaConfig;
-        $this->pageSize = $pageSize;
         $this->cliOutput = null;
         $this->dataValidator = $dataValidator;
     }
@@ -239,7 +231,7 @@ class ProductImport
     {
         $parameters = new Parameters();
         $parameters->fromArray([
-            self::REQUEST_PAGE_SIZE_KEY => $this->pageSize,
+            self::REQUEST_PAGE_SIZE_KEY => $this->katanaConfig->getPageSize(),
         ]);
 
         return $parameters;

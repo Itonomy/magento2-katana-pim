@@ -100,7 +100,7 @@ class ProductImport
         PersistenceProcessorInterface $persistenceProcessor,
         ManagerInterface $eventManager,
         Logger $logger,
-        Katana $katanaConfig,
+        Katana $katanaConfig
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;

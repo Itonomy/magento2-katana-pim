@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Process;
 
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
+use Itonomy\Katanapim\Api\Data\ImportInterface;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Model\KatanaImport;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Itonomy\Katanapim\Model\Process\SpecificationsLocalization\SpecificationOptions;
 use Itonomy\Katanapim\Model\Process\SpecificationsLocalization\SpecificationTranslation;
 use Itonomy\Katanapim\Model\ResourceModel\AttributeMapping\CollectionFactory;
@@ -21,7 +25,7 @@ use Throwable;
  * Class for translating specifications ("attributes" in magento) and adding and translating their options.
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SpecificationsLocalization
+class SpecificationsLocalization implements ImportInterface
 {
     private const URL_PART = 'Specifications';
 
@@ -61,6 +65,16 @@ class SpecificationsLocalization
     private SpecificationOptions $specificationOptionsProcessor;
 
     /**
+     * @var KatanaImportHelper
+     */
+    private KatanaImportHelper $katanaImportHelper;
+
+    /**
+     * @var KatanaImportInterface
+     */
+    private KatanaImportInterface $katanaImport;
+
+    /**
      * SpecificationsLocalization constructor.
      *
      * @param RestClient $rest
@@ -68,13 +82,15 @@ class SpecificationsLocalization
      * @param ProductAttributeRepositoryInterface $attributeRepository
      * @param SpecificationTranslation $specificationTranslationProcessor
      * @param SpecificationOptions $specificationOptionsProcessor
+     * @param KatanaImportHelper $katanaImportHelper
      */
     public function __construct(
         RestClient $rest,
         CollectionFactory $mappingCollectionFactory,
         ProductAttributeRepositoryInterface $attributeRepository,
         SpecificationTranslation $specificationTranslationProcessor,
-        SpecificationOptions $specificationOptionsProcessor
+        SpecificationOptions $specificationOptionsProcessor,
+        KatanaImportHelper $katanaImportHelper
     ) {
         $this->rest = $rest;
         $this->attributeMapping = [];
@@ -82,49 +98,100 @@ class SpecificationsLocalization
         $this->attributeRepository = $attributeRepository;
         $this->specificationTranslationProcessor = $specificationTranslationProcessor;
         $this->specificationOptionsProcessor = $specificationOptionsProcessor;
+        $this->katanaImportHelper = $katanaImportHelper;
     }
 
     /**
      * Execute specifications localization import
      *
-     * @return int
+     * @return void
      * @throws RuntimeException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function execute(): int
+    public function import(): void
     {
         $i = 0;
+        $this->katanaImportHelper->updateKatanaImportStatus(
+            $this->getKatanaImport(),
+            KatanaImport::STATUS_RUNNING
+        );
 
-        do {
-            $parameters = new Parameters();
-            $parameters->set('specificationFilterModel.pageIndex', $i);
+        try {
+            do {
+                $parameters = new Parameters();
+                $parameters->set('specificationFilterModel.pageIndex', $i);
 
-            $apiData = $this->rest->execute(self::URL_PART, Request::METHOD_GET, $parameters);
+                $apiData = $this->rest->execute(self::URL_PART, Request::METHOD_GET, $parameters);
 
-            if (empty($apiData['Items'])) {
-                throw new RuntimeException(__('Specification data empty.'));
-            }
+                if (empty($apiData['Items'])) {
+                    throw new RuntimeException(__('Specification data empty.'));
+                }
 
-            if ($this->progressBar) {
-                //phpcs:ignore Generic.Files.LineLength.TooLong
-                $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $apiData['TotalCount'] . ' Specifications');
-                $this->progressBar->setMaxSteps($apiData['TotalCount']);
-                $this->progressBar->display();
-            }
+                if ($this->progressBar) {
+                    //phpcs:ignore Generic.Files.LineLength.TooLong
+                    $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $apiData['TotalCount'] . ' Specifications');
+                    $this->progressBar->setMaxSteps($apiData['TotalCount']);
+                    $this->progressBar->display();
+                }
 
-            $apiSpecifications = $this->reindexApiSpecs($apiData['Items']);
+                $apiSpecifications = $this->reindexApiSpecs($apiData['Items']);
 
-            try {
-                $this->processSpecificationLocalization($apiSpecifications);
-            } catch (Throwable $e) {
-                throw new RuntimeException(__(
-                    'Error while trying to import specifications translations. ' . $e->getMessage()
-                ));
-            }
+                try {
+                    $this->processSpecificationLocalization($apiSpecifications);
+                } catch (Throwable $e) {
+                    throw new RuntimeException(__(
+                        'Error while trying to import specifications translations. ' . $e->getMessage()
+                    ));
+                }
 
-            $i++;
-        } while ($i < $apiData['TotalPages']);
+                $i++;
+            } while ($i < $apiData['TotalPages']);
+        } catch (Throwable $e) {
+            $this->katanaImportHelper->updateKatanaImportStatus(
+                $this->getKatanaImport(),
+                KatanaImport::STATUS_ERROR
+            );
+            throw new RuntimeException(__(
+                'Error while trying to import specifications translations. ' . $e->getMessage()
+            ));
+        }
 
-        return 0;
+        $this->katanaImportHelper->updateKatanaImportStatus(
+            $this->getKatanaImport(),
+            KatanaImport::STATUS_COMPLETE
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityType(): string
+    {
+        return self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityId(): string
+    {
+        return uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setKatanaImport(KatanaImportInterface $katanaImport): void
+    {
+        $this->katanaImport = $katanaImport;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getKatanaImport(): KatanaImportInterface
+    {
+        return $this->katanaImport;
     }
 
     /**

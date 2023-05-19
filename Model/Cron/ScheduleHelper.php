@@ -80,7 +80,7 @@ class ScheduleHelper
         $this->katanaImportHelper->createKatanaImport(
             $schedule->getJobCode(),
             $schedule->getStatus(),
-            (int) $schedule->getId(),
+            uniqid($schedule->getJobCode() . '_')
         );
     }
 

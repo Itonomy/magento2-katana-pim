@@ -4,7 +4,11 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Process\Entity;
 
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
+use Itonomy\Katanapim\Api\Data\ImportInterface;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\AttributeMappingRepository;
+use Itonomy\Katanapim\Model\KatanaImport;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Itonomy\Katanapim\Model\RestClient;
 use Laminas\Http\Request;
 use Laminas\Stdlib\Parameters;
@@ -12,7 +16,7 @@ use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class Specifications
+class Specifications implements ImportInterface
 {
     private const URL_PART = 'Specifications';
 
@@ -32,6 +36,11 @@ class Specifications
     private ?ProgressBar $progressBar = null;
 
     /**
+     * @var KatanaImportInterface
+     */
+    private KatanaImportInterface $katanaImport;
+
+    /**
      * @var string[]
      */
     public array $type = [
@@ -39,53 +48,104 @@ class Specifications
         10 => 'text', //more than 255
         20 => 'text'
     ];
+    private KatanaImportHelper $katanaImportHelper;
 
     /**
      * @param RestClient $rest
      * @param AttributeMappingRepository $attributeMappingRepository
+     * @param KatanaImportHelper $katanaImportHelper
      */
     public function __construct(
         RestClient $rest,
-        AttributeMappingRepository $attributeMappingRepository
+        AttributeMappingRepository $attributeMappingRepository,
+        KatanaImportHelper $katanaImportHelper
     ) {
         $this->rest = $rest;
         $this->attributeMappingRepository = $attributeMappingRepository;
+        $this->katanaImportHelper = $katanaImportHelper;
     }
 
     /**
      * Execute specifications import
      *
-     * @return int
+     * @return void
      * @throws CouldNotSaveException
      * @throws RuntimeException
      */
-    public function execute(): int
+    public function import(): void
     {
         $i = 0;
 
-        do {
-            $parameters = new Parameters();
-            $parameters->set('specificationFilterModel.pageIndex', $i);
+        $this->katanaImportHelper->updateKatanaImportStatus(
+            $this->getKatanaImport(),
+            KatanaImport::STATUS_RUNNING
+        );
+        try {
+            do {
+                $parameters = new Parameters();
+                $parameters->set('specificationFilterModel.pageIndex', $i);
 
-            $specifications = $this->rest->execute(self::URL_PART, Request::METHOD_GET, $parameters);
+                $specifications = $this->rest->execute(self::URL_PART, Request::METHOD_GET, $parameters);
 
-            if (empty($specifications['Items'])) {
-                //phpcs:ignore Generic.Files.LineLength.TooLong
-                throw new RuntimeException(__('Empty response when trying to retrieve specifications from Katana API.'));
-            }
+                if (empty($specifications['Items'])) {
+                    //phpcs:ignore Generic.Files.LineLength.TooLong
+                    throw new RuntimeException(__('Empty response when trying to retrieve specifications from Katana API.'));
+                }
 
-            if ($this->progressBar) {
-                //phpcs:ignore Generic.Files.LineLength.TooLong
-                $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $specifications['TotalCount'] . ' Specifications');
-                $this->progressBar->setMaxSteps($specifications['TotalCount']);
-                $this->progressBar->display();
-            }
+                if ($this->progressBar) {
+                    //phpcs:ignore Generic.Files.LineLength.TooLong
+                    $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $specifications['TotalCount'] . ' Specifications');
+                    $this->progressBar->setMaxSteps($specifications['TotalCount']);
+                    $this->progressBar->display();
+                }
 
-            $this->processSpecifications($specifications);
-            $i++;
-        } while ($i < $specifications['TotalPages']);
+                $this->processSpecifications($specifications);
+                $i++;
+            } while ($i < $specifications['TotalPages']);
+        } catch (\Throwable $e) {
+            $this->katanaImportHelper->updateKatanaImportStatus(
+                $this->getKatanaImport(),
+                KatanaImport::STATUS_ERROR
+            );
+            throw $e;
+        }
 
-        return 0;
+        $this->katanaImportHelper->updateKatanaImportStatus(
+            $this->getKatanaImport(),
+            KatanaImport::STATUS_COMPLETE
+        );
+    }
+
+    /**
+     * @inheirtDoc
+     */
+    public function getEntityType(): string
+    {
+        return self::SPECIFICATIONS_IMPORT_JOB_CODE;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityId(): string
+    {
+        return uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setKatanaImport(KatanaImportInterface $katanaImport): void
+    {
+        $this->katanaImport = $katanaImport;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getKatanaImport(): KatanaImportInterface
+    {
+        return $this->katanaImport;
     }
 
     /**

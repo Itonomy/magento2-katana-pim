@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Process\Entity\Specifications;
-use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
+use Itonomy\Katanapim\Model\ImportFactory;
 
 /**
  * Cron job for importing product Katana specifications
@@ -14,27 +13,19 @@ class SpecificationsImport
     public const JOB_CODE = 'itonomy_katanapim_specifications_import';
 
     /**
-     * @var Specifications
+     * @var ImportFactory
      */
-    private Specifications $specifications;
-
-    /**
-     * @var SpecificationGroup
-     */
-    private SpecificationGroup $specificationGroup;
+    private ImportFactory $importFactory;
 
     /**
      * SpecificationsImport constructor.
      *
-     * @param Specifications $specifications
-     * @param SpecificationGroup $specificationGroup
+     * @param ImportFactory $importFactory
      */
     public function __construct(
-        Specifications $specifications,
-        SpecificationGroup $specificationGroup
+        ImportFactory $importFactory
     ) {
-        $this->specifications = $specifications;
-        $this->specificationGroup = $specificationGroup;
+        $this->importFactory = $importFactory;
     }
 
     /**
@@ -46,7 +37,7 @@ class SpecificationsImport
      */
     public function execute(): void
     {
-        $this->specifications->execute();
-        $this->specificationGroup->execute();
+        $this->importFactory->get('specifications')->import();
+        $this->importFactory->get('specifications_group')->import();
     }
 }

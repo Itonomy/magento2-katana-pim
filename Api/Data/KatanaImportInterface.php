@@ -14,22 +14,27 @@ interface KatanaImportInterface
     public const START_TIME = "start_time";
     public const FINISH_TIME = "finish_time";
     public const STATUS = "status";
+    public const STATUS_PENDING = "pending";
+    public const STATUS_RUNNING = "running";
+    public const STATUS_COMPLETE = "complete";
+    public const STATUS_ERROR = "error";
+
 
     /**
      * Getter for ImportId.
      *
-     * @return int
+     * @return string
      */
-    public function getImportId(): ?int;
+    public function getImportId(): ?string;
 
     /**
      * Setter for ImportId.
      *
-     * @param int|null $importId
+     * @param string|null $importId
      *
      * @return void
      */
-    public function setImportId(?int $importId): void;
+    public function setImportId(?string $importId): void;
 
     /**
      * Getter for EntityType.

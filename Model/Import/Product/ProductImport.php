@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Import\Product;
 
+use Itonomy\Katanapim\Api\Data\ImportInterface;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
@@ -10,6 +12,8 @@ use Itonomy\Katanapim\Model\Data\Product\DataValidator;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
+use Itonomy\Katanapim\Model\KatanaImport;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Itonomy\Katanapim\Model\Logger;
 use Itonomy\Katanapim\Model\RestClient;
 use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
@@ -19,7 +23,7 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ProductImport
+class ProductImport implements ImportInterface
 {
     private const URL_PART = 'Product';
     private const REQUEST_PAGE_INDEX_KEY = 'filterModel.paging.pageIndex';
@@ -84,6 +88,16 @@ class ProductImport
     private DataValidator $dataValidator;
 
     /**
+     * @var KatanaImportHelper
+     */
+    private KatanaImportHelper $katanaImportHelper;
+
+    /**
+     * @var KatanaImportInterface
+     */
+    private KatanaImportInterface $katanaImport;
+
+    /**
      * ProductImport constructor.
      *
      * @param RestClient $restClient
@@ -95,6 +109,7 @@ class ProductImport
      * @param ManagerInterface $eventManager
      * @param Logger $logger
      * @param Katana $katanaConfig
+     * @param KatanaImportHelper $katanaImportHelper
      * @param int $pageSize
      */
     public function __construct(
@@ -107,6 +122,7 @@ class ProductImport
         ManagerInterface $eventManager,
         Logger $logger,
         Katana $katanaConfig,
+        KatanaImportHelper $katanaImportHelper,
         int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
@@ -120,6 +136,7 @@ class ProductImport
         $this->pageSize = $pageSize;
         $this->cliOutput = null;
         $this->dataValidator = $dataValidator;
+        $this->katanaImportHelper = $katanaImportHelper;
     }
 
     /**
@@ -135,6 +152,10 @@ class ProductImport
         $parameters = $this->prepareRequestArray();
 
         try {
+            $this->katanaImportHelper->updateKatanaImportStatus(
+                $this->getKatanaImport(),
+                KatanaImport::STATUS_RUNNING
+            );
             do {
                 $parameters->set(self::REQUEST_PAGE_INDEX_KEY, $page++);
 
@@ -145,7 +166,7 @@ class ProductImport
                 );
 
                 $items = $response['Items'] ?? [];
-
+                $items = \array_slice($items, 0, 1);
                 if (empty($items)) {
                     break;
                 }
@@ -153,11 +174,51 @@ class ProductImport
                 $this->importItems($items, $page);
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
+            $this->katanaImportHelper->updateKatanaImportStatus(
+                $this->getKatanaImport(),
+                KatanaImport::STATUS_ERROR
+            );
             $this->log('Error while trying to run katana product import. ' . $e->getMessage(), self::IMPORT_ERROR);
             throw $e;
         }
 
+        $this->katanaImportHelper->updateKatanaImportStatus(
+            $this->getKatanaImport(),
+            KatanaImport::STATUS_COMPLETE
+        );
         $this->eventManager->dispatch('katana_product_import_after');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityType(): string
+    {
+        return self::PRODUCT_IMPORT_JOB_CODE;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityId(): string
+    {
+        return uniqid(self::PRODUCT_IMPORT_JOB_CODE . '_');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setKatanaImport(KatanaImportInterface $katanaImport): void
+    {
+        $this->katanaImport = $katanaImport;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getKatanaImport(): KatanaImportInterface
+    {
+        return $this->katanaImport;
     }
 
     /**

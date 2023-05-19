@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Import\Product\ProductImport;
+use Itonomy\Katanapim\Model\ImportFactory;
 
 /**
  * Cron job for importing Katana product catalog
@@ -11,20 +11,21 @@ use Itonomy\Katanapim\Model\Import\Product\ProductImport;
 class ProductsImport
 {
     public const JOB_CODE = 'itonomy_katanapim_products_import';
+
     /**
-     * @var ProductImport
+     * @var ImportFactory
      */
-    private ProductImport $importer;
+    private ImportFactory $importFactory;
 
     /**
      * ProductsImport constructor.
      *
-     * @param ProductImport $importer
+     * @param ImportFactory $importFactory
      */
     public function __construct(
-        ProductImport $importer
+        ImportFactory $importFactory
     ) {
-        $this->importer = $importer;
+        $this->importFactory = $importFactory;
     }
 
     /**
@@ -35,6 +36,6 @@ class ProductsImport
      */
     public function execute(): void
     {
-        $this->importer->import();
+        $this->importFactory->get('product')->import();
     }
 }

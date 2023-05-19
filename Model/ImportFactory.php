@@ -61,6 +61,12 @@ class ImportFactory
         }
         if (!isset($this->registry[$typeName])) {
             $this->registry[$typeName] = $this->objectManager->get($this->importTypes[$typeName]);
+            $katanaImport = $this->importHelper->createKatanaImport(
+                $this->registry[$typeName]->getEntityType(),
+                KatanaImport::STATUS_PENDING,
+                uniqid($this->registry[$typeName]->getEntityType() . '_')
+            );
+            $this->registry[$typeName]->setKatanaImport($katanaImport);
         }
 
         return $this->registry[$typeName];

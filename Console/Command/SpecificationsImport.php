@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
-use Itonomy\Katanapim\Model\Process\Entity\Specifications;
+use Itonomy\Katanapim\Model\ImportFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,37 +12,29 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SpecificationsImport extends Command
 {
     /**
-     * @var Specifications
-     */
-    private Specifications $specifications;
-
-    /**
-     * @var SpecificationGroup
-     */
-    private SpecificationGroup $specificationGroup;
-
-    /**
      * @var ProgressBarFactory
      */
     private ProgressBarFactory $progressBarFactory;
 
     /**
+     * @var ImportFactory
+     */
+    private ImportFactory $importFactory;
+
+    /**
      * ImportFromCsv constructor.
      *
-     * @param Specifications $specifications
-     * @param SpecificationGroup $specificationGroup
+     * @param ImportFactory $importFactory
      * @param ProgressBarFactory $progressBarFactory
      */
     public function __construct(
-        Specifications $specifications,
-        SpecificationGroup $specificationGroup,
+        ImportFactory $importFactory,
         ProgressBarFactory $progressBarFactory
     ) {
-        $this->specifications = $specifications;
-        $this->specificationGroup = $specificationGroup;
         $this->progressBarFactory = $progressBarFactory;
-
+        $this->importFactory = $importFactory;
         parent::__construct();
+
     }
 
     /**
@@ -78,12 +69,8 @@ class SpecificationsImport extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->specifications
-            ->setProgressBar($progressBar)
-            ->execute();
-
-        $this->specificationGroup
-            ->execute();
+        $this->importFactory->get('specifications')->setProgressBar($progressBar)->import();
+        $this->importFactory->get('specifications_group')->import();
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

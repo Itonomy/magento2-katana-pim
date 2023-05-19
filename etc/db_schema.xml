@@ -70,7 +70,7 @@
            comment="Katana PIM Table for storing import records">
         <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
                 comment="Entity Id"/>
-        <column xsi:type="int" name="import_id" padding="10" unsigned="true" nullable="true"
+        <column xsi:type="varchar" name="import_id" length="255" nullable="true"
                 comment="Import Id"/>
         <column xsi:type="varchar" name="entity_type" nullable="false" length="255"
                 comment="Katana Import Entity Type"/>

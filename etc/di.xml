@@ -76,9 +76,10 @@
     <type name="Itonomy\Katanapim\Model\ImportFactory">
         <arguments>
             <argument name="importTypes" xsi:type="array">
-                <item name="product" xsi:type="object">Itonomy\Katanapim\Cron\ProductsImport</item>
-                <item name="specifications" xsi:type="object">Itonomy\Katanapim\Cron\SpecificationsImport</item>
-                <item name="specifications_localization" xsi:type="object">Itonomy\Katanapim\Cron\SpecificationsLocalizationImport</item>
+                <item name="product" xsi:type="string">Itonomy\Katanapim\Model\Import\Product\ProductImport</item>
+                <item name="specifications" xsi:type="string">Itonomy\Katanapim\Model\Process\Entity\Specifications</item>
+                <item name="specifications_group" xsi:type="string">Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup</item>
+                <item name="specifications_localization" xsi:type="string">Itonomy\Katanapim\Model\Process\SpecificationsLocalization</item>
             </argument>
         </arguments>
     </type>

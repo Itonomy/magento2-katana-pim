@@ -24,7 +24,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function getImportId(): ?int
+    public function getImportId(): ?string
     {
         return $this->getData(self::IMPORT_ID);
     }
@@ -32,7 +32,7 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setImportId(?int $importId): void
+    public function setImportId(?string $importId): void
     {
         $this->setData(self::IMPORT_ID, $importId);
     }

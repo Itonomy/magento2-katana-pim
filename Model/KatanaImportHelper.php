@@ -44,14 +44,14 @@ class KatanaImportHelper
     /**
      * @param string $entityType
      * @param string $status
-     * @param int|null $importId
+     * @param string|null $importId
      * @return KatanaImportInterface
      * @throws CouldNotSaveException
      */
     public function createKatanaImport(
         string $entityType,
         string $status,
-        ?int $importId
+        ?string $importId
     ): KatanaImportInterface {
         $katanaImport = $this->katanaImportFactory->create();
         $katanaImport->setEntityType($entityType);

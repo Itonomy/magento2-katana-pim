@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Process\Entity;
 
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
 use Itonomy\Katanapim\Api\Data\ImportInterface;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
@@ -19,6 +20,20 @@ use Symfony\Component\Console\Helper\ProgressBar;
 class Specifications implements ImportInterface
 {
     private const URL_PART = 'Specifications';
+
+    /**
+     * @var string
+     */
+    private string $entityId = '';
+
+    /**
+     * @var string[]
+     */
+    public array $type = [
+        0 => 'select',
+        10 => 'text', //more than 255
+        20 => 'text'
+    ];
 
     /**
      * @var RestClient
@@ -41,28 +56,31 @@ class Specifications implements ImportInterface
     private KatanaImportInterface $katanaImport;
 
     /**
-     * @var string[]
+     * @var KatanaImportHelper
      */
-    public array $type = [
-        0 => 'select',
-        10 => 'text', //more than 255
-        20 => 'text'
-    ];
     private KatanaImportHelper $katanaImportHelper;
+
+    /**
+     * @var Logger
+     */
+    private Logger $logger;
 
     /**
      * @param RestClient $rest
      * @param AttributeMappingRepository $attributeMappingRepository
      * @param KatanaImportHelper $katanaImportHelper
+     * @param Logger $logger
      */
     public function __construct(
         RestClient $rest,
         AttributeMappingRepository $attributeMappingRepository,
-        KatanaImportHelper $katanaImportHelper
+        KatanaImportHelper $katanaImportHelper,
+        Logger $logger
     ) {
         $this->rest = $rest;
         $this->attributeMappingRepository = $attributeMappingRepository;
         $this->katanaImportHelper = $katanaImportHelper;
+        $this->logger = $logger;
     }
 
     /**
@@ -103,6 +121,10 @@ class Specifications implements ImportInterface
                 $i++;
             } while ($i < $specifications['TotalPages']);
         } catch (\Throwable $e) {
+            $this->logger->critical(
+                $e->getMessage(),
+                ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]
+            );
             $this->katanaImportHelper->updateKatanaImportStatus(
                 $this->getKatanaImport(),
                 KatanaImport::STATUS_ERROR
@@ -129,7 +151,11 @@ class Specifications implements ImportInterface
      */
     public function getEntityId(): string
     {
-        return uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+        if (!empty($this->entityId)) {
+            return $this->entityId;
+        }
+        $this->entityId = uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+        return $this->entityId;
     }
 
     /**

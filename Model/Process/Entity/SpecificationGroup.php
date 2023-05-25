@@ -11,13 +11,18 @@ use Itonomy\Katanapim\Model\AttributeSetRepository;
 use Itonomy\Katanapim\Model\AttributeSetToAttributeRepository;
 use Itonomy\Katanapim\Model\KatanaImport;
 use Itonomy\Katanapim\Model\KatanaImportHelper;
-use Itonomy\Katanapim\Model\Logger;
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Model\RestClient;
 use Magento\Framework\Exception\RuntimeException;
 
 class SpecificationGroup implements ImportInterface
 {
     private const URL_PART = 'Spec/SpecificationGroup';
+
+    /**
+     * @var string
+     */
+    private string $entityId = '';
 
     /**
      * @var RestClient
@@ -132,7 +137,10 @@ class SpecificationGroup implements ImportInterface
                 $this->getKatanaImport(),
                 KatanaImport::STATUS_ERROR
             );
-            $this->logger->error($e->getMessage());
+            $this->logger->error(
+                $e->getMessage(),
+                ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]
+            );
             return;
         }
 
@@ -155,7 +163,11 @@ class SpecificationGroup implements ImportInterface
      */
     public function getEntityId(): string
     {
-        return uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+        if (!empty($this->entityId)) {
+            return $this->entityId;
+        }
+        $this->entityId = uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+        return $this->entityId;
     }
 
     /**

@@ -14,7 +14,7 @@ use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
 use Itonomy\Katanapim\Model\KatanaImport;
 use Itonomy\Katanapim\Model\KatanaImportHelper;
-use Itonomy\Katanapim\Model\Logger;
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Model\RestClient;
 use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
 use Laminas\Http\Request;
@@ -31,6 +31,11 @@ class ProductImport implements ImportInterface
 
     public const IMPORT_ERROR = 'error';
     public const IMPORT_INFO = 'info';
+
+    /**
+     * @var string
+     */
+    private string $entityId = '';
 
     /**
      * @var RestClient
@@ -166,7 +171,6 @@ class ProductImport implements ImportInterface
                 );
 
                 $items = $response['Items'] ?? [];
-                $items = \array_slice($items, 0, 1);
                 if (empty($items)) {
                     break;
                 }
@@ -202,7 +206,11 @@ class ProductImport implements ImportInterface
      */
     public function getEntityId(): string
     {
-        return uniqid(self::PRODUCT_IMPORT_JOB_CODE . '_');
+        if (!empty($this->entityId)) {
+            return $this->entityId;
+        }
+        $this->entityId = uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
+        return $this->entityId;
     }
 
     /**
@@ -361,12 +369,12 @@ class ProductImport implements ImportInterface
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<error>' . $string . '</error>');
             }
-            $this->logger->error($string);
+            $this->logger->error($string, ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]);
         } else {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<info>' . $string . '</info>');
             }
-            $this->logger->info($string);
+            $this->logger->info($string, ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]);
         }
     }
 }

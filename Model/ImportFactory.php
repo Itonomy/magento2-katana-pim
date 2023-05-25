@@ -64,7 +64,7 @@ class ImportFactory
             $katanaImport = $this->importHelper->createKatanaImport(
                 $this->registry[$typeName]->getEntityType(),
                 KatanaImport::STATUS_PENDING,
-                uniqid($this->registry[$typeName]->getEntityType() . '_')
+                $this->registry[$typeName]->getEntityId()
             );
             $this->registry[$typeName]->setKatanaImport($katanaImport);
         }

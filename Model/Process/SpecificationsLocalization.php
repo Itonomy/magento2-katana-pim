@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Process;
 
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
 use Itonomy\Katanapim\Api\Data\ImportInterface;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
@@ -28,6 +29,11 @@ use Throwable;
 class SpecificationsLocalization implements ImportInterface
 {
     private const URL_PART = 'Specifications';
+
+    /**
+     * @var string
+     */
+    private string $entityId = '';
 
     /**
      * @var RestClient
@@ -75,6 +81,11 @@ class SpecificationsLocalization implements ImportInterface
     private KatanaImportInterface $katanaImport;
 
     /**
+     * @var Logger
+     */
+    private Logger $logger;
+
+    /**
      * SpecificationsLocalization constructor.
      *
      * @param RestClient $rest
@@ -83,6 +94,7 @@ class SpecificationsLocalization implements ImportInterface
      * @param SpecificationTranslation $specificationTranslationProcessor
      * @param SpecificationOptions $specificationOptionsProcessor
      * @param KatanaImportHelper $katanaImportHelper
+     * @param Logger $logger
      */
     public function __construct(
         RestClient $rest,
@@ -90,7 +102,8 @@ class SpecificationsLocalization implements ImportInterface
         ProductAttributeRepositoryInterface $attributeRepository,
         SpecificationTranslation $specificationTranslationProcessor,
         SpecificationOptions $specificationOptionsProcessor,
-        KatanaImportHelper $katanaImportHelper
+        KatanaImportHelper $katanaImportHelper,
+        Logger $logger
     ) {
         $this->rest = $rest;
         $this->attributeMapping = [];
@@ -99,6 +112,7 @@ class SpecificationsLocalization implements ImportInterface
         $this->specificationTranslationProcessor = $specificationTranslationProcessor;
         $this->specificationOptionsProcessor = $specificationOptionsProcessor;
         $this->katanaImportHelper = $katanaImportHelper;
+        $this->logger = $logger;
     }
 
     /**
@@ -151,6 +165,10 @@ class SpecificationsLocalization implements ImportInterface
                 $this->getKatanaImport(),
                 KatanaImport::STATUS_ERROR
             );
+            $this->logger->error(
+                $e->getMessage(),
+                ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]
+            );
             throw new RuntimeException(__(
                 'Error while trying to import specifications translations. ' . $e->getMessage()
             ));
@@ -175,7 +193,11 @@ class SpecificationsLocalization implements ImportInterface
      */
     public function getEntityId(): string
     {
-        return uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
+        if (!empty($this->entityId)) {
+            return $this->entityId;
+        }
+        $this->entityId = uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
+        return $this->entityId;
     }
 
     /**

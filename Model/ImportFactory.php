@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model;
 
 use Itonomy\Katanapim\Api\Data\ImportInterface;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Magento\Framework\ObjectManagerInterface;
 
 class ImportFactory
@@ -66,7 +67,7 @@ class ImportFactory
                 KatanaImport::STATUS_PENDING,
                 $this->registry[$typeName]->getEntityId()
             );
-            $this->registry[$typeName]->setKatanaImport($katanaImport);
+            $this->importHelper->setImport($katanaImport);
         }
 
         return $this->registry[$typeName];

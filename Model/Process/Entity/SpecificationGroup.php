@@ -79,13 +79,12 @@ class SpecificationGroup implements ImportInterface
      * Execute specification group import
      *
      * @return void
-     * @throws RuntimeException
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
     public function import(): void
     {
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_RUNNING
         );
         try {
@@ -134,7 +133,7 @@ class SpecificationGroup implements ImportInterface
             );
         } catch (\Throwable $e) {
             $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->getKatanaImport(),
+                $this->katanaImportHelper->getImport(),
                 KatanaImport::STATUS_ERROR
             );
             $this->logger->error(
@@ -145,7 +144,7 @@ class SpecificationGroup implements ImportInterface
         }
 
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_COMPLETE
         );
     }
@@ -168,21 +167,5 @@ class SpecificationGroup implements ImportInterface
         }
         $this->entityId = uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
         return $this->entityId;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setKatanaImport(KatanaImportInterface $katanaImport): void
-    {
-        $this->katanaImport = $katanaImport;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getKatanaImport(): KatanaImportInterface
-    {
-        return $this->katanaImport;
     }
 }

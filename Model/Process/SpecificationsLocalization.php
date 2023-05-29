@@ -126,7 +126,7 @@ class SpecificationsLocalization implements ImportInterface
     {
         $i = 0;
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_RUNNING
         );
 
@@ -162,7 +162,7 @@ class SpecificationsLocalization implements ImportInterface
             } while ($i < $apiData['TotalPages']);
         } catch (Throwable $e) {
             $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->getKatanaImport(),
+                $this->katanaImportHelper->getImport(),
                 KatanaImport::STATUS_ERROR
             );
             $this->logger->error(
@@ -175,7 +175,7 @@ class SpecificationsLocalization implements ImportInterface
         }
 
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_COMPLETE
         );
     }
@@ -198,22 +198,6 @@ class SpecificationsLocalization implements ImportInterface
         }
         $this->entityId = uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
         return $this->entityId;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setKatanaImport(KatanaImportInterface $katanaImport): void
-    {
-        $this->katanaImport = $katanaImport;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getKatanaImport(): KatanaImportInterface
-    {
-        return $this->katanaImport;
     }
 
     /**

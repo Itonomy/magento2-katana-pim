@@ -95,7 +95,7 @@ class Specifications implements ImportInterface
         $i = 0;
 
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_RUNNING
         );
         try {
@@ -126,14 +126,14 @@ class Specifications implements ImportInterface
                 ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]
             );
             $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->getKatanaImport(),
+                $this->katanaImportHelper->getImport(),
                 KatanaImport::STATUS_ERROR
             );
             throw $e;
         }
 
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_COMPLETE
         );
     }
@@ -156,22 +156,6 @@ class Specifications implements ImportInterface
         }
         $this->entityId = uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
         return $this->entityId;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setKatanaImport(KatanaImportInterface $katanaImport): void
-    {
-        $this->katanaImport = $katanaImport;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getKatanaImport(): KatanaImportInterface
-    {
-        return $this->katanaImport;
     }
 
     /**

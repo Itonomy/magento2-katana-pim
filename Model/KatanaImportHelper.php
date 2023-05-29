@@ -27,6 +27,11 @@ class KatanaImportHelper
     private ResourceModel\KatanaImport\CollectionFactory $katanaCollectionFactory;
 
     /**
+     * @var KatanaImportInterface
+     */
+    private KatanaImportInterface $katanaImport;
+
+    /**
      * @param KatanaImportRepository $katanaImportRepository
      * @param KatanaImportFactory $katanaImportFactory
      * @param ResourceModel\KatanaImport\CollectionFactory $katanaCollectionFactory
@@ -112,5 +117,19 @@ class KatanaImportHelper
     {
         $katanaImport->setStatus($status);
         $this->katanaImportRepository->save($katanaImport);
+    }
+
+    /**
+     * @param KatanaImportInterface $katanaImport
+     * @return void
+     */
+    public function setImport(KatanaImportInterface $katanaImport)
+    {
+        $this->katanaImport = $katanaImport;
+    }
+
+    public function getImport(): KatanaImportInterface
+    {
+        return $this->katanaImport;
     }
 }

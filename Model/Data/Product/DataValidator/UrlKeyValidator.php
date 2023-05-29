@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataValidator;
 
+use Itonomy\DatabaseLogger\Model\Logger;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Magento\Catalog\Model\Product\Url;
-use Itonomy\Katanapim\Model\Logger;
 
 class UrlKeyValidator implements ValidatorInterface
 {
@@ -30,15 +31,23 @@ class UrlKeyValidator implements ValidatorInterface
     private Logger $logger;
 
     /**
+     * @var KatanaImportHelper
+     */
+    private KatanaImportHelper $importHelper;
+
+    /**
      * @param Url $productUrl
      * @param Logger $logger
+     * @param KatanaImportHelper $importHelper
      */
     public function __construct(
         Url $productUrl,
-        Logger $logger
+        Logger $logger,
+        KatanaImportHelper $importHelper
     ) {
         $this->productUrl = $productUrl;
         $this->logger = $logger;
+        $this->importHelper = $importHelper;
     }
 
     /**
@@ -60,10 +69,21 @@ class UrlKeyValidator implements ValidatorInterface
             if (!empty($productData[self::COL_SKU])) {
                 $this->logger->info(
                     'Skipping product, url_key doesn\'t exist for product with SKU: ',
-                    [$productData[self::COL_SKU]]
+                    [
+                        $productData[self::COL_SKU],
+                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_type' => $this->importHelper->getImport()->getEntityType()
+                    ]
                 );
             } else {
-                $this->logger->info('Skipping product, url_key doesn\'t exist for product');
+                $this->logger->info(
+                    'Skipping product, url_key doesn\'t exist for product',
+                    [
+                        $productData[self::COL_SKU],
+                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_type' => $this->importHelper->getImport()->getEntityType()
+                    ]
+                );
             }
 
             return false;

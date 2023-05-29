@@ -5,7 +5,8 @@ namespace Itonomy\Katanapim\Observer;
 
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\ImageDirectoryProvider;
-use Itonomy\Katanapim\Model\Logger;
+use Itonomy\DatabaseLogger\Model\Logger;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\FileSystemException;
@@ -31,20 +32,28 @@ class ImageCleanupObserver implements ObserverInterface
     private Katana $katanaConfig;
 
     /**
+     * @var KatanaImportHelper
+     */
+    private KatanaImportHelper $importHelper;
+
+    /**
      * ImageCleanupObserver constructor.
      *
      * @param ImageDirectoryProvider $directoryProvider
      * @param Logger $logger
      * @param Katana $katanaConfig
+     * @param KatanaImportHelper $importHelper
      */
     public function __construct(
         ImageDirectoryProvider $directoryProvider,
         Logger $logger,
-        Katana $katanaConfig
+        Katana $katanaConfig,
+        KatanaImportHelper $importHelper
     ) {
         $this->directoryProvider = $directoryProvider;
         $this->logger = $logger;
         $this->katanaConfig = $katanaConfig;
+        $this->importHelper = $importHelper;
     }
 
     /**
@@ -61,7 +70,13 @@ class ImageCleanupObserver implements ObserverInterface
             try {
                 $this->directoryProvider->deleteDirectory();
             } catch (FileSystemException $e) {
-                $this->logger->error('Could not clean up KatanaPim image import directory ' . $e->getMessage());
+                $this->logger->error(
+                    'Could not clean up KatanaPim image import directory ' . $e->getMessage(),
+                    [
+                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_type' => $this->importHelper->getImport()->getEntityType()
+                    ]
+                );
             }
         }
     }

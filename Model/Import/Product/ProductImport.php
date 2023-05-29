@@ -158,7 +158,7 @@ class ProductImport implements ImportInterface
 
         try {
             $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->getKatanaImport(),
+                $this->katanaImportHelper->getImport(),
                 KatanaImport::STATUS_RUNNING
             );
             do {
@@ -179,7 +179,7 @@ class ProductImport implements ImportInterface
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
             $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->getKatanaImport(),
+                $this->katanaImportHelper->getImport(),
                 KatanaImport::STATUS_ERROR
             );
             $this->log('Error while trying to run katana product import. ' . $e->getMessage(), self::IMPORT_ERROR);
@@ -187,7 +187,7 @@ class ProductImport implements ImportInterface
         }
 
         $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->getKatanaImport(),
+            $this->katanaImportHelper->getImport(),
             KatanaImport::STATUS_COMPLETE
         );
         $this->eventManager->dispatch('katana_product_import_after');
@@ -211,22 +211,6 @@ class ProductImport implements ImportInterface
         }
         $this->entityId = uniqid(self::SPECIFICATIONS_LOCALIZATION_IMPORT_JOB_CODE . '_');
         return $this->entityId;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setKatanaImport(KatanaImportInterface $katanaImport): void
-    {
-        $this->katanaImport = $katanaImport;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getKatanaImport(): KatanaImportInterface
-    {
-        return $this->katanaImport;
     }
 
     /**

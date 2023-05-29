@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\FileDownloader;
 use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\ImageDirectoryProvider;
-use Itonomy\Katanapim\Model\Logger;
+use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\File\Uploader;
@@ -29,14 +30,19 @@ class ImageDataPreprocessor implements PreprocessorInterface
     private ImageDirectoryProvider $imageDirectoryProvider;
 
     /**
-     * @var string|null
-     */
-    private ?string $downloadDir;
-
-    /**
      * @var File
      */
     private File $file;
+
+    /**
+     * @var KatanaImportHelper
+     */
+    private KatanaImportHelper $importHelper;
+
+    /**
+     * @var string|null
+     */
+    private ?string $downloadDir;
 
     /**
      * ImageDataPreprocessor constructor.
@@ -45,6 +51,7 @@ class ImageDataPreprocessor implements PreprocessorInterface
      * @param FileDownloader $fileDownloader
      * @param ImageDirectoryProvider $imageDirectoryProvider
      * @param File $file
+     * @param KatanaImportHelper $importHelper
      * @param string|null $downloadDir
      */
     public function __construct(
@@ -52,6 +59,7 @@ class ImageDataPreprocessor implements PreprocessorInterface
         FileDownloader $fileDownloader,
         ImageDirectoryProvider $imageDirectoryProvider,
         File $file,
+        KatanaImportHelper $importHelper,
         ?string $downloadDir = null
     ) {
         $this->fileDownloader = $fileDownloader;
@@ -59,6 +67,7 @@ class ImageDataPreprocessor implements PreprocessorInterface
         $this->imageDirectoryProvider = $imageDirectoryProvider;
         $this->file = $file;
         $this->downloadDir = $downloadDir;
+        $this->importHelper = $importHelper;
     }
 
     /**
@@ -155,7 +164,11 @@ class ImageDataPreprocessor implements PreprocessorInterface
     {
         foreach ($errors as $error) {
             $this->logger->error(
-                'Error encountered while downloading images for katana import: ' . $error
+                'Error encountered while downloading images for katana import: ' . $error,
+                [
+                    'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                    'entity_type' => $this->importHelper->getImport()->getEntityType()
+                ]
             );
         }
     }

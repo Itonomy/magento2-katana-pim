@@ -24,15 +24,4 @@ interface ImportInterface
      * @return string
      */
     public function getEntityId(): string;
-
-    /**
-     * @param KatanaImportInterface $katanaImport
-     * @return void
-     */
-    public function setKatanaImport(KatanaImportInterface $katanaImport): void;
-
-    /**
-     * @return KatanaImportInterface
-     */
-    public function getKatanaImport(): KatanaImportInterface;
 }

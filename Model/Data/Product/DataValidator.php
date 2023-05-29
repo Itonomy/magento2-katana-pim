@@ -47,25 +47,13 @@ class DataValidator
             $this->setValidators();
         }
 
-        foreach ($data as $productId => $productData) {
-            if ($scope) {
-                foreach ($this->scopeValidators as $validator) {
-                    $valid = $validator->validate($productData);
-                    if (!$valid) {
-                        unset($data[$productId]);
-                    } else {
-                        $data[$productId] = $productData;
-                    }
-                }
-            } else {
-                foreach ($this->defaultValidators as $validator) {
-                    $valid = $validator->validate($productData);
-                    if (!$valid) {
-                        unset($data[$productId]);
-                    } else {
-                        $data[$productId] = $productData;
-                    }
-                }
+        if ($scope) {
+            foreach ($this->scopeValidators as $validator) {
+                $validator->validate($data);
+            }
+        } else {
+            foreach ($this->defaultValidators as $validator) {
+                $validator->validate($data);
             }
         }
 
@@ -90,7 +78,7 @@ class DataValidator
         $scopeValidators = array_filter(
             $this->validators,
             function ($item) {
-                return isset($item['scope']) && (bool) $item['scope'];
+                return isset($item['scope']) && (bool)$item['scope'];
             }
         );
         $this->scopeValidators = array_column($scopeValidators, 'object');

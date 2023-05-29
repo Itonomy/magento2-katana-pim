@@ -7,10 +7,29 @@ use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
 
 class BasicDataParser implements DataParserInterface
 {
+    /**
+     * Basic Product Type Id in KatanaPIM
+     */
     public const KATANA_PRODUCT_TYPE = 5;
+
+    /**
+     * Basic Product Type
+     */
     public const PRODUCT_TYPE = 'simple';
+
+    /**
+     * Basic Product Visibility
+     */
     public const VISIBILITY = 'Catalog, Search';
 
+    /**
+     * KatanaPIM Id key
+     */
+    public const ID_KEY = 'Id';
+
+    /**
+     * KatanaPim Data Map
+     */
     protected const DATA_MAP = [
 //Basic Data
         'sku' => ['TextFieldsModel','Sku'],
@@ -22,7 +41,6 @@ class BasicDataParser implements DataParserInterface
         'meta_title' => ['TextFieldsModel', 'MetaTitle'],
         'meta_keywords' => ['TextFieldsModel', 'MetaKeywords'],
         'meta_description' => ['TextFieldsModel', 'MetaDescription'],
-        'url_key' => ['TextFieldsModel', 'Slug'],
 //Price Data
         'price' => ['Prices','CurrentPriceBookItem','Price'],
 //Images Data
@@ -78,7 +96,7 @@ class BasicDataParser implements DataParserInterface
             $output[$attributeCode] = $this->findValue($item, $katanaKey);
 
             if ($attributeCode === 'sku' && empty($output[$attributeCode])) {
-                $output[$attributeCode] = (string)$item['Id'];
+                $output[$attributeCode] = (string)$item[self::ID_KEY];
             }
         }
 

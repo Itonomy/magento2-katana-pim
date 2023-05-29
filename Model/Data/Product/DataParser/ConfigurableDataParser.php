@@ -8,8 +8,19 @@ use Magento\Framework\Exception\LocalizedException;
 
 class ConfigurableDataParser extends BasicDataParser
 {
+    /**
+     * Basic Product Type Id in KatanaPIM
+     */
     public const KATANA_PRODUCT_TYPE = 30;
+
+    /**
+     * Basic Product Type
+     */
     public const PRODUCT_TYPE = 'configurable';
+
+    /**
+     * Basic Product Visibility
+     */
     public const VISIBILITY = 'Catalog, Search';
 
     /**

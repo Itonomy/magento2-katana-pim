@@ -40,6 +40,7 @@
             <argument name="dataParsers" xsi:type="array">
                 <item name="simple" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser</item>
                 <item name="configurable" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\ConfigurableDataParser</item>
+                <item name="url_key" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\UrlKeyDataParser</item>
                 <item name="specifications" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\SpecificationsDataParser</item>
                 <item name="scope" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataParser\ScopeDataParser</item>
             </argument>
@@ -61,13 +62,13 @@
     <type name="Itonomy\Katanapim\Model\Data\Product\DataValidator">
         <arguments>
             <argument name="validators" xsi:type="array">
-                <item name="url_key" xsi:type="array">
+                <item name="example_validator" xsi:type="array">
                     <item name="scope" xsi:type="boolean">true</item>
-                    <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\UrlKeyValidator</item>
+                    <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\ExampleValidator</item>
                 </item>
-                <item name="url_key_unscoped" xsi:type="array">
+                <item name="example_validator_global" xsi:type="array">
                     <item name="scope" xsi:type="boolean">false</item>
-                    <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\UrlKeyValidator</item>
+                    <item name="object" xsi:type="object">Itonomy\Katanapim\Model\Data\Product\DataValidator\ExampleValidator</item>
                 </item>
             </argument>
         </arguments>

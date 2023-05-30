@@ -98,4 +98,20 @@
                 type="Itonomy\Katanapim\Model\KatanaImport"/>
     <preference for="Itonomy\Katanapim\Api\KatanaImportRepositoryInterface"
                 type="Itonomy\Katanapim\Model\KatanaImportRepository"/>
+
+    <virtualType name="DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="resourceModel" xsi:type="string">
+                Itonomy\Katanapim\Model\ResourceModel\KatanaImport\Collection
+            </argument>
+            <argument name="mainTable" xsi:type="string">katanapim_import</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument xsi:type="array">
+                <item xsi:type="string" name="katanapim_import_data_source">DataProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

@@ -20,5 +20,10 @@
              module="Itonomy_Katanapim" sortOrder="45"
              parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::base"
              action="katanapim/imports"/>
+
+        <add id="Itonomy_Katanapim::import" title="KatanaPim Import Logs"
+             module="Itonomy_Katanapim" sortOrder="45"
+             parent="Itonomy_Katanapim::base" resource="Itonomy_Katanapim::base"
+             action="katanapim/import/index"/>
     </menu>
 </config>

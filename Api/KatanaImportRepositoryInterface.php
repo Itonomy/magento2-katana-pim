@@ -13,4 +13,10 @@ interface KatanaImportRepositoryInterface
      * @return KatanaImportInterface
      */
     public function save(KatanaImportInterface $katanaImport): KatanaImportInterface;
+
+    /**
+     * @param $id
+     * @return KatanaImportInterface
+     */
+    public function getById($id): KatanaImportInterface;
 }

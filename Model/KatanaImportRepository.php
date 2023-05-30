@@ -7,6 +7,7 @@ namespace Itonomy\Katanapim\Model;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class KatanaImportRepository implements KatanaImportRepositoryInterface
 {
@@ -16,11 +17,20 @@ class KatanaImportRepository implements KatanaImportRepositoryInterface
     private ResourceModel\KatanaImport $resource;
 
     /**
-     * @param ResourceModel\KatanaImport $resource
+     * @var KatanaImportFactory
      */
-    public function __construct(\Itonomy\Katanapim\Model\ResourceModel\KatanaImport $resource)
-    {
+    private KatanaImportFactory $katanaImportFactory;
+
+    /**
+     * @param ResourceModel\KatanaImport $resource
+     * @param KatanaImportFactory $katanaImportFactory
+     */
+    public function __construct(
+        \Itonomy\Katanapim\Model\ResourceModel\KatanaImport $resource,
+        KatanaImportFactory $katanaImportFactory
+    ) {
         $this->resource = $resource;
+        $this->katanaImportFactory = $katanaImportFactory;
     }
 
     /**
@@ -40,5 +50,19 @@ class KatanaImportRepository implements KatanaImportRepositoryInterface
         }
 
         return $katanaImport;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NoSuchEntityException
+     */
+    public function getById($id): KatanaImportInterface
+    {
+        $entityLog = $this->katanaImportFactory->create();
+        $this->resource->load($entityLog, $id);
+        if (!$entityLog->getId()) {
+            throw new NoSuchEntityException(__('Katana Import with the "%1" ID doesn\'t exist.', $id));
+        }
+        return $entityLog;
     }
 }

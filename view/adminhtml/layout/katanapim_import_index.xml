@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Itonomy_Katanapim::css/log.css"/>
+    </head>
+    <referenceBlock name="page.title">
+        <action method="setPageTitle">
+            <argument name="title" xsi:type="string">KatanaPim Import Logs</argument>
+        </action>
+    </referenceBlock>
+    <body>
+        <referenceContainer name="js">
+            <block class="Magento\Backend\Block\Template" template="Itonomy_Katanapim::js.phtml" name="log.view.model.js"/>
+        </referenceContainer>
+        <referenceContainer name="content">
+            <uiComponent name="katanapim_import"/>
+        </referenceContainer>
+    </body>
+</page>

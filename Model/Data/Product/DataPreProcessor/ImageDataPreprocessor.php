@@ -166,7 +166,7 @@ class ImageDataPreprocessor implements PreprocessorInterface
             $this->logger->error(
                 'Error encountered while downloading images for katana import: ' . $error,
                 [
-                    'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                    'entity_id' => $this->importHelper->getImport()->getImportId(),
                     'entity_type' => $this->importHelper->getImport()->getEntityType()
                 ]
             );

@@ -73,7 +73,7 @@ class ImageCleanupObserver implements ObserverInterface
                 $this->logger->error(
                     'Could not clean up KatanaPim image import directory ' . $e->getMessage(),
                     [
-                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_id' => $this->importHelper->getImport()->getImportId(),
                         'entity_type' => $this->importHelper->getImport()->getEntityType()
                     ]
                 );

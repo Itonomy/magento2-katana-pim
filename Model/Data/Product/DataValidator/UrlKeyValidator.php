@@ -71,7 +71,7 @@ class UrlKeyValidator implements ValidatorInterface
                     'Skipping product, url_key doesn\'t exist for product with SKU: ',
                     [
                         $productData[self::COL_SKU],
-                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_id' => $this->importHelper->getImport()->getImportId(),
                         'entity_type' => $this->importHelper->getImport()->getEntityType()
                     ]
                 );
@@ -80,7 +80,7 @@ class UrlKeyValidator implements ValidatorInterface
                     'Skipping product, url_key doesn\'t exist for product',
                     [
                         $productData[self::COL_SKU],
-                        'entity_id' => $this->importHelper->getImport()->getEntityId(),
+                        'entity_id' => $this->importHelper->getImport()->getImportId(),
                         'entity_type' => $this->importHelper->getImport()->getEntityType()
                     ]
                 );

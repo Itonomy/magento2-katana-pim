@@ -78,7 +78,7 @@ class BasicDataParser implements DataParserInterface
             $output[$attributeCode] = $this->findValue($item, $katanaKey);
 
             if ($attributeCode === 'sku' && empty($output[$attributeCode])) {
-                $output[$attributeCode] = $item['Id'];
+                $output[$attributeCode] = (string)$item['Id'];
             }
         }
 

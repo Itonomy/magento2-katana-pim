@@ -12,6 +12,8 @@ class Katana extends AbstractHelper
 
     private const API_KEY = 'katanapim_general/api/key';
 
+    private const PAGE_SIZE = 'katanapim_general/advanced/page_size';
+
     private const PRODUCT_IMPORT_ENABLED = 'katanapim_product_import/general/enabled';
 
     private const CATEGORY_IMPORT_ENABLED = 'katanapim_product_import/general/import_categories';
@@ -38,6 +40,16 @@ class Katana extends AbstractHelper
     public function getApiKey(): string
     {
         return (string)$this->scopeConfig->getValue(self::API_KEY);
+    }
+
+    /**
+     * Get Import Page Size
+     *
+     * @return int
+     */
+    public function getPageSize(): int
+    {
+        return (int)$this->scopeConfig->getValue(self::PAGE_SIZE);
     }
 
     /**

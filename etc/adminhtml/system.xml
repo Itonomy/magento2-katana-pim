@@ -6,16 +6,24 @@
             <label>Katana PIM</label>
         </tab>
         <section id="katanapim_general" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Katana PIM</label>
+            <label>General</label>
             <tab>katanapim</tab>
             <resource>Itonomy_Katanapim::general</resource>
             <group id="api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>Katana PIM Api</label>
+                <label>API</label>
                 <field id="url" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Url</label>
                 </field>
                 <field id="key" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Key</label>
+                </field>
+            </group>
+            <group id="advanced" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Advanced</label>
+                <field id="page_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Page Size</label>
+                    <comment>Import page size</comment>
+                    <validate>validate-zero-or-greater validate-digits</validate>
                 </field>
             </group>
         </section>

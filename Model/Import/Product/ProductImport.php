@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Import\Product;
 
 use Itonomy\Katanapim\Api\Data\ImportInterface;
-use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
@@ -68,11 +67,6 @@ class ProductImport implements ImportInterface
     private Logger $logger;
 
     /**
-     * @var int
-     */
-    private int $pageSize;
-
-    /**
      * @var LocalizedDataParser
      */
     private LocalizedDataParser $localizedDataParser;
@@ -98,11 +92,6 @@ class ProductImport implements ImportInterface
     private KatanaImportHelper $katanaImportHelper;
 
     /**
-     * @var KatanaImportInterface
-     */
-    private KatanaImportInterface $katanaImport;
-
-    /**
      * ProductImport constructor.
      *
      * @param RestClient $restClient
@@ -115,7 +104,6 @@ class ProductImport implements ImportInterface
      * @param Logger $logger
      * @param Katana $katanaConfig
      * @param KatanaImportHelper $katanaImportHelper
-     * @param int $pageSize
      */
     public function __construct(
         RestClient $restClient,
@@ -128,7 +116,6 @@ class ProductImport implements ImportInterface
         Logger $logger,
         Katana $katanaConfig,
         KatanaImportHelper $katanaImportHelper,
-        int $pageSize = 1000
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;
@@ -138,7 +125,6 @@ class ProductImport implements ImportInterface
         $this->eventManager = $eventManager;
         $this->logger = $logger;
         $this->katanaConfig = $katanaConfig;
-        $this->pageSize = $pageSize;
         $this->cliOutput = null;
         $this->dataValidator = $dataValidator;
         $this->katanaImportHelper = $katanaImportHelper;
@@ -292,7 +278,7 @@ class ProductImport implements ImportInterface
     {
         $parameters = new Parameters();
         $parameters->fromArray([
-            self::REQUEST_PAGE_SIZE_KEY => $this->pageSize,
+            self::REQUEST_PAGE_SIZE_KEY => $this->katanaConfig->getPageSize(),
         ]);
 
         return $parameters;

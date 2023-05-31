@@ -16,55 +16,59 @@
     <dataSource name="katanapim_import_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
             <storageConfig>
-                <param name="indexField" xsi:type="string">import_id</param>
+                <param name="indexField" xsi:type="string">id</param>
             </storageConfig>
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Itonomy_Katanapim::base</aclResource>
         <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="katanapim_import_data_source">
             <settings>
-                <requestFieldName>import_id</requestFieldName>
-                <primaryFieldName>import_id</primaryFieldName>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>id</primaryFieldName>
             </settings>
         </dataProvider>
     </dataSource>
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
-        <columnsControls name="columns_controls"/>
-        <filterSearch name="fulltext"/>
         <filters name="listing_filters"/>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="katanapim_import_columns">
         <column name="entity_type">
             <settings>
+                <filter>text</filter>
                 <label translate="true">Entity Type</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
         <column name="start_time">
             <settings>
+                <filter>dateRange</filter>
                 <label translate="true">Start Time</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
         <column name="finish_time">
             <settings>
+                <filter>dateRange</filter>
                 <label translate="true">Finish time</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
         <column name="status">
             <settings>
+                <options class="Itonomy\Katanapim\Model\Source\Statuses"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
                 <label translate="true">Status</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
-        <actionsColumn name="import_id" class="Itonomy\Katanapim\Ui\ViewAction">
+        <actionsColumn name="id" class="Itonomy\Katanapim\Ui\ViewAction">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="viewUrlPath" xsi:type="string">katanapim/import/log</item>
-                    <item name="urlEntityParamName" xsi:type="string">import_id</item>
+                    <item name="urlEntityParamName" xsi:type="string">id</item>
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                 </item>
             </argument>

@@ -7,6 +7,7 @@ use Itonomy\Katanapim\Api\Data\AttributeSetInterface;
 use Itonomy\Katanapim\Api\Data\AttributeSetToAttributeInterface;
 use Itonomy\Katanapim\Api\Data\ImportInterface;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Itonomy\Katanapim\Model\AttributeSetRepository;
 use Itonomy\Katanapim\Model\AttributeSetToAttributeRepository;
 use Itonomy\Katanapim\Model\KatanaImport;
@@ -45,14 +46,14 @@ class SpecificationGroup implements ImportInterface
     private Logger $logger;
 
     /**
-     * @var KatanaImportInterface
-     */
-    private KatanaImportInterface $katanaImport;
-
-    /**
      * @var KatanaImportHelper
      */
     private KatanaImportHelper $katanaImportHelper;
+
+    /**
+     * @var KatanaImportRepositoryInterface
+     */
+    private KatanaImportRepositoryInterface $katanaImportRepository;
 
     /**
      * @param RestClient $rest
@@ -60,19 +61,22 @@ class SpecificationGroup implements ImportInterface
      * @param AttributeSetToAttributeRepository $attributeSetToAttributeRepository
      * @param Logger $logger
      * @param KatanaImportHelper $katanaImportHelper
+     * @param KatanaImportRepositoryInterface $katanaImportRepository
      */
     public function __construct(
         RestClient $rest,
         AttributeSetRepository $attributeSetRepository,
         AttributeSetToAttributeRepository $attributeSetToAttributeRepository,
         Logger $logger,
-        KatanaImportHelper $katanaImportHelper
+        KatanaImportHelper $katanaImportHelper,
+        KatanaImportRepositoryInterface $katanaImportRepository
     ) {
         $this->rest = $rest;
         $this->attributeSetRepository = $attributeSetRepository;
         $this->attributeSetToAttributeRepository = $attributeSetToAttributeRepository;
         $this->logger = $logger;
         $this->katanaImportHelper = $katanaImportHelper;
+        $this->katanaImportRepository = $katanaImportRepository;
     }
 
     /**
@@ -83,10 +87,9 @@ class SpecificationGroup implements ImportInterface
      */
     public function import(): void
     {
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_RUNNING
-        );
+        $katanaImport = $this->katanaImportHelper->getImport();
+        $this->katanaImportRepository->save($katanaImport->setStatus(KatanaImport::STATUS_RUNNING));
+
         try {
             $specificationGroups = $this->rest->execute(self::URL_PART);
 
@@ -132,9 +135,8 @@ class SpecificationGroup implements ImportInterface
                 ]
             );
         } catch (\Throwable $e) {
-            $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->katanaImportHelper->getImport(),
-                KatanaImport::STATUS_ERROR
+            $this->katanaImportRepository->save(
+                $katanaImport->setStatus(KatanaImport::STATUS_ERROR)->setFinishTime(date('Y-m-d H:i:s'))
             );
             $this->logger->error(
                 $e->getMessage(),
@@ -143,9 +145,8 @@ class SpecificationGroup implements ImportInterface
             return;
         }
 
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_COMPLETE
+        $this->katanaImportRepository->save(
+            $katanaImport->setStatus(KatanaImport::STATUS_COMPLETE)->setFinishTime(date('Y-m-d H:i:s'))
         );
     }
 
@@ -154,7 +155,7 @@ class SpecificationGroup implements ImportInterface
      */
     public function getEntityType(): string
     {
-        return self::SPECIFICATIONS_IMPORT_JOB_CODE;
+        return self::SPECIFICATIONS_GROUP_IMPORT_JOB_CODE;
     }
 
     /**
@@ -165,7 +166,7 @@ class SpecificationGroup implements ImportInterface
         if (!empty($this->entityId)) {
             return $this->entityId;
         }
-        $this->entityId = uniqid(self::SPECIFICATIONS_IMPORT_JOB_CODE . '_');
+        $this->entityId = uniqid(self::SPECIFICATIONS_GROUP_IMPORT_JOB_CODE . '_');
         return $this->entityId;
     }
 }

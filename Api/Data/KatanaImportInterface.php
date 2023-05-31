@@ -32,9 +32,9 @@ interface KatanaImportInterface
      *
      * @param string|null $importId
      *
-     * @return void
+     * @return $this
      */
-    public function setImportId(?string $importId): void;
+    public function setImportId(?string $importId): KatanaImportInterface;
 
     /**
      * Getter for EntityType.
@@ -48,9 +48,9 @@ interface KatanaImportInterface
      *
      * @param string $entityType
      *
-     * @return void
+     * @return $this
      */
-    public function setEntityType(string $entityType): void;
+    public function setEntityType(string $entityType): KatanaImportInterface;
 
     /**
      * Getter for StartTime.
@@ -64,9 +64,9 @@ interface KatanaImportInterface
      *
      * @param string|null $startTime
      *
-     * @return void
+     * @return $this
      */
-    public function setStartTime(?string $startTime): void;
+    public function setStartTime(?string $startTime): KatanaImportInterface;
 
     /**
      * Getter for FinishTime.
@@ -80,9 +80,9 @@ interface KatanaImportInterface
      *
      * @param string|null $finishTime
      *
-     * @return void
+     * @return $this
      */
-    public function setFinishTime(?string $finishTime): void;
+    public function setFinishTime(?string $finishTime): KatanaImportInterface;
 
     /**
      * Getter for Status.
@@ -96,7 +96,7 @@ interface KatanaImportInterface
      *
      * @param string $status
      *
-     * @return void
+     * @return $this
      */
-    public function setStatus(string $status): void;
+    public function setStatus(string $status): KatanaImportInterface;
 }

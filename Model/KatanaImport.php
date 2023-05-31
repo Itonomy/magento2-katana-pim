@@ -32,9 +32,9 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setImportId(?string $importId): void
+    public function setImportId(?string $importId): KatanaImportInterface
     {
-        $this->setData(self::IMPORT_ID, $importId);
+        return $this->setData(self::IMPORT_ID, $importId);
     }
 
     /**
@@ -48,9 +48,9 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setEntityType(string $entityType): void
+    public function setEntityType(string $entityType): KatanaImportInterface
     {
-        $this->setData(self::ENTITY_TYPE, $entityType);
+        return $this->setData(self::ENTITY_TYPE, $entityType);
     }
 
     /**
@@ -64,9 +64,9 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setStartTime(?string $startTime): void
+    public function setStartTime(?string $startTime): KatanaImportInterface
     {
-        $this->setData(self::START_TIME, $startTime);
+        return $this->setData(self::START_TIME, $startTime);
     }
 
     /**
@@ -80,9 +80,9 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setFinishTime(?string $finishTime): void
+    public function setFinishTime(?string $finishTime): KatanaImportInterface
     {
-        $this->setData(self::FINISH_TIME, $finishTime);
+        return $this->setData(self::FINISH_TIME, $finishTime);
     }
 
     /**
@@ -96,8 +96,8 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function setStatus(string $status): void
+    public function setStatus(string $status): KatanaImportInterface
     {
-        $this->setData(self::STATUS, $status);
+        return $this->setData(self::STATUS, $status);
     }
 }

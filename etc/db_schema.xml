@@ -76,8 +76,7 @@
                 comment="Katana Import Entity Type"/>
         <column xsi:type="timestamp" name="start_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
                 comment="Start Time"/>
-        <column xsi:type="timestamp" name="finish_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
-                comment="Finish Time"/>
+        <column xsi:type="timestamp" name="finish_time" on_update="false" nullable="true" comment="Finish Time"/>
         <column xsi:type="varchar" name="status" nullable="false" length="20" default="pending" comment="Status"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">

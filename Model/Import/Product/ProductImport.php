@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Model\Import\Product;
 
 use Itonomy\Katanapim\Api\Data\ImportInterface;
+use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
@@ -90,6 +91,7 @@ class ProductImport implements ImportInterface
      * @var KatanaImportHelper
      */
     private KatanaImportHelper $katanaImportHelper;
+    private KatanaImportRepositoryInterface $katanaImportRepository;
 
     /**
      * ProductImport constructor.
@@ -104,6 +106,7 @@ class ProductImport implements ImportInterface
      * @param Logger $logger
      * @param Katana $katanaConfig
      * @param KatanaImportHelper $katanaImportHelper
+     * @param KatanaImportRepositoryInterface $katanaImportRepository
      */
     public function __construct(
         RestClient $restClient,
@@ -116,6 +119,7 @@ class ProductImport implements ImportInterface
         Logger $logger,
         Katana $katanaConfig,
         KatanaImportHelper $katanaImportHelper,
+        KatanaImportRepositoryInterface $katanaImportRepository
     ) {
         $this->restClient = $restClient;
         $this->dataParser = $dataParser;
@@ -128,6 +132,7 @@ class ProductImport implements ImportInterface
         $this->cliOutput = null;
         $this->dataValidator = $dataValidator;
         $this->katanaImportHelper = $katanaImportHelper;
+        $this->katanaImportRepository = $katanaImportRepository;
     }
 
     /**
@@ -141,12 +146,10 @@ class ProductImport implements ImportInterface
     {
         $page = 0;
         $parameters = $this->prepareRequestArray();
+        $katanaImport = $this->katanaImportHelper->getImport();
 
         try {
-            $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->katanaImportHelper->getImport(),
-                KatanaImport::STATUS_RUNNING
-            );
+            $this->katanaImportRepository->save($katanaImport->setStatus(KatanaImport::STATUS_RUNNING));
             do {
                 $parameters->set(self::REQUEST_PAGE_INDEX_KEY, $page++);
 
@@ -164,18 +167,14 @@ class ProductImport implements ImportInterface
                 $this->importItems($items, $page);
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
-            $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->katanaImportHelper->getImport(),
-                KatanaImport::STATUS_ERROR
+            $this->katanaImportRepository->save(
+                $katanaImport->setStatus(KatanaImport::STATUS_ERROR)->setFinishTime(date('Y-m-d H:i:s'))
             );
             $this->log('Error while trying to run katana product import. ' . $e->getMessage(), self::IMPORT_ERROR);
             throw $e;
         }
 
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_COMPLETE
-        );
+        $this->katanaImportRepository->save($katanaImport->setStatus(KatanaImport::STATUS_COMPLETE)->setFinishTime(date('Y-m-d H:i:s')));
         $this->eventManager->dispatch('katana_product_import_after');
     }
 

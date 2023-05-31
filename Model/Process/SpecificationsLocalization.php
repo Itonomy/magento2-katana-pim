@@ -7,6 +7,7 @@ use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
 use Itonomy\Katanapim\Api\Data\ImportInterface;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Itonomy\Katanapim\Model\KatanaImport;
 use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Itonomy\Katanapim\Model\Process\SpecificationsLocalization\SpecificationOptions;
@@ -76,14 +77,14 @@ class SpecificationsLocalization implements ImportInterface
     private KatanaImportHelper $katanaImportHelper;
 
     /**
-     * @var KatanaImportInterface
-     */
-    private KatanaImportInterface $katanaImport;
-
-    /**
      * @var Logger
      */
     private Logger $logger;
+
+    /**
+     * @var KatanaImportRepositoryInterface
+     */
+    private KatanaImportRepositoryInterface $katanaImportRepository;
 
     /**
      * SpecificationsLocalization constructor.
@@ -94,6 +95,7 @@ class SpecificationsLocalization implements ImportInterface
      * @param SpecificationTranslation $specificationTranslationProcessor
      * @param SpecificationOptions $specificationOptionsProcessor
      * @param KatanaImportHelper $katanaImportHelper
+     * @param KatanaImportRepositoryInterface $katanaImportRepository
      * @param Logger $logger
      */
     public function __construct(
@@ -103,6 +105,7 @@ class SpecificationsLocalization implements ImportInterface
         SpecificationTranslation $specificationTranslationProcessor,
         SpecificationOptions $specificationOptionsProcessor,
         KatanaImportHelper $katanaImportHelper,
+        KatanaImportRepositoryInterface $katanaImportRepository,
         Logger $logger
     ) {
         $this->rest = $rest;
@@ -113,6 +116,7 @@ class SpecificationsLocalization implements ImportInterface
         $this->specificationOptionsProcessor = $specificationOptionsProcessor;
         $this->katanaImportHelper = $katanaImportHelper;
         $this->logger = $logger;
+        $this->katanaImportRepository = $katanaImportRepository;
     }
 
     /**
@@ -125,10 +129,8 @@ class SpecificationsLocalization implements ImportInterface
     public function import(): void
     {
         $i = 0;
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_RUNNING
-        );
+        $katanaImport = $this->katanaImportHelper->getImport();
+        $this->katanaImportRepository->save($katanaImport->setStatus(KatanaImport::STATUS_RUNNING));
 
         try {
             do {
@@ -161,9 +163,8 @@ class SpecificationsLocalization implements ImportInterface
                 $i++;
             } while ($i < $apiData['TotalPages']);
         } catch (Throwable $e) {
-            $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->katanaImportHelper->getImport(),
-                KatanaImport::STATUS_ERROR
+            $this->katanaImportRepository->save(
+                $katanaImport->setStatus(KatanaImport::STATUS_ERROR)->setFinishTime(date('Y-m-d H:i:s'))
             );
             $this->logger->error(
                 $e->getMessage(),
@@ -174,9 +175,8 @@ class SpecificationsLocalization implements ImportInterface
             ));
         }
 
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_COMPLETE
+        $this->katanaImportRepository->save(
+            $katanaImport->setStatus(KatanaImport::STATUS_COMPLETE)->setFinishTime(date('Y-m-d H:i:s'))
         );
     }
 

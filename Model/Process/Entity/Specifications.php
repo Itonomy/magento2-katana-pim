@@ -7,6 +7,7 @@ use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Api\Data\AttributeMappingInterface;
 use Itonomy\Katanapim\Api\Data\ImportInterface;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Itonomy\Katanapim\Model\AttributeMappingRepository;
 use Itonomy\Katanapim\Model\KatanaImport;
 use Itonomy\Katanapim\Model\KatanaImportHelper;
@@ -66,21 +67,29 @@ class Specifications implements ImportInterface
     private Logger $logger;
 
     /**
+     * @var KatanaImportRepositoryInterface
+     */
+    private KatanaImportRepositoryInterface $katanaImportRepository;
+
+    /**
      * @param RestClient $rest
      * @param AttributeMappingRepository $attributeMappingRepository
      * @param KatanaImportHelper $katanaImportHelper
+     * @param KatanaImportRepositoryInterface $katanaImportRepository
      * @param Logger $logger
      */
     public function __construct(
         RestClient $rest,
         AttributeMappingRepository $attributeMappingRepository,
         KatanaImportHelper $katanaImportHelper,
+        KatanaImportRepositoryInterface $katanaImportRepository,
         Logger $logger
     ) {
         $this->rest = $rest;
         $this->attributeMappingRepository = $attributeMappingRepository;
         $this->katanaImportHelper = $katanaImportHelper;
         $this->logger = $logger;
+        $this->katanaImportRepository = $katanaImportRepository;
     }
 
     /**
@@ -93,11 +102,8 @@ class Specifications implements ImportInterface
     public function import(): void
     {
         $i = 0;
-
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_RUNNING
-        );
+        $katanaImport = $this->katanaImportHelper->getImport();
+        $this->katanaImportRepository->save($katanaImport->setStatus(KatanaImport::STATUS_RUNNING));
         try {
             do {
                 $parameters = new Parameters();
@@ -125,16 +131,14 @@ class Specifications implements ImportInterface
                 $e->getMessage(),
                 ['entity_type' => $this->getEntityType(), 'entity_id' => $this->getEntityId()]
             );
-            $this->katanaImportHelper->updateKatanaImportStatus(
-                $this->katanaImportHelper->getImport(),
-                KatanaImport::STATUS_ERROR
+            $this->katanaImportRepository->save(
+                $katanaImport->setStatus(KatanaImport::STATUS_ERROR)->setFinishTime(date('Y-m-d H:i:s'))
             );
             throw $e;
         }
 
-        $this->katanaImportHelper->updateKatanaImportStatus(
-            $this->katanaImportHelper->getImport(),
-            KatanaImport::STATUS_COMPLETE
+        $this->katanaImportRepository->save(
+            $katanaImport->setStatus(KatanaImport::STATUS_COMPLETE)->setFinishTime(date('Y-m-d H:i:s'))
         );
     }
 

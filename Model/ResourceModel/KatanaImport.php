@@ -14,6 +14,11 @@ class KatanaImport extends AbstractDb
     protected $_eventPrefix = 'katanapim_import_resource_model';
 
     /**
+     * @var string
+     */
+    protected $_idFieldName = 'id';
+
+    /**
      * Initialize resource model.
      */
     protected function _construct()

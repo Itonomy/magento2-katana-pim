@@ -16,6 +16,11 @@ class Collection extends AbstractCollection
     protected $_eventPrefix = 'katanapim_import_collection';
 
     /**
+     * @var string
+     */
+    protected $_idFieldName = 'id';
+
+    /**
      * Initialize collection model.
      */
     protected function _construct()

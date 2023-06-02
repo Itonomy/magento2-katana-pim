@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product;
 
+use Itonomy\Katanapim\Model\Data\Product\DataParser\BasicDataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataParser\DataParserInterface;
 
 class DataParser
@@ -38,15 +39,13 @@ class DataParser
             $parserValues = [];
 
             foreach ($data as $item) {
-                $itemId = $item['Id'];
-
                 $itemData = $parser->parse($item);
 
                 if (empty($itemData)) {
                     continue;
                 }
 
-                $parserValues[$itemId] = $itemData;
+                $parserValues[$item[BasicDataParser::ID_KEY]] = $itemData;
             }
 
             $parsedData = array_replace_recursive($parsedData, $parserValues);

@@ -222,6 +222,7 @@ class ProductImport implements ImportInterface
         $this->log('Created: ' . $saveResult->getCreatedCount());
         $this->log('Updated: ' . $saveResult->getUpdatedCount());
         $this->log('Deleted: ' . $saveResult->getDeletedCount());
+
         /** @var Error $error */
         foreach ($saveResult->getErrors() as $error) {
             $this->log(sprintf(

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Data\Product\DataValidator;
 
-/**
- * Interface PreprocessorInterface
- */
-interface ValidatorInterface
+class ExampleValidator implements ValidatorInterface
 {
     /**
-     * Validate the api data before saving
+     * Validate something
      *
      * @param array $productsData
      * @return void
      */
-    public function validate(array &$productsData): void;
+    public function validate(array &$productsData): void
+    {
+        //todo: Validate
+    }
 }

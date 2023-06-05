@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Itonomy\Katanapim\Model\Handler;
+
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Framework\ObjectManagerInterface;
+
+class ImportRunnerFactory
+{
+    private ObjectManagerInterface $objectManager;
+    /**
+     * @var array|string[]
+     */
+    private array $importRunners;
+
+    /**
+     * @param ObjectManagerInterface $objectManager
+     * @param string[] $importRunners
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        array $importRunners = [
+            ProductImport::class,
+            SpecificationGroup::class,
+            Specifications::class,
+            SpecificationsLocalization::class
+        ]
+    ) {
+        $this->objectManager = $objectManager;
+        $this->importRunners = $importRunners;
+    }
+
+    /**
+     * @param string $importType
+     * @return ImportRunnerInterface
+     * @throws NotFoundException
+     */
+    public function create(string $importType): ImportRunnerInterface
+    {
+        if (!isset($this->importRunners[$importType])) {
+            throw new NotFoundException(__("Import with type {$importType} doesn't exist."));
+        }
+
+        return $this->objectManager->create($this->importRunners[$importType]);
+    }
+}

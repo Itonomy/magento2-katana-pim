@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\Import\Product\ProductImport;
-use Itonomy\Katanapim\Model\ImportFactory;
+use Itonomy\Katanapim\Model\Handler\ProductImport;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBarFactory;
 
 /**
  * CLI Command to import products from KatanaPim
@@ -21,25 +21,25 @@ class ImportProducts extends Command
     private ProgressBarFactory $progressBarFactory;
 
     /**
-     * @var ImportFactory
+     * @var StartImport
      */
-    private ImportFactory $importFactory;
+    private StartImport $startImport;
 
     /**
      * ImportProducts constructor.
      *
-     * @param ImportFactory $importFactory
+     * @param StartImport $startImport
      * @param ProgressBarFactory $progressBarFactory
      * @param string|null $name
      */
     public function __construct(
-        ImportFactory $importFactory,
+        StartImport $startImport,
         ProgressBarFactory $progressBarFactory,
         string $name = null
     ) {
         $this->progressBarFactory = $progressBarFactory;
-        $this->importFactory = $importFactory;
         parent::__construct($name);
+        $this->startImport = $startImport;
     }
 
     /**
@@ -78,8 +78,7 @@ class ImportProducts extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->importFactory->get('product')->setCliOutput($output);
-        $this->importFactory->get('product')->import();
+        $this->startImport->execute(ProductImport::class);
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

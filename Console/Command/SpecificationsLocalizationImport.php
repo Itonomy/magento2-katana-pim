@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\ImportFactory;
+use Itonomy\Katanapim\Model\Handler\SpecificationsLocalization;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,23 +21,23 @@ class SpecificationsLocalizationImport extends Command
     private ProgressBarFactory $progressBarFactory;
 
     /**
-     * @var ImportFactory
+     * @var StartImport
      */
-    private ImportFactory $importFactory;
+    private StartImport $startImport;
 
     /**
      * SpecificationsLocalizationImport constructor.
      *
-     * @param ImportFactory $importFactory
+     * @param StartImport $startImport
      * @param ProgressBarFactory $progressBarFactory
      */
     public function __construct(
-        ImportFactory $importFactory,
+        StartImport $startImport,
         ProgressBarFactory $progressBarFactory
     ) {
         $this->progressBarFactory = $progressBarFactory;
-        $this->importFactory = $importFactory;
         parent::__construct();
+        $this->startImport = $startImport;
     }
 
     /**
@@ -71,9 +72,7 @@ class SpecificationsLocalizationImport extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->importFactory->get('specifications_localization')
-            ->setProgressBar($progressBar)
-            ->import();
+        $this->startImport->execute(SpecificationsLocalization::class);
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

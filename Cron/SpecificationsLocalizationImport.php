@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\ImportFactory;
+use Itonomy\Katanapim\Model\Handler\SpecificationsLocalization;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Magento\Framework\Exception\CouldNotSaveException;
 
 /**
@@ -14,16 +15,16 @@ class SpecificationsLocalizationImport
     public const JOB_CODE = 'itonomy_katanapim_specifications_localization_import';
 
     /**
-     * @var ImportFactory
+     * @var StartImport
      */
-    private ImportFactory $importFactory;
+    private StartImport $startImport;
 
     /**
-     * @param ImportFactory $importFactory
+     * @param StartImport $startImport
      */
-    public function __construct(ImportFactory $importFactory)
+    public function __construct(StartImport $startImport)
     {
-        $this->importFactory = $importFactory;
+        $this->startImport = $startImport;
     }
 
     /**
@@ -31,9 +32,11 @@ class SpecificationsLocalizationImport
      *
      * @return void
      * @throws CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Throwable
      */
     public function execute(): void
     {
-        $this->importFactory->get('specifications_localization')->import();
+        $this->startImport->execute(SpecificationsLocalization::class);
     }
 }

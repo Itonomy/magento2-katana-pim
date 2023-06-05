@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\ImportFactory;
+use Itonomy\Katanapim\Model\Handler\SpecificationGroup;
+use Itonomy\Katanapim\Model\Handler\Specifications;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,24 +19,24 @@ class SpecificationsImport extends Command
     private ProgressBarFactory $progressBarFactory;
 
     /**
-     * @var ImportFactory
+     * @var StartImport
      */
-    private ImportFactory $importFactory;
+    private StartImport $startImport;
 
     /**
      * ImportFromCsv constructor.
      *
-     * @param ImportFactory $importFactory
+     * @param StartImport $startImport
      * @param ProgressBarFactory $progressBarFactory
      */
     public function __construct(
-        ImportFactory $importFactory,
+        StartImport $startImport,
         ProgressBarFactory $progressBarFactory
     ) {
         $this->progressBarFactory = $progressBarFactory;
-        $this->importFactory = $importFactory;
         parent::__construct();
 
+        $this->startImport = $startImport;
     }
 
     /**
@@ -69,8 +71,8 @@ class SpecificationsImport extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->importFactory->get('specifications')->setProgressBar($progressBar)->import();
-        $this->importFactory->get('specifications_group')->import();
+        $this->startImport->execute(Specifications::class);
+        $this->startImport->execute(SpecificationGroup::class);
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

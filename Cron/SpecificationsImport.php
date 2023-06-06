@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Process\Entity\Specifications;
-use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 
 /**
  * Cron job for importing product Katana specifications
@@ -14,39 +14,29 @@ class SpecificationsImport
     public const JOB_CODE = 'itonomy_katanapim_specifications_import';
 
     /**
-     * @var Specifications
+     * @var StartImport
      */
-    private Specifications $specifications;
+    private StartImport $startImport;
 
     /**
-     * @var SpecificationGroup
+     * @param StartImport $startImport
      */
-    private SpecificationGroup $specificationGroup;
-
-    /**
-     * SpecificationsImport constructor.
-     *
-     * @param Specifications $specifications
-     * @param SpecificationGroup $specificationGroup
-     */
-    public function __construct(
-        Specifications $specifications,
-        SpecificationGroup $specificationGroup
-    ) {
-        $this->specifications = $specifications;
-        $this->specificationGroup = $specificationGroup;
+    public function __construct(StartImport $startImport)
+    {
+        $this->startImport = $startImport;
     }
 
     /**
-     * Execute specifications import
+     * Run specifications import
      *
      * @return void
      * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\RuntimeException
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Throwable
      */
     public function execute(): void
     {
-        $this->specifications->execute();
-        $this->specificationGroup->execute();
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_IMPORT_TYPE);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_GROUP_IMPORT_TYPE);
     }
 }

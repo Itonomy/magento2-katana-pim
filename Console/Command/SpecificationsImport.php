@@ -3,46 +3,28 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\Process\Entity\SpecificationGroup;
-use Itonomy\Katanapim\Model\Process\Entity\Specifications;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SpecificationsImport extends Command
 {
     /**
-     * @var Specifications
+     * @var StartImport
      */
-    private Specifications $specifications;
-
-    /**
-     * @var SpecificationGroup
-     */
-    private SpecificationGroup $specificationGroup;
-
-    /**
-     * @var ProgressBarFactory
-     */
-    private ProgressBarFactory $progressBarFactory;
+    private StartImport $startImport;
 
     /**
      * ImportFromCsv constructor.
      *
-     * @param Specifications $specifications
-     * @param SpecificationGroup $specificationGroup
-     * @param ProgressBarFactory $progressBarFactory
+     * @param StartImport $startImport
      */
     public function __construct(
-        Specifications $specifications,
-        SpecificationGroup $specificationGroup,
-        ProgressBarFactory $progressBarFactory
+        StartImport $startImport
     ) {
-        $this->specifications = $specifications;
-        $this->specificationGroup = $specificationGroup;
-        $this->progressBarFactory = $progressBarFactory;
-
+        $this->startImport = $startImport;
         parent::__construct();
     }
 
@@ -68,26 +50,8 @@ class SpecificationsImport extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $progressBar = $this->progressBarFactory->create([
-            'output' => $output,
-            'max' => 100,
-        ]);
-        $progressBar->setFormat(
-            "%current%/%max% [%bar%] %percent:3s%% %elapsed% %memory:6s% \t| <info>%message%</info>"
-        );
-        $progressBar->setMessage(\date('H:i:s') . ' Start');
-        $progressBar->start();
-
-        $this->specifications
-            ->setProgressBar($progressBar)
-            ->execute();
-
-        $this->specificationGroup
-            ->execute();
-
-        $progressBar->setMessage(\date('H:i:s') . ' Finish');
-        $progressBar->finish();
-
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_IMPORT_TYPE, $output);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_GROUP_IMPORT_TYPE, $output);
         return 0;
     }
 }

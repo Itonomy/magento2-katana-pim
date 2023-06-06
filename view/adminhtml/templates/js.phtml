@@ -1,0 +1,94 @@
+<script>
+    require([
+        "jquery",
+        "Magento_Ui/js/modal/modal",
+        'mage/backend/notification',
+        "prototype"
+    ], function(jQuery) {
+
+//<![CDATA[
+        Window.keepMultiModalWindow = true;
+        var adminLogView = {
+            overlayShowEffectOptions : null,
+            overlayHideEffectOptions : null,
+            modal: null,
+            activityId: 0,
+
+            open : function(editorUrl, elementId) {
+                if (editorUrl && elementId) {
+                    jQuery.ajax({
+                        url: editorUrl,
+                        data: {
+                            id: elementId
+                        },
+                        showLoader: true,
+                        dataType: 'html',
+                        success: function(data) {
+                            this.openDialogWindow(data, elementId);
+                        }.bind(this)
+                    });
+                }
+            },
+
+            openDialogWindow : function(data, elementId) {
+                var self = this;
+                this.activityId = elementId;
+                if (this.modal) {
+                    this.modal.html(jQuery(data).html());
+                } else {
+                    this.modal = jQuery(data).modal({
+                        title: '<?= /* @escapeNotVerified */ __('Import Logs'); ?>',
+                        modalClass: 'magento',
+                        type: 'slide',
+                        firedElementId: elementId,
+                        buttons: [{
+                            text: jQuery.mage.__('Back'),
+                            class: 'action- scalable back',
+                            click: function () {
+                                self.closeDialogWindow(this);
+                            }
+                        }],
+                        close: function () {
+                            self.closeDialogWindow(this);
+                        }
+                    });
+                }
+                this.modal.modal('openModal');
+                this.autoResize();
+            },
+
+            closeDialogWindow : function(dialogWindow) {
+
+                jQuery('body').trigger('processStop');
+                dialogWindow.closeModal();
+                Windows.overlayShowEffectOptions = this.overlayShowEffectOptions;
+                Windows.overlayHideEffectOptions = this.overlayHideEffectOptions;
+            },
+
+            error: function (message) {
+                jQuery('body').notification('clear')
+                    .notification('add', {
+                        error: true,
+                        message: jQuery.mage.__(message),
+                        insertMethod: function (message) {
+                            var $wrapper = jQuery('<div/>').html(message);
+                            jQuery('.page-main-actions').after($wrapper);
+                        }
+                    });
+            },
+
+            autoResize: function () {
+                jQuery.each(jQuery('textarea.value-container'), function() {
+                    var offset = this.offsetHeight - this.clientHeight;
+                    var resizeTextarea = function(el) {
+                        jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset);
+                    };
+                    jQuery(this).unbind().on('click', function() { resizeTextarea(this); }).trigger('click');
+                });
+            }
+        };
+
+        window.adminLogView = adminLogView;
+//]]>
+    });
+</script>

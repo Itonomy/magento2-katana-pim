@@ -21,6 +21,11 @@ class DataPreprocessor
     private AttributeSetProductRegistry $attributeSetProductRegistry;
 
     /**
+     * @var array
+     */
+    private array $errors;
+
+    /**
      * DataPreprocessor constructor.
      *
      * @param AttributeSetProductRegistry $attributeSetProductRegistry
@@ -32,6 +37,7 @@ class DataPreprocessor
     ) {
         $this->processors = $processors;
         $this->attributeSetProductRegistry = $attributeSetProductRegistry;
+        $this->errors = [];
     }
 
     /**
@@ -42,8 +48,10 @@ class DataPreprocessor
      */
     public function process(array $data): array
     {
+        $this->errors = [];
         $skus = \array_column($data, 'sku');
         $this->attributeSetProductRegistry->fetchProducts($skus);
+
         foreach ($data as $productId => &$productData) {
             //TODO: Generate sku for configurable products
             if (!isset($productData['sku'])) {
@@ -53,9 +61,21 @@ class DataPreprocessor
 
             foreach ($this->processors as $processor) {
                 $productData = $processor->process($productData);
+                //@codingStandardsIgnoreLine
+                $this->errors = array_merge($this->errors, $processor->getErrors());
             }
         }
 
         return $data;
+    }
+
+    /**
+     * Get data preprocessor errors
+     *
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }

@@ -65,4 +65,24 @@
             <column name="attribute_id"/>
         </constraint>
     </table>
+
+    <table name="katanapim_import" resource="default" engine="innodb"
+           comment="Katana PIM Table for storing import records">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity Id"/>
+        <column xsi:type="varchar" name="import_id" length="255" nullable="true"
+                comment="Import Id"/>
+        <column xsi:type="varchar" name="import_type" nullable="false" length="255"
+                comment="Katana Import Type"/>
+        <column xsi:type="timestamp" name="start_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Start Time"/>
+        <column xsi:type="timestamp" name="finish_time" on_update="false" nullable="true"
+                comment="Finish Time"/>
+        <column xsi:type="varchar" name="status" nullable="false" length="20" default="pending"
+                comment="Status"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
 </schema>

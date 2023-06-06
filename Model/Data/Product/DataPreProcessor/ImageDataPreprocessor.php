@@ -5,7 +5,6 @@ namespace Itonomy\Katanapim\Model\Data\Product\DataPreProcessor;
 
 use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\FileDownloader;
 use Itonomy\Katanapim\Model\Data\Product\DataPreProcessor\Image\ImageDirectoryProvider;
-use Itonomy\Katanapim\Model\Logger;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\File\Uploader;
@@ -19,19 +18,9 @@ class ImageDataPreprocessor implements PreprocessorInterface
     private FileDownloader $fileDownloader;
 
     /**
-     * @var Logger
-     */
-    private Logger $logger;
-
-    /**
      * @var ImageDirectoryProvider
      */
     private ImageDirectoryProvider $imageDirectoryProvider;
-
-    /**
-     * @var string|null
-     */
-    private ?string $downloadDir;
 
     /**
      * @var File
@@ -39,26 +28,34 @@ class ImageDataPreprocessor implements PreprocessorInterface
     private File $file;
 
     /**
+     * @var string|null
+     */
+    private ?string $downloadDir;
+
+    /**
+     * @var array
+     */
+    private array $errors;
+
+    /**
      * ImageDataPreprocessor constructor.
      *
-     * @param Logger $logger
      * @param FileDownloader $fileDownloader
      * @param ImageDirectoryProvider $imageDirectoryProvider
      * @param File $file
      * @param string|null $downloadDir
      */
     public function __construct(
-        Logger $logger,
         FileDownloader $fileDownloader,
         ImageDirectoryProvider $imageDirectoryProvider,
         File $file,
         ?string $downloadDir = null
     ) {
         $this->fileDownloader = $fileDownloader;
-        $this->logger = $logger;
         $this->imageDirectoryProvider = $imageDirectoryProvider;
         $this->file = $file;
         $this->downloadDir = $downloadDir;
+        $this->errors = [];
     }
 
     /**
@@ -71,6 +68,7 @@ class ImageDataPreprocessor implements PreprocessorInterface
      */
     public function process(array $productData): array
     {
+        $this->errors = [];
         $fileNames = $this->downloadImages($productData);
 
         if (!empty($fileNames)) {
@@ -93,6 +91,17 @@ class ImageDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * @inheritDoc
+     *
+     * @param array $productData
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
      * Download images
      *
      * @param array $productData
@@ -102,7 +111,6 @@ class ImageDataPreprocessor implements PreprocessorInterface
      */
     private function downloadImages(array $productData): array
     {
-        $errors = [];
         $toDownload = [];
         $existingFiles = [];
         $downloadedFiles = [];
@@ -133,31 +141,14 @@ class ImageDataPreprocessor implements PreprocessorInterface
                 [$downloadedFiles, $errors] = $this->fileDownloader->downloadBulk($toDownload);
 
                 foreach ($errors as $e) {
-                    $errors[] = $e;
+                    $this->errors[] = 'Error encountered while downloading images for katana import: ' . $e;
                 }
             }
         } catch (FileSystemException $e) {
-            $errors[] = $e->getMessage();
+            $this->errors[] = 'Error encountered while downloading images for katana import: ' . $e->getMessage();
         }
-
-        $this->logErrors($errors);
 
         return array_merge($downloadedFiles, $existingFiles);
-    }
-
-    /**
-     * Log errors
-     *
-     * @param array $errors
-     * @return void
-     */
-    private function logErrors(array $errors): void
-    {
-        foreach ($errors as $error) {
-            $this->logger->error(
-                'Error encountered while downloading images for katana import: ' . $error
-            );
-        }
     }
 
     /**

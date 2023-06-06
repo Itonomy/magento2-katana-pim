@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Itonomy\Katanapim\Model\Import\Product;
+namespace Itonomy\Katanapim\Model\Handler;
 
+use Itonomy\DatabaseLogger\Model\Logger;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Config\Katana;
 use Itonomy\Katanapim\Model\Data\Product\DataParser;
 use Itonomy\Katanapim\Model\Data\Product\DataPreprocessor;
@@ -10,7 +12,7 @@ use Itonomy\Katanapim\Model\Data\Product\DataValidator;
 use Itonomy\Katanapim\Model\Data\Product\LocalizedDataParser;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult;
 use Itonomy\Katanapim\Model\Import\Product\Persistence\PersistenceResult\Error;
-use Itonomy\Katanapim\Model\Logger;
+use Itonomy\Katanapim\Model\Import\Product\PersistenceProcessorInterface;
 use Itonomy\Katanapim\Model\RestClient;
 use Itonomy\Katanapim\Setup\Patch\Data\AddKatanaPimProductIdAttribute;
 use Laminas\Http\Request;
@@ -19,7 +21,7 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ProductImport
+class ProductImport implements ImportRunnerInterface
 {
     private const URL_PART = 'Product';
     private const REQUEST_PAGE_INDEX_KEY = 'filterModel.paging.pageIndex';
@@ -117,11 +119,12 @@ class ProductImport
     /**
      * Import products from Katana PIM
      *
+     * @param KatanaImportInterface $importInfo
      * @return void
      * @throws NoSuchEntityException
      * @throws \Throwable
      */
-    public function import(): void
+    public function execute(KatanaImportInterface $importInfo): void
     {
         $page = 0;
         $parameters = $this->prepareRequestArray();
@@ -142,14 +145,21 @@ class ProductImport
                     break;
                 }
 
-                $this->importItems($items, $page);
+                $this->importItems($items, $page, $importInfo);
             } while (($response['TotalPages'] >= $response['PageIndex'] + 2));
         } catch (\Throwable $e) {
-            $this->log('Error while trying to run katana product import. ' . $e->getMessage(), self::IMPORT_ERROR);
+            $this->log(
+                'Error while trying to run product import. ' . $e->getMessage(),
+                $importInfo,
+                self::IMPORT_ERROR
+            );
+
             throw $e;
         }
 
-        $this->eventManager->dispatch('katana_product_import_after');
+        $this->eventManager->dispatch('katana_product_import_after', [
+            'importInfo' => $importInfo,
+        ]);
     }
 
     /**
@@ -157,15 +167,26 @@ class ProductImport
      *
      * @param array $items
      * @param int $page
+     * @param KatanaImportInterface $importInfo
      * @throws NoSuchEntityException
      */
-    private function importItems(array $items, int $page): void
+    private function importItems(array $items, int $page, KatanaImportInterface $importInfo): void
     {
         //Global scope import
-        $this->log(PHP_EOL . 'Processing page ' . $page);
-        $this->log('Importing values in global scope');
+        $this->log(PHP_EOL . 'Processing page ' . $page, $importInfo);
+        $this->log('Importing values in global scope', $importInfo);
         $parsedData = $this->dataParser->parse($items);
         $preprocessedData = $this->dataPreprocessor->process($parsedData);
+
+        if (!empty($this->dataPreprocessor->getErrors())) {
+            foreach ($this->dataPreprocessor->getErrors() as $error) {
+                $this->log(
+                    'Error while preprocessing data: ' . $error,
+                    $importInfo,
+                    self::IMPORT_ERROR
+                );
+            }
+        }
 
         if (empty($preprocessedData)) {
             return;
@@ -173,9 +194,9 @@ class ProductImport
 
         $validatedData = $this->dataValidator->execute($preprocessedData);
         $saveResult = $this->persistenceProcessor->save($validatedData);
-        $this->log('Created: ' . $saveResult->getCreatedCount());
-        $this->log('Updated: ' . $saveResult->getUpdatedCount());
-        $this->log('Deleted: ' . $saveResult->getDeletedCount());
+        $this->log('Products Created: ' . $saveResult->getCreatedCount(), $importInfo);
+        $this->log('Products Updated: ' . $saveResult->getUpdatedCount(), $importInfo);
+        $this->log('Products Deleted: ' . $saveResult->getDeletedCount(), $importInfo);
 
         /** @var Error $error */
         foreach ($saveResult->getErrors() as $error) {
@@ -184,7 +205,7 @@ class ProductImport
                 $error->getMessage(),
                 $error->getItemData()['sku'] ?? '',
                 $error->getItemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
-            ), self::IMPORT_ERROR);
+            ), $importInfo, self::IMPORT_ERROR);
         }
 
         //Store scope import
@@ -196,7 +217,7 @@ class ProductImport
         }
 
         foreach ($languageMapping as $storeViewId => $languageCode) {
-            $this->log('Starting import for ' . $languageCode . ' language in store ' . $storeViewId);
+            $this->log('Starting import for ' . $languageCode . ' language in store ' . $storeViewId, $importInfo);
 
             $parsedData = $this->localizedDataParser->parse(
                 $validItems,
@@ -205,11 +226,12 @@ class ProductImport
             );
 
             $validatedData = $this->dataValidator->execute($parsedData, true);
+
             if (!empty($validatedData)) {
                 $saveResult = $this->persistenceProcessor->save($validatedData);
-                $this->log('Created: ' . $saveResult->getCreatedCount());
-                $this->log('Updated: ' . $saveResult->getUpdatedCount());
-                $this->log('Deleted: ' . $saveResult->getDeletedCount());
+                $this->log('Created: ' . $saveResult->getCreatedCount(), $importInfo);
+                $this->log('Updated: ' . $saveResult->getUpdatedCount(), $importInfo);
+                $this->log('Deleted: ' . $saveResult->getDeletedCount(), $importInfo);
 
                 foreach ($saveResult->getErrors() as $error) {
                     $this->log(sprintf(
@@ -217,7 +239,7 @@ class ProductImport
                         $error->getMessage(),
                         $error->getItemData()['sku'] ?? '',
                         $error->getItemData()[AddKatanaPimProductIdAttribute::KATANA_PRODUCT_ID_ATTRIBUTE_CODE] ?? ''
-                    ), self::IMPORT_ERROR);
+                    ), $importInfo, self::IMPORT_ERROR);
                 }
             }
         }
@@ -273,7 +295,7 @@ class ProductImport
      * @param OutputInterface $cliOutput
      * @return void
      */
-    public function setCliOutput(OutputInterface $cliOutput)
+    public function setCliOutput(OutputInterface $cliOutput): void
     {
         $this->cliOutput = $cliOutput;
     }
@@ -284,21 +306,30 @@ class ProductImport
      * TODO: Move Output Stream handler / Logger outside this class.
      *
      * @param string $string
+     * @param KatanaImportInterface $importInfo
      * @param string $level
      * @return void
      */
-    private function log(string $string, string $level = self::IMPORT_INFO): void
+    private function log(string $string, KatanaImportInterface $importInfo, string $level = self::IMPORT_INFO): void
     {
         if ($level === self::IMPORT_ERROR) {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<error>' . $string . '</error>');
             }
-            $this->logger->error($string);
+
+            $this->logger->error(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         } else {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<info>' . $string . '</info>');
             }
-            $this->logger->info($string);
+
+            $this->logger->info(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         }
     }
 }

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Process\SpecificationsLocalization;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\RuntimeException;
 
 /**
  * Cron job for importing product Katana specification options and translations
@@ -15,30 +15,28 @@ class SpecificationsLocalizationImport
     public const JOB_CODE = 'itonomy_katanapim_specifications_localization_import';
 
     /**
-     * @var SpecificationsLocalization
+     * @var StartImport
      */
-    private SpecificationsLocalization $importer;
+    private StartImport $startImport;
 
     /**
-     * SpecificationsLocalizationImport constructor.
-     *
-     * @param SpecificationsLocalization $importer
+     * @param StartImport $startImport
      */
-    public function __construct(
-        SpecificationsLocalization $importer
-    ) {
-        $this->importer = $importer;
+    public function __construct(StartImport $startImport)
+    {
+        $this->startImport = $startImport;
     }
 
     /**
      * Import specification (attribute) options, specification translation and option translations
      *
-     * @throws CouldNotSaveException
-     * @throws RuntimeException
      * @return void
+     * @throws CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Throwable
      */
     public function execute(): void
     {
-        $this->importer->execute();
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_LOCALIZATION_IMPORT_TYPE);
     }
 }

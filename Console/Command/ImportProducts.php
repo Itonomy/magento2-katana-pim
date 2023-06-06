@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
-use Itonomy\Katanapim\Model\Import\Product\ProductImport;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
+use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBarFactory;
 
 /**
  * CLI Command to import products from KatanaPim
@@ -15,29 +15,21 @@ use Symfony\Component\Console\Helper\ProgressBarFactory;
 class ImportProducts extends Command
 {
     /**
-     * @var ProductImport
+     * @var StartImport
      */
-    private ProductImport $importer;
-
-    /**
-     * @var ProgressBarFactory
-     */
-    private ProgressBarFactory $progressBarFactory;
+    private StartImport $startImport;
 
     /**
      * ImportProducts constructor.
      *
-     * @param ProductImport $importer
-     * @param ProgressBarFactory $progressBarFactory
+     * @param StartImport $startImport
      * @param string|null $name
      */
     public function __construct(
-        ProductImport $importer,
-        ProgressBarFactory $progressBarFactory,
+        StartImport $startImport,
         string $name = null
     ) {
-        $this->importer = $importer;
-        $this->progressBarFactory = $progressBarFactory;
+        $this->startImport = $startImport;
         parent::__construct($name);
     }
 
@@ -64,25 +56,8 @@ class ImportProducts extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $start = \microtime(true);
-
         $output->writeln('Start: ' . \date('H:i:s'));
-
-        $progressBar = $this->progressBarFactory->create([
-            'output' => $output,
-            'max' => 100
-        ]);
-        $progressBar->setFormat(
-            "%current%/%max% [%bar%] %percent:3s%% %elapsed% %memory:6s% \t| <info>%message%</info>"
-        );
-        $progressBar->setMessage(\date('H:i:s') . ' Start');
-        $progressBar->start();
-
-        $this->importer->setCliOutput($output);
-        $this->importer->import();
-
-        $progressBar->setMessage(\date('H:i:s') . ' Finish');
-        $progressBar->finish();
-
+        $this->startImport->execute(KatanaImportInterface::PRODUCT_IMPORT_TYPE, $output);
         $output->writeln('Executed: ' . \ceil(\microtime(true) - $start) . ' seconds');
 
         return 0;

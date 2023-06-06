@@ -44,6 +44,14 @@ class CategoryDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getErrors(): array
+    {
+        return [];
+    }
+
+    /**
      * Process categories data
      *
      * @param array $productData

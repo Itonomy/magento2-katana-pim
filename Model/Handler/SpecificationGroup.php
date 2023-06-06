@@ -159,13 +159,19 @@ class SpecificationGroup implements ImportRunnerInterface
                 $this->cliOutput->writeln('<error>' . $string . '</error>');
             }
 
-            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->error(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         } else {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<info>' . $string . '</info>');
             }
 
-            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->info(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         }
     }
 }

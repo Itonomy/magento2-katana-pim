@@ -37,13 +37,4 @@ $logs = $logProvider->getImportJobs();
         <?php endforeach ?>
         </tbody>
     </table>
-
-    <div class="imports-additional-info">
-        <?= $escaper->escapeHtml(__(
-            'The information here represents magento cronjobs. For more detailed information on imports see '
-        )) ?>
-        <span class="logfile-path">
-            <?= $escaper->escapeHtml('[..]/var/log/katanapim/system.log') ?>
-        </span>
-    </div>
 </div>

@@ -5,8 +5,10 @@ namespace Itonomy\Katanapim\Ui;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\LayoutInterface;
+use Magento\Ui\Component\Listing\Columns\Column;
 
-class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
+class ViewAction extends Column
 {
     /**
      * @var UrlInterface
@@ -14,7 +16,7 @@ class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
     public $urlBuilder;
 
     /**
-     * @var \Magento\Framework\View\LayoutInterface
+     * @var LayoutInterface
      */
     public $layout;
 
@@ -23,7 +25,7 @@ class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param UrlInterface $urlBuilder
-     * @param \Magento\Framework\View\LayoutInterface $layout
+     * @param LayoutInterface $layout
      * @param array $components
      * @param array $data
      */
@@ -31,7 +33,7 @@ class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
         UrlInterface $urlBuilder,
-        \Magento\Framework\View\LayoutInterface $layout,
+        LayoutInterface $layout,
         array $components = [],
         array $data = []
     ) {
@@ -42,6 +44,7 @@ class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
 
     /**
      * Get item url
+     *
      * @return string
      */
     public function getViewUrl()
@@ -53,6 +56,7 @@ class ViewAction extends \Magento\Ui\Component\Listing\Columns\Column
 
     /**
      * Prepare Data Source
+     *
      * @param array $dataSource
      * @return array
      */

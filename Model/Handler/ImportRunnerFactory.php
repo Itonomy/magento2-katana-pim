@@ -32,6 +32,8 @@ class ImportRunnerFactory
     }
 
     /**
+     * Create import runner
+     *
      * @param string $importType
      * @return ImportRunnerInterface
      * @throws NotFoundException

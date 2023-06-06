@@ -45,6 +45,8 @@ class StartImport
     }
 
     /**
+     * Run import
+     *
      * @param string $importType
      * @param OutputInterface|null $cliOutput
      * @return void

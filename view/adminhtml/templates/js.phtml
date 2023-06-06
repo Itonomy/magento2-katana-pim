@@ -13,6 +13,7 @@
             overlayHideEffectOptions : null,
             modal: null,
             activityId: 0,
+
             open : function(editorUrl, elementId) {
                 if (editorUrl && elementId) {
                     jQuery.ajax({
@@ -28,6 +29,7 @@
                     });
                 }
             },
+
             openDialogWindow : function(data, elementId) {
                 var self = this;
                 this.activityId = elementId;
@@ -54,6 +56,7 @@
                 this.modal.modal('openModal');
                 this.autoResize();
             },
+
             closeDialogWindow : function(dialogWindow) {
 
                 jQuery('body').trigger('processStop');
@@ -61,6 +64,7 @@
                 Windows.overlayShowEffectOptions = this.overlayShowEffectOptions;
                 Windows.overlayHideEffectOptions = this.overlayHideEffectOptions;
             },
+
             error: function (message) {
                 jQuery('body').notification('clear')
                     .notification('add', {
@@ -72,11 +76,11 @@
                         }
                     });
             },
+
             autoResize: function () {
                 jQuery.each(jQuery('textarea.value-container'), function() {
                     var offset = this.offsetHeight - this.clientHeight;
                     var resizeTextarea = function(el) {
-                        console.log('You clicked me!!');
                         jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset);
                     };
                     jQuery(this).unbind().on('click', function() { resizeTextarea(this); }).trigger('click');
@@ -86,6 +90,5 @@
 
         window.adminLogView = adminLogView;
 //]]>
-
     });
 </script>

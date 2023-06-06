@@ -32,8 +32,8 @@ class ImageDataPreprocessor implements PreprocessorInterface
      */
     private ?string $downloadDir;
 
-    /*
-     * $var array
+    /**
+     * @var array
      */
     private array $errors;
 

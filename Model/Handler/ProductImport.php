@@ -167,7 +167,7 @@ class ProductImport implements ImportRunnerInterface
      *
      * @param array $items
      * @param int $page
-     * @param KatanaImportInterface $importData
+     * @param KatanaImportInterface $importInfo
      * @throws NoSuchEntityException
      */
     private function importItems(array $items, int $page, KatanaImportInterface $importInfo): void
@@ -177,10 +177,6 @@ class ProductImport implements ImportRunnerInterface
         $this->log('Importing values in global scope', $importInfo);
         $parsedData = $this->dataParser->parse($items);
         $preprocessedData = $this->dataPreprocessor->process($parsedData);
-
-        for ($x = 0; $x <= 100; $x++) {
-            $this->log('test error ' . $x, $importInfo, self::IMPORT_ERROR);
-        }
 
         if (!empty($this->dataPreprocessor->getErrors())) {
             foreach ($this->dataPreprocessor->getErrors() as $error) {
@@ -321,13 +317,19 @@ class ProductImport implements ImportRunnerInterface
                 $this->cliOutput->writeln('<error>' . $string . '</error>');
             }
 
-            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->error(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         } else {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<info>' . $string . '</info>');
             }
 
-            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->info(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         }
     }
 }

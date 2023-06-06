@@ -25,6 +25,7 @@ class Log extends Action
 
     /**
      * Log constructor.
+     *
      * @param Context $context
      * @param RawFactory $resultRawFactory
      * @param LayoutFactory $layoutFactory
@@ -41,7 +42,8 @@ class Log extends Action
     }
 
     /**
-     * view action
+     * View action
+     *
      * @return Raw
      */
     public function execute(): Raw
@@ -52,6 +54,7 @@ class Log extends Action
             );
 
         $resultRaw = $this->resultRawFactory->create();
+
         return $resultRaw->setContents($content->toHtml());
     }
 }

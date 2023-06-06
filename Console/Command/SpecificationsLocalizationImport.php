@@ -53,7 +53,7 @@ class SpecificationsLocalizationImport extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->startImport->execute(KatanaImportInterface::SPECIIFICATION_LOCALIZATION_IMPORT_TYPE, $output);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_LOCALIZATION_IMPORT_TYPE, $output);
         return 0;
     }
 }

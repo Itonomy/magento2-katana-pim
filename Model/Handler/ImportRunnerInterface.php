@@ -10,12 +10,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface ImportRunnerInterface
 {
     /**
+     * Execute import
+     *
      * @param KatanaImportInterface $importInfo
      * @return void
      */
     public function execute(KatanaImportInterface $importInfo): void;
 
     /**
+     * Set import cli output
+     *
      * @param OutputInterface $cliOutput
      * @return void
      */

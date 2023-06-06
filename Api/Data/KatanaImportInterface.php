@@ -29,13 +29,12 @@ interface KatanaImportInterface
     public const PRODUCT_IMPORT_TYPE = "product";
     public const SPECIFICATION_IMPORT_TYPE = "specification";
     public const SPECIFICATION_GROUP_IMPORT_TYPE = "specification_group";
-    public const SPECIIFICATION_LOCALIZATION_IMPORT_TYPE = "specification_localization";
-
+    public const SPECIFICATION_LOCALIZATION_IMPORT_TYPE = "specification_localization";
 
     /**
      * Getter for ImportId.
      *
-     * @return string
+     * @return string|null
      */
     public function getImportId(): ?string;
 
@@ -49,7 +48,7 @@ interface KatanaImportInterface
     public function setImportId(?string $importId): KatanaImportInterface;
 
     /**
-     * Getter for EntityType.
+     * Getter for ImportType.
      *
      * @return string|null
      */
@@ -58,7 +57,7 @@ interface KatanaImportInterface
     /**
      * Setter for EntityType.
      *
-     * @param string $entityType
+     * @param string $importType
      *
      * @return $this
      */

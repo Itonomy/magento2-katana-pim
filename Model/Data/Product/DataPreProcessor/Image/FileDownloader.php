@@ -82,7 +82,8 @@ class FileDownloader
             if ($response === self::HTTP_OK) {
                 $downloadedFiles[$key] = $handle['file_path'];
             } else {
-                $errors[] = 'Could not download image file from ' . $handle['url'] . ' HTTP Response code: ' . $response;
+                $errors[] = 'Could not download image file from '
+                    . $handle['url'] . ' HTTP Response code: ' . $response;
 
                 if (file_exists($handle['file_path'])) {
                     unlink($handle['file_path']);

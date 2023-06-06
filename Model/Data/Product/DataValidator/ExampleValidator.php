@@ -14,6 +14,7 @@ class ExampleValidator implements ValidatorInterface
      */
     public function validate(array &$productsData): void
     {
+        //@codingStandardsIgnoreLine
         //todo: Validate
     }
 }

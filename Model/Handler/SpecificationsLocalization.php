@@ -157,15 +157,11 @@ class SpecificationsLocalization implements ImportRunnerInterface
      * Process specifications localization
      *
      * @param array $items
-     * @param int $page
-     * @param KatanaImportInterface $importInfo
      * @throws NoSuchEntityException
      * @throws RuntimeException
      */
-    public function importItems(array $items, int $page, KatanaImportInterface $importInfo): void
+    public function importItems(array $items): void
     {
-        $this->log('Processing page ' . $page, $importInfo);
-
         $existingMappedSpecs = $this->getSpecificationsMapping();
 
         foreach ($items as $apiSpecification) {
@@ -269,13 +265,19 @@ class SpecificationsLocalization implements ImportRunnerInterface
                 $this->cliOutput->writeln('<error>' . $string . '</error>');
             }
 
-            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->error(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         } else {
             if ($this->cliOutput instanceof OutputInterface) {
                 $this->cliOutput->writeln('<info>' . $string . '</info>');
             }
 
-            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+            $this->logger->info(
+                $string,
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
         }
     }
 }

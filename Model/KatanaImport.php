@@ -14,6 +14,8 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     protected $_eventPrefix = 'katanapim_import_model';
 
     /**
+     * Construct
+     *
      * @return void
      */
     protected function _construct()

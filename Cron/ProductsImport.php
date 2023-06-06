@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Config\Katana;
-use Itonomy\Katanapim\Model\Handler\ProductImport;
 use Itonomy\Katanapim\Model\Operation\StartImport;
 
 /**
@@ -47,7 +47,7 @@ class ProductsImport
     public function execute(): void
     {
         if ($this->config->isProductImportEnabled()) {
-            $this->startImport->execute(ProductImport::class);
+            $this->startImport->execute(KatanaImportInterface::PRODUCT_IMPORT_TYPE);
         }
     }
 }

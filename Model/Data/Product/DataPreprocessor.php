@@ -61,6 +61,7 @@ class DataPreprocessor
 
             foreach ($this->processors as $processor) {
                 $productData = $processor->process($productData);
+                //@codingStandardsIgnoreLine
                 $this->errors = array_merge($this->errors, $processor->getErrors());
             }
         }
@@ -68,6 +69,11 @@ class DataPreprocessor
         return $data;
     }
 
+    /**
+     * Get data preprocessor errors
+     *
+     * @return array
+     */
     public function getErrors(): array
     {
         return $this->errors;

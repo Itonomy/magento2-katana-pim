@@ -9,12 +9,16 @@ use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 interface KatanaImportRepositoryInterface
 {
     /**
+     * Save katana import
+     *
      * @param KatanaImportInterface $katanaImport
      * @return KatanaImportInterface
      */
     public function save(KatanaImportInterface $katanaImport): KatanaImportInterface;
 
     /**
+     * Get katana import by id
+     *
      * @param $id
      * @return KatanaImportInterface
      */

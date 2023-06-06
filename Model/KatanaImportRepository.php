@@ -34,8 +34,8 @@ class KatanaImportRepository implements KatanaImportRepositoryInterface
     }
 
     /**
-     * @param KatanaImportInterface $katanaImport
-     * @return KatanaImportInterface
+     * @inheritDoc
+     *
      * @throws CouldNotSaveException
      */
     public function save(KatanaImportInterface $katanaImport): KatanaImportInterface
@@ -54,6 +54,7 @@ class KatanaImportRepository implements KatanaImportRepositoryInterface
 
     /**
      * @inheritDoc
+     *
      * @throws NoSuchEntityException
      */
     public function getById($id): KatanaImportInterface

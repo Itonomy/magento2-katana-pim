@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Handler\SpecificationsLocalization;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Operation\StartImport;
 use Magento\Framework\Exception\CouldNotSaveException;
 
@@ -37,6 +37,6 @@ class SpecificationsLocalizationImport
      */
     public function execute(): void
     {
-        $this->startImport->execute(SpecificationsLocalization::class);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_LOCALIZATION_IMPORT_TYPE);
     }
 }

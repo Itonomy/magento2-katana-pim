@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Cron;
 
-use Itonomy\Katanapim\Model\Handler\SpecificationGroup;
-use Itonomy\Katanapim\Model\Handler\Specifications;
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Operation\StartImport;
 
 /**
@@ -28,6 +27,8 @@ class SpecificationsImport
     }
 
     /**
+     * Run specifications import
+     *
      * @return void
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\NotFoundException
@@ -35,7 +36,7 @@ class SpecificationsImport
      */
     public function execute(): void
     {
-        $this->startImport->execute(Specifications::class);
-        $this->startImport->execute(SpecificationGroup::class);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_IMPORT_TYPE);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_GROUP_IMPORT_TYPE);
     }
 }

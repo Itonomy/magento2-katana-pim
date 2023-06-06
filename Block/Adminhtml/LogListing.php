@@ -6,7 +6,6 @@ use Itonomy\DatabaseLogger\Api\EntityLogRepositoryInterface;
 use Itonomy\Katanapim\Api\KatanaImportRepositoryInterface;
 use Magento\Backend\Block\Template;
 
-
 class LogListing extends Template
 {
     /**
@@ -41,6 +40,7 @@ class LogListing extends Template
 
     /**
      * Get import log listing
+     *
      * @return array
      */
     public function getLogListing(): array

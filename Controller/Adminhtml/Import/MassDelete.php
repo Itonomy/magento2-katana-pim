@@ -14,7 +14,7 @@ class MassDelete extends \Magento\Backend\App\Action implements HttpPostActionIn
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magento_Cms::block';
+    public const ADMIN_RESOURCE = 'Magento_Cms::block';
 
     /**
      * @var Filter
@@ -27,6 +27,8 @@ class MassDelete extends \Magento\Backend\App\Action implements HttpPostActionIn
     protected $collectionFactory;
 
     /**
+     * Constructor
+     *
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory

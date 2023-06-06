@@ -17,6 +17,9 @@ class SpecificationGroup implements ImportRunnerInterface
 {
     private const URL_PART = 'Spec/SpecificationGroup';
 
+    public const IMPORT_ERROR = 'error';
+    public const IMPORT_INFO = 'info';
+
     /**
      * @var RestClient
      */
@@ -52,7 +55,7 @@ class SpecificationGroup implements ImportRunnerInterface
         RestClient $rest,
         AttributeSetRepository $attributeSetRepository,
         AttributeSetToAttributeRepository $attributeSetToAttributeRepository,
-        Logger $logger,
+        Logger $logger
     ) {
         $this->rest = $rest;
         $this->attributeSetRepository = $attributeSetRepository;
@@ -64,10 +67,10 @@ class SpecificationGroup implements ImportRunnerInterface
     /**
      * Execute specification group import
      *
-     * @param KatanaImportInterface $importData
+     * @param KatanaImportInterface $importInfo
      * @return void
      */
-    public function execute(KatanaImportInterface $importData): void
+    public function execute(KatanaImportInterface $importInfo): void
     {
         try {
             $specificationGroups = $this->rest->execute(self::URL_PART);
@@ -114,12 +117,18 @@ class SpecificationGroup implements ImportRunnerInterface
                 ]
             );
         } catch (\Throwable $e) {
-            $this->logger->error(
+            $this->log(
                 $e->getMessage(),
-                ['entity_type' => $importData->getImportType(), 'entity_id' => $importData->getImportId()]
+                $importInfo,
+                self::IMPORT_ERROR,
             );
             return;
         }
+
+        $this->log(
+            'Specification group import finished',
+            $importInfo
+        );
     }
 
     /**
@@ -131,5 +140,32 @@ class SpecificationGroup implements ImportRunnerInterface
     public function setCliOutput(OutputInterface $cliOutput): void
     {
         $this->cliOutput = $cliOutput;
+    }
+
+    /**
+     * Log some information to the available output streams
+     *
+     * TODO: Move Output Stream handler / Logger outside this class.
+     *
+     * @param string $string
+     * @param KatanaImportInterface $importInfo
+     * @param string $level
+     * @return void
+     */
+    private function log(string $string, KatanaImportInterface $importInfo, string $level = self::IMPORT_INFO): void
+    {
+        if ($level === self::IMPORT_ERROR) {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<error>' . $string . '</error>');
+            }
+
+            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        } else {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<info>' . $string . '</info>');
+            }
+
+            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        }
     }
 }

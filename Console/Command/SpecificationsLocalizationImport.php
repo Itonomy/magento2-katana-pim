@@ -4,23 +4,16 @@ declare(strict_types=1);
 namespace Itonomy\Katanapim\Console\Command;
 
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
-use Itonomy\Katanapim\Model\Handler\SpecificationsLocalization;
 use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBarFactory;
 
 /**
  * Class for importing specification (attribute) translations and their options and option translations
  */
 class SpecificationsLocalizationImport extends Command
 {
-    /**
-     * @var ProgressBarFactory
-     */
-    private ProgressBarFactory $progressBarFactory;
-
     /**
      * @var StartImport
      */
@@ -30,15 +23,12 @@ class SpecificationsLocalizationImport extends Command
      * SpecificationsLocalizationImport constructor.
      *
      * @param StartImport $startImport
-     * @param ProgressBarFactory $progressBarFactory
      */
     public function __construct(
-        StartImport $startImport,
-        ProgressBarFactory $progressBarFactory
+        StartImport $startImport
     ) {
-        $this->progressBarFactory = $progressBarFactory;
-        parent::__construct();
         $this->startImport = $startImport;
+        parent::__construct();
     }
 
     /**
@@ -63,21 +53,7 @@ class SpecificationsLocalizationImport extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $progressBar = $this->progressBarFactory->create([
-            'output' => $output,
-            'max' => 100,
-        ]);
-        $progressBar->setFormat(
-            "%current%/%max% [%bar%] %percent:3s%% %elapsed% %memory:6s% \t| <info>%message%</info>"
-        );
-        $progressBar->setMessage(\date('H:i:s') . ' Start');
-        $progressBar->start();
-
-        $this->startImport->execute(KatanaImportInterface::SPECIIFICATION_LOCALIZATION_IMPORT_TYPE);
-
-        $progressBar->setMessage(\date('H:i:s') . ' Finish');
-        $progressBar->finish();
-
+        $this->startImport->execute(KatanaImportInterface::SPECIIFICATION_LOCALIZATION_IMPORT_TYPE, $output);
         return 0;
     }
 }

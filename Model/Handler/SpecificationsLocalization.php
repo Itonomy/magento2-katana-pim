@@ -164,7 +164,7 @@ class SpecificationsLocalization implements ImportRunnerInterface
      */
     public function importItems(array $items, int $page, KatanaImportInterface $importInfo): void
     {
-        $this->log(PHP_EOL . 'Processing page ' . $page, $importInfo);
+        $this->log('Processing page ' . $page, $importInfo);
 
         $existingMappedSpecs = $this->getSpecificationsMapping();
 

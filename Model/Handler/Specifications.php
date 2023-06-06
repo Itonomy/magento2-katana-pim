@@ -12,7 +12,6 @@ use Laminas\Http\Request;
 use Laminas\Stdlib\Parameters;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Specifications implements ImportRunnerInterface
@@ -28,6 +27,9 @@ class Specifications implements ImportRunnerInterface
         20 => 'text'
     ];
 
+    public const IMPORT_ERROR = 'error';
+    public const IMPORT_INFO = 'info';
+
     /**
      * @var RestClient
      */
@@ -37,11 +39,6 @@ class Specifications implements ImportRunnerInterface
      * @var AttributeMappingRepository
      */
     private AttributeMappingRepository $attributeMappingRepository;
-
-    /**
-     * @var ProgressBar|null
-     */
-    private ?ProgressBar $progressBar = null;
 
     /**
      * @var Logger
@@ -93,24 +90,23 @@ class Specifications implements ImportRunnerInterface
                     throw new RuntimeException(__('Empty response when trying to retrieve specifications from Katana API.'));
                 }
 
-                if ($this->progressBar) {
-                    //phpcs:ignore Generic.Files.LineLength.TooLong
-                    $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $specifications['TotalCount'] . ' Specifications');
-                    $this->progressBar->setMaxSteps($specifications['TotalCount']);
-                    $this->progressBar->display();
-                }
-
                 $this->processSpecifications($specifications);
                 $i++;
             } while ($i < $specifications['TotalPages']);
         } catch (\Throwable $e) {
-            $this->logger->critical(
+            $this->log(
                 $e->getMessage(),
-                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+                $importInfo,
+                self::IMPORT_ERROR,
             );
 
             throw $e;
         }
+
+        $this->log(
+            'Specification import finished',
+            $importInfo
+        );
     }
 
     /**
@@ -144,12 +140,6 @@ class Specifications implements ImportRunnerInterface
                 AttributeMappingInterface::KATANA_ATTRIBUTE_TYPE => $this->getType($specification['AttributeTypeId']),
                 AttributeMappingInterface::KATANA_ATTRIBUTE_TYPE_ID => $specification['AttributeTypeId'],
             ];
-
-            if ($this->progressBar) {
-                //phpcs:ignore Generic.Files.LineLength.TooLong
-                $this->progressBar->setMessage(\date('H:i:s') . ' ' . $specification['Name'] . ' processed');
-                $this->progressBar->advance(1);
-            }
         }
 
         $this->attributeMappingRepository->insertOnDuplicate(
@@ -176,5 +166,32 @@ class Specifications implements ImportRunnerInterface
         }
 
         return 'text';
+    }
+
+    /**
+     * Log some information to the available output streams
+     *
+     * TODO: Move Output Stream handler / Logger outside this class.
+     *
+     * @param string $string
+     * @param KatanaImportInterface $importInfo
+     * @param string $level
+     * @return void
+     */
+    private function log(string $string, KatanaImportInterface $importInfo, string $level = self::IMPORT_INFO): void
+    {
+        if ($level === self::IMPORT_ERROR) {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<error>' . $string . '</error>');
+            }
+
+            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        } else {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<info>' . $string . '</info>');
+            }
+
+            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        }
     }
 }

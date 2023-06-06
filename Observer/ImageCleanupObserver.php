@@ -41,7 +41,7 @@ class ImageCleanupObserver implements ObserverInterface
     public function __construct(
         ImageDirectoryProvider $directoryProvider,
         Logger $logger,
-        Katana $katanaConfig,
+        Katana $katanaConfig
     ) {
         $this->directoryProvider = $directoryProvider;
         $this->logger = $logger;

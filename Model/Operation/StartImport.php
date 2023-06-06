@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Operation;
 
+use Itonomy\DatabaseLogger\Model\Logger;
 use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Builder\BuildImportDataByImportType;
 use Itonomy\Katanapim\Model\Handler\ImportRunnerFactory;
@@ -30,6 +31,11 @@ class StartImport
     private ImportRunnerFactory $importRunnerFactory;
 
     /**
+     * @var Logger
+     */
+    private Logger $logger;
+
+    /**
      * @param BuildImportDataByImportType $buildImportDataByImportType
      * @param KatanaImportRepository $katanaImportRepository
      * @param ImportRunnerFactory $importRunnerFactory
@@ -37,11 +43,13 @@ class StartImport
     public function __construct(
         BuildImportDataByImportType $buildImportDataByImportType,
         KatanaImportRepository $katanaImportRepository,
-        ImportRunnerFactory $importRunnerFactory
+        ImportRunnerFactory $importRunnerFactory,
+        Logger $logger
     ) {
         $this->buildImportDataByImportType = $buildImportDataByImportType;
         $this->katanaImportRepository = $katanaImportRepository;
         $this->importRunnerFactory = $importRunnerFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -68,6 +76,11 @@ class StartImport
             $this->katanaImportRepository->save($importInfo);
             $import->execute($importInfo);
         } catch (\Throwable $e) {
+            $this->logger->error(
+                'Import failed. Error: ' . $e->getMessage(),
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
+            );
+
             $importInfo->setStatus(KatanaImportInterface::STATUS_ERROR);
             $importInfo->setFinishTime((new \DateTime())->format('Y-m-d H:i:s'));
             $this->katanaImportRepository->save($importInfo);

@@ -198,9 +198,9 @@ class ProductImport implements ImportRunnerInterface
 
         $validatedData = $this->dataValidator->execute($preprocessedData);
         $saveResult = $this->persistenceProcessor->save($validatedData);
-        $this->log('Created: ' . $saveResult->getCreatedCount(), $importInfo);
-        $this->log('Updated: ' . $saveResult->getUpdatedCount(), $importInfo);
-        $this->log('Deleted: ' . $saveResult->getDeletedCount(), $importInfo);
+        $this->log('Products Created: ' . $saveResult->getCreatedCount(), $importInfo);
+        $this->log('Products Updated: ' . $saveResult->getUpdatedCount(), $importInfo);
+        $this->log('Products Deleted: ' . $saveResult->getDeletedCount(), $importInfo);
 
         /** @var Error $error */
         foreach ($saveResult->getErrors() as $error) {

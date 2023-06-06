@@ -16,7 +16,6 @@ use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
@@ -28,6 +27,9 @@ class SpecificationsLocalization implements ImportRunnerInterface
 {
     private const URL_PART = 'Specifications';
 
+    public const IMPORT_ERROR = 'error';
+    public const IMPORT_INFO = 'info';
+
     /**
      * @var RestClient
      */
@@ -37,11 +39,6 @@ class SpecificationsLocalization implements ImportRunnerInterface
      * @var array
      */
     private array $attributeMapping;
-
-    /**
-     * @var ProgressBar|null
-     */
-    private ?ProgressBar $progressBar = null;
 
     /**
      * @var CollectionFactory
@@ -104,53 +101,45 @@ class SpecificationsLocalization implements ImportRunnerInterface
     /**
      * Execute specifications localization import
      *
-     * @param KatanaImportInterface $importData
+     * @param KatanaImportInterface $importInfo
      * @return void
      * @throws RuntimeException
      */
-    public function execute(KatanaImportInterface $importData): void
+    public function execute(KatanaImportInterface $importInfo): void
     {
-        $i = 0;
+        $page = 0;
 
         try {
             do {
                 $parameters = new Parameters();
-                $parameters->set('specificationFilterModel.pageIndex', $i);
-
+                $parameters->set('specificationFilterModel.pageIndex', $page);
                 $apiData = $this->rest->execute(self::URL_PART, Request::METHOD_GET, $parameters);
 
                 if (empty($apiData['Items'])) {
                     throw new RuntimeException(__('Specification data empty.'));
                 }
 
-                if ($this->progressBar) {
-                    //phpcs:ignore Generic.Files.LineLength.TooLong
-                    $this->progressBar->setMessage(\date('H:i:s') . ' downloaded ' . $apiData['TotalCount'] . ' Specifications');
-                    $this->progressBar->setMaxSteps($apiData['TotalCount']);
-                    $this->progressBar->display();
-                }
+                $items = $this->reindexApiSpecs($apiData['Items']);
+                $this->importItems($items, $page, $importInfo);
 
-                $apiSpecifications = $this->reindexApiSpecs($apiData['Items']);
-
-                try {
-                    $this->processSpecificationLocalization($apiSpecifications);
-                } catch (Throwable $e) {
-                    throw new RuntimeException(__(
-                        'Error while trying to import specifications translations. ' . $e->getMessage()
-                    ));
-                }
-
-                $i++;
-            } while ($i < $apiData['TotalPages']);
+                $page++;
+            } while ($page < $apiData['TotalPages']);
         } catch (Throwable $e) {
-            $this->logger->error(
+            $this->log(
                 $e->getMessage(),
-                ['entity_type' => $importData->getImportType(), 'entity_id' => $importData->getImportId()]
+                $importInfo,
+                self::IMPORT_ERROR
             );
+
             throw new RuntimeException(__(
                 'Error while trying to import specifications translations. ' . $e->getMessage()
             ));
         }
+
+        $this->log(
+            'Specification localization import finished',
+            $importInfo
+        );
     }
 
     /**
@@ -167,15 +156,19 @@ class SpecificationsLocalization implements ImportRunnerInterface
     /**
      * Process specifications localization
      *
-     * @param array $apiSpecifications
+     * @param array $items
+     * @param int $page
+     * @param KatanaImportInterface $importInfo
      * @throws NoSuchEntityException
      * @throws RuntimeException
      */
-    public function processSpecificationLocalization(array $apiSpecifications): void
+    public function importItems(array $items, int $page, KatanaImportInterface $importInfo): void
     {
+        $this->log(PHP_EOL . 'Processing page ' . $page, $importInfo);
+
         $existingMappedSpecs = $this->getSpecificationsMapping();
 
-        foreach ($apiSpecifications as $apiSpecification) {
+        foreach ($items as $apiSpecification) {
             $id = $apiSpecification['Id'];
             $mappedSpecification = $existingMappedSpecs[$id] ?? null;
 
@@ -257,5 +250,32 @@ class SpecificationsLocalization implements ImportRunnerInterface
         }
 
         return $output;
+    }
+
+    /**
+     * Log some information to the available output streams
+     *
+     * TODO: Move Output Stream handler / Logger outside this class.
+     *
+     * @param string $string
+     * @param KatanaImportInterface $importInfo
+     * @param string $level
+     * @return void
+     */
+    private function log(string $string, KatanaImportInterface $importInfo, string $level = self::IMPORT_INFO): void
+    {
+        if ($level === self::IMPORT_ERROR) {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<error>' . $string . '</error>');
+            }
+
+            $this->logger->error($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        } else {
+            if ($this->cliOutput instanceof OutputInterface) {
+                $this->cliOutput->writeln('<info>' . $string . '</info>');
+            }
+
+            $this->logger->info($string, ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]);
+        }
     }
 }

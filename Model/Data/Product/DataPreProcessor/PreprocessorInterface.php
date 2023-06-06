@@ -15,4 +15,11 @@ interface PreprocessorInterface
      * @return array
      */
     public function process(array $productData): array;
+
+    /**
+     * Get errors
+     *
+     * @return array
+     */
+    public function getErrors(): array;
 }

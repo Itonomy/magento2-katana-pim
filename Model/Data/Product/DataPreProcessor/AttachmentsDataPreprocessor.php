@@ -24,6 +24,14 @@ class AttachmentsDataPreprocessor implements PreprocessorInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getErrors(): array
+    {
+        return [];
+    }
+
+    /**
      * Process katana product attachments
      *
      * @param array $productData

@@ -97,6 +97,7 @@
             <argument name="mainTable" xsi:type="string">katanapim_import</argument>
         </arguments>
     </virtualType>
+
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument xsi:type="array">
@@ -104,4 +105,17 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="\Itonomy\Katanapim\Model\Handler\ImportRunnerFactory">
+        <arguments>
+            <argument name="importRunners" xsi:type="array">
+                <item xsi:type="string" name="product">Itonomy\Katanapim\Model\Handler\ProductImport</item>
+                <item xsi:type="string" name="specification">Itonomy\Katanapim\Model\Handler\Specifications</item>
+                <item xsi:type="string" name="specification_group">Itonomy\Katanapim\Model\Handler\SpecificationGroup</item>
+                <item xsi:type="string" name="specification_localization">Itonomy\Katanapim\Model\Handler\SpecificationsLocalization</item>
+            </argument>
+        </arguments>
+    </type>
+
+
 </config>

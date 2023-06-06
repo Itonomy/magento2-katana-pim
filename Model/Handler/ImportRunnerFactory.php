@@ -9,7 +9,11 @@ use Magento\Framework\ObjectManagerInterface;
 
 class ImportRunnerFactory
 {
+    /**
+     * @var ObjectManagerInterface
+     */
     private ObjectManagerInterface $objectManager;
+
     /**
      * @var array|string[]
      */
@@ -21,12 +25,7 @@ class ImportRunnerFactory
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
-        array $importRunners = [
-            ProductImport::class,
-            SpecificationGroup::class,
-            Specifications::class,
-            SpecificationsLocalization::class
-        ]
+        array $importRunners = []
     ) {
         $this->objectManager = $objectManager;
         $this->importRunners = $importRunners;

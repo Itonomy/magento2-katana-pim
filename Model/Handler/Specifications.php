@@ -13,6 +13,7 @@ use Laminas\Stdlib\Parameters;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Specifications implements ImportRunnerInterface
 {
@@ -48,6 +49,11 @@ class Specifications implements ImportRunnerInterface
     private Logger $logger;
 
     /**
+     * @var OutputInterface|null
+     */
+    private ?OutputInterface $cliOutput;
+
+    /**
      * @param RestClient $rest
      * @param AttributeMappingRepository $attributeMappingRepository
      * @param Logger $logger
@@ -60,18 +66,19 @@ class Specifications implements ImportRunnerInterface
         $this->rest = $rest;
         $this->attributeMappingRepository = $attributeMappingRepository;
         $this->logger = $logger;
+        $this->cliOutput = null;
     }
 
     /**
      * Execute specifications import
      *
-     * @param KatanaImportInterface $importData
+     * @param KatanaImportInterface $importInfo
      * @return void
      * @throws CouldNotSaveException
      * @throws RuntimeException
      * @throws \Throwable
      */
-    public function execute(KatanaImportInterface $importData): void
+    public function execute(KatanaImportInterface $importInfo): void
     {
         $i = 0;
         try {
@@ -99,10 +106,22 @@ class Specifications implements ImportRunnerInterface
         } catch (\Throwable $e) {
             $this->logger->critical(
                 $e->getMessage(),
-                ['entity_type' => $importData->getEntityType(), 'entity_id' => $importData->getImportId()]
+                ['entity_type' => $importInfo->getImportType(), 'entity_id' => $importInfo->getImportId()]
             );
+
             throw $e;
         }
+    }
+
+    /**
+     * Set the cli output
+     *
+     * @param OutputInterface $cliOutput
+     * @return void
+     */
+    public function setCliOutput(OutputInterface $cliOutput): void
+    {
+        $this->cliOutput = $cliOutput;
     }
 
     /**
@@ -142,19 +161,6 @@ class Specifications implements ImportRunnerInterface
                 AttributeMappingInterface::KATANA_ATTRIBUTE_TYPE_ID
             ]
         );
-    }
-
-    /**
-     * Set progress bar
-     *
-     * @param ProgressBar $progressBar
-     * @return Specifications
-     */
-    public function setProgressBar(ProgressBar $progressBar): Specifications
-    {
-        $this->progressBar = $progressBar;
-
-        return $this;
     }
 
     /**

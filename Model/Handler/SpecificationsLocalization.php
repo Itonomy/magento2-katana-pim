@@ -17,6 +17,7 @@ use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 /**
@@ -68,6 +69,11 @@ class SpecificationsLocalization implements ImportRunnerInterface
     private Logger $logger;
 
     /**
+     * @var OutputInterface|null
+     */
+    private ?OutputInterface $cliOutput;
+
+    /**
      * SpecificationsLocalization constructor.
      *
      * @param RestClient $rest
@@ -92,6 +98,7 @@ class SpecificationsLocalization implements ImportRunnerInterface
         $this->specificationTranslationProcessor = $specificationTranslationProcessor;
         $this->specificationOptionsProcessor = $specificationOptionsProcessor;
         $this->logger = $logger;
+        $this->cliOutput = null;
     }
 
     /**
@@ -138,12 +145,23 @@ class SpecificationsLocalization implements ImportRunnerInterface
         } catch (Throwable $e) {
             $this->logger->error(
                 $e->getMessage(),
-                ['entity_type' => $importData->getEntityType(), 'entity_id' => $importData->getImportId()]
+                ['entity_type' => $importData->getImportType(), 'entity_id' => $importData->getImportId()]
             );
             throw new RuntimeException(__(
                 'Error while trying to import specifications translations. ' . $e->getMessage()
             ));
         }
+    }
+
+    /**
+     * Set the cli output
+     *
+     * @param OutputInterface $cliOutput
+     * @return void
+     */
+    public function setCliOutput(OutputInterface $cliOutput): void
+    {
+        $this->cliOutput = $cliOutput;
     }
 
     /**
@@ -201,19 +219,6 @@ class SpecificationsLocalization implements ImportRunnerInterface
                 }
             }
         }
-    }
-
-    /**
-     * Set progress bar
-     *
-     * @param ProgressBar $progressBar
-     * @return SpecificationsLocalization
-     */
-    public function setProgressBar(ProgressBar $progressBar): SpecificationsLocalization
-    {
-        $this->progressBar = $progressBar;
-
-        return $this;
     }
 
     /**

@@ -11,6 +11,7 @@ use Itonomy\Katanapim\Model\AttributeSetRepository;
 use Itonomy\Katanapim\Model\AttributeSetToAttributeRepository;
 use Itonomy\Katanapim\Model\RestClient;
 use Magento\Framework\Exception\RuntimeException;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SpecificationGroup implements ImportRunnerInterface
 {
@@ -37,6 +38,11 @@ class SpecificationGroup implements ImportRunnerInterface
     private Logger $logger;
 
     /**
+     * @var OutputInterface|null
+     */
+    private ?OutputInterface $cliOutput;
+
+    /**
      * @param RestClient $rest
      * @param AttributeSetRepository $attributeSetRepository
      * @param AttributeSetToAttributeRepository $attributeSetToAttributeRepository
@@ -52,6 +58,7 @@ class SpecificationGroup implements ImportRunnerInterface
         $this->attributeSetRepository = $attributeSetRepository;
         $this->attributeSetToAttributeRepository = $attributeSetToAttributeRepository;
         $this->logger = $logger;
+        $this->cliOutput = null;
     }
 
     /**
@@ -109,9 +116,20 @@ class SpecificationGroup implements ImportRunnerInterface
         } catch (\Throwable $e) {
             $this->logger->error(
                 $e->getMessage(),
-                ['entity_type' => $importData->getEntityType(), 'entity_id' => $importData->getImportId()]
+                ['entity_type' => $importData->getImportType(), 'entity_id' => $importData->getImportId()]
             );
             return;
         }
+    }
+
+    /**
+     * Set the cli output
+     *
+     * @param OutputInterface $cliOutput
+     * @return void
+     */
+    public function setCliOutput(OutputInterface $cliOutput): void
+    {
+        $this->cliOutput = $cliOutput;
     }
 }

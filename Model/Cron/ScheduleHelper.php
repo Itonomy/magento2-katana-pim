@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Model\Cron;
 
-use Itonomy\Katanapim\Model\KatanaImportHelper;
 use Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory;
 use Magento\Cron\Model\Schedule;
 use Magento\Cron\Model\ScheduleFactory;
@@ -33,26 +32,18 @@ class ScheduleHelper
     private CollectionFactory $collectionFactory;
 
     /**
-     * @var KatanaImportHelper
-     */
-    private KatanaImportHelper $katanaImportHelper;
-
-    /**
      * @param ScheduleFactory $scheduleFactory
      * @param DateTime $dateTime
      * @param CollectionFactory $collectionFactory
-     * @param KatanaImportHelper $katanaImportHelper
      */
     public function __construct(
         ScheduleFactory $scheduleFactory,
         DateTime $dateTime,
-        CollectionFactory $collectionFactory,
-        KatanaImportHelper $katanaImportHelper
+        CollectionFactory $collectionFactory
     ) {
         $this->scheduleFactory = $scheduleFactory;
         $this->dateTime = $dateTime;
         $this->collectionFactory = $collectionFactory;
-        $this->katanaImportHelper = $katanaImportHelper;
     }
 
     /**
@@ -77,11 +68,6 @@ class ScheduleHelper
         }
 
         $schedule->save();
-        $this->katanaImportHelper->createKatanaImport(
-            $schedule->getJobCode(),
-            $schedule->getStatus(),
-            uniqid($schedule->getJobCode() . '_')
-        );
     }
 
     /**

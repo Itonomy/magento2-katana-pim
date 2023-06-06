@@ -40,17 +40,17 @@ class KatanaImport extends AbstractModel implements KatanaImportInterface
     /**
      * @inheritDoc
      */
-    public function getEntityType(): string
+    public function getImportType(): string
     {
-        return $this->getData(self::ENTITY_TYPE);
+        return $this->getData(self::IMPORT_TYPE);
     }
 
     /**
      * @inheritDoc
      */
-    public function setEntityType(string $entityType): KatanaImportInterface
+    public function setImportType(string $importType): KatanaImportInterface
     {
-        return $this->setData(self::ENTITY_TYPE, $entityType);
+        return $this->setData(self::IMPORT_TYPE, $importType);
     }
 
     /**

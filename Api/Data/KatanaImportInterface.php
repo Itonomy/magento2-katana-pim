@@ -10,14 +10,26 @@ interface KatanaImportInterface
      * String constants for property names
      */
     public const IMPORT_ID = "import_id";
-    public const ENTITY_TYPE = "entity_type";
+    public const IMPORT_TYPE = "import_type";
     public const START_TIME = "start_time";
     public const FINISH_TIME = "finish_time";
     public const STATUS = "status";
+
+    /**
+     * Import statuses
+     */
     public const STATUS_PENDING = "pending";
     public const STATUS_RUNNING = "running";
     public const STATUS_COMPLETE = "complete";
     public const STATUS_ERROR = "error";
+
+    /**
+     * Import types
+     */
+    public const PRODUCT_IMPORT_TYPE = "product";
+    public const SPECIFICATION_IMPORT_TYPE = "specification";
+    public const SPECIFICATION_GROUP_IMPORT_TYPE = "specification_group";
+    public const SPECIIFICATION_LOCALIZATION_IMPORT_TYPE = "specification_localization";
 
 
     /**
@@ -41,7 +53,7 @@ interface KatanaImportInterface
      *
      * @return string|null
      */
-    public function getEntityType(): ?string;
+    public function getImportType(): ?string;
 
     /**
      * Setter for EntityType.
@@ -50,7 +62,7 @@ interface KatanaImportInterface
      *
      * @return $this
      */
-    public function setEntityType(string $entityType): KatanaImportInterface;
+    public function setImportType(string $importType): KatanaImportInterface;
 
     /**
      * Getter for StartTime.

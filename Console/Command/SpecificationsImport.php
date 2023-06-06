@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Handler\SpecificationGroup;
 use Itonomy\Katanapim\Model\Handler\Specifications;
 use Itonomy\Katanapim\Model\Operation\StartImport;
@@ -71,8 +72,8 @@ class SpecificationsImport extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->startImport->execute(Specifications::class);
-        $this->startImport->execute(SpecificationGroup::class);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_IMPORT_TYPE);
+        $this->startImport->execute(KatanaImportInterface::SPECIFICATION_GROUP_IMPORT_TYPE);
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

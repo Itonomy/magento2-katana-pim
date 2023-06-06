@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Itonomy\Katanapim\Console\Command;
 
+use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Handler\SpecificationsLocalization;
 use Itonomy\Katanapim\Model\Operation\StartImport;
 use Symfony\Component\Console\Command\Command;
@@ -72,7 +73,7 @@ class SpecificationsLocalizationImport extends Command
         $progressBar->setMessage(\date('H:i:s') . ' Start');
         $progressBar->start();
 
-        $this->startImport->execute(SpecificationsLocalization::class);
+        $this->startImport->execute(KatanaImportInterface::SPECIIFICATION_LOCALIZATION_IMPORT_TYPE);
 
         $progressBar->setMessage(\date('H:i:s') . ' Finish');
         $progressBar->finish();

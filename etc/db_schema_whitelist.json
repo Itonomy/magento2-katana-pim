@@ -44,7 +44,7 @@
         "column": {
             "id": true,
             "import_id": true,
-            "entity_type": true,
+            "import_type": true,
             "start_time": true,
             "finish_time": true,
             "status": true

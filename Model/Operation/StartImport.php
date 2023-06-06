@@ -8,6 +8,9 @@ use Itonomy\Katanapim\Api\Data\KatanaImportInterface;
 use Itonomy\Katanapim\Model\Builder\BuildImportDataByImportType;
 use Itonomy\Katanapim\Model\Handler\ImportRunnerFactory;
 use Itonomy\Katanapim\Model\KatanaImportRepository;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NotFoundException;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class StartImport
 {
@@ -43,27 +46,35 @@ class StartImport
 
     /**
      * @param string $importType
+     * @param OutputInterface|null $cliOutput
      * @return void
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws CouldNotSaveException
+     * @throws NotFoundException
      * @throws \Throwable
      */
-    public function execute(string $importType): void
+    public function execute(string $importType, OutputInterface $cliOutput = null): void
     {
-        $importData = $this->buildImportDataByImportType->execute($importType);
+        $importInfo = $this->buildImportDataByImportType->execute($importType);
         $import = $this->importRunnerFactory->create($importType);
 
+        if ($cliOutput) {
+            $import->setCliOutput($cliOutput);
+        }
+
         try {
-            $importData->setStatus(KatanaImportInterface::STATUS_RUNNING);
-            $import->execute($importData);
+            $importInfo->setStatus(KatanaImportInterface::STATUS_RUNNING);
+            $this->katanaImportRepository->save($importInfo);
+            $import->execute($importInfo);
         } catch (\Throwable $e) {
-            $importData->setStatus(KatanaImportInterface::STATUS_ERROR);
-            $importData->setFinishTime((new \DateTime())->format('Y-m-d H:i:s'));
-            $this->katanaImportRepository->save($importData);
+            $importInfo->setStatus(KatanaImportInterface::STATUS_ERROR);
+            $importInfo->setFinishTime((new \DateTime())->format('Y-m-d H:i:s'));
+            $this->katanaImportRepository->save($importInfo);
+
             throw $e;
         }
-        $importData->setStatus(KatanaImportInterface::STATUS_COMPLETE);
-        $importData->setFinishTime((new \DateTime())->format('Y-m-d H:i:s'));
-        $this->katanaImportRepository->save($importData);
+
+        $importInfo->setStatus(KatanaImportInterface::STATUS_COMPLETE);
+        $importInfo->setFinishTime((new \DateTime())->format('Y-m-d H:i:s'));
+        $this->katanaImportRepository->save($importInfo);
     }
 }

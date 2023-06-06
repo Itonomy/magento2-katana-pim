@@ -27,11 +27,13 @@ class BuildImportDataByImportType
      */
     public function execute(string $importType): KatanaImportInterface
     {
-        $object = $this->katanaImportFactory->create();
-        $object->setImportId(uniqid());
-        $object->setStatus(KatanaImportInterface::STATUS_PENDING);
-        $object->setStartTime((new \DateTime())->format('Y-m-d H:i:s'));
+        $importData = $this->katanaImportFactory->create();
+        //todo: is this setImportId needed?
+        $importData->setImportId(uniqid());
+        $importData->setImportType($importType);
+        $importData->setStatus(KatanaImportInterface::STATUS_PENDING);
+        $importData->setStartTime((new \DateTime())->format('Y-m-d H:i:s'));
 
-        return $object;
+        return $importData;
     }
 }

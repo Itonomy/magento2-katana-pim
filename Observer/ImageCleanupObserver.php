@@ -32,28 +32,20 @@ class ImageCleanupObserver implements ObserverInterface
     private Katana $katanaConfig;
 
     /**
-     * @var KatanaImportHelper
-     */
-    private KatanaImportHelper $importHelper;
-
-    /**
      * ImageCleanupObserver constructor.
      *
      * @param ImageDirectoryProvider $directoryProvider
      * @param Logger $logger
      * @param Katana $katanaConfig
-     * @param KatanaImportHelper $importHelper
      */
     public function __construct(
         ImageDirectoryProvider $directoryProvider,
         Logger $logger,
         Katana $katanaConfig,
-        KatanaImportHelper $importHelper
     ) {
         $this->directoryProvider = $directoryProvider;
         $this->logger = $logger;
         $this->katanaConfig = $katanaConfig;
-        $this->importHelper = $importHelper;
     }
 
     /**
@@ -64,17 +56,19 @@ class ImageCleanupObserver implements ObserverInterface
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer): void
     {
         if ($this->katanaConfig->isCleanImageCacheSet()) {
             try {
                 $this->directoryProvider->deleteDirectory();
             } catch (FileSystemException $e) {
+                $importInfo = $observer->getData('importInfo');
+
                 $this->logger->error(
                     'Could not clean up KatanaPim image import directory ' . $e->getMessage(),
                     [
-                        'entity_id' => $this->importHelper->getImport()->getImportId(),
-                        'entity_type' => $this->importHelper->getImport()->getEntityType()
+                        'entity_id' => $importInfo->getImportId(),
+                        'entity_type' => $importInfo->getImportType()
                     ]
                 );
             }

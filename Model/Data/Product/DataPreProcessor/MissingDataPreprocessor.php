@@ -60,4 +60,12 @@ class MissingDataPreprocessor implements PreprocessorInterface
 
         return $productData;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrors(): array
+    {
+        return [];
+    }
 }

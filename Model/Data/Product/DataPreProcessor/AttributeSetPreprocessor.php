@@ -41,4 +41,12 @@ class AttributeSetPreprocessor implements PreprocessorInterface
         }
         return $productData;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrors(): array
+    {
+        return [];
+    }
 }

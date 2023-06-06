@@ -52,10 +52,10 @@
                 <indexField>id</indexField>
             </settings>
         </selectionsColumn>
-        <column name="entity_type">
+        <column name="import_type">
             <settings>
                 <filter>text</filter>
-                <label translate="true">Entity Type</label>
+                <label translate="true">Import Type</label>
                 <sorting>desc</sorting>
             </settings>
         </column>

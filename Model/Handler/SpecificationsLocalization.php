@@ -187,7 +187,7 @@ class SpecificationsLocalization implements ImportRunnerInterface
 
             if (!empty($localizationData)) {
                 try {
-                    $this->specificationTranslationProcessor->process($localizationData, $productAttribute);
+                    $this->specificationTranslationProcessor->process($localizationData, $productAttribute, $apiSpecification['Name']);
                 } catch (Throwable $e) {
                     throw new RuntimeException(__(
                         'Error while trying to process specifications translation. ' . $e->getMessage()

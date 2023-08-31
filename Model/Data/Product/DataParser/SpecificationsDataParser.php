@@ -204,7 +204,7 @@ class SpecificationsDataParser implements DataParserInterface
      */
     private function isSelectAttributeValueExists(string $value, ProductAttributeInterface $attribute): bool
     {
-        $options = $attribute->getOptions();
+        $options = $attribute->setStoreId(0)->getOptions();
 
         foreach ($options as $option) {
             if ($this->mbStrcasecmp($option->getLabel(), $value) === 0) {

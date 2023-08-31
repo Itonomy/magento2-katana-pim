@@ -73,10 +73,6 @@ class StoreViewColumn extends Select
         $options = [];
 
         foreach ($stores as $store) {
-            if ($store->getCode() === 'default') {
-                continue;
-            }
-
             $options[] = [
                 'label' => $store->getName(),
                 'value' => $store->getId()

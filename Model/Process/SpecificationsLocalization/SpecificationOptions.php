@@ -212,7 +212,7 @@ class SpecificationOptions
         $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
         $defaultName = \trim($optionData['Name']);
         $optionLabel->setStoreId($defaultStore->getId())->setLabel($defaultName);
-        $storeLabels[] = $optionLabel;
+        $storeLabels[$defaultStore->getId()] = $optionLabel;
 
         foreach ($optionData['LocalizedProperties'] as $prop) {
             if ($prop['LocaleKey'] !== 'Name') {
@@ -227,9 +227,12 @@ class SpecificationOptions
             }
 
             foreach ($storeIds as $storeId) {
+                if ($storeId === (int) $defaultStore->getId()) {
+                    unset($storeLabels[$storeId]);
+                }
                 $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
                 $optionLabel->setStoreId($storeId)->setLabel($label);
-                $storeLabels[] = $optionLabel;
+                $storeLabels[$storeId] = $optionLabel;
             }
         }
 

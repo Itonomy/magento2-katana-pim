@@ -62,7 +62,7 @@ class SpecificationTranslation
      */
     public function process(array $localizationData, ProductAttributeInterface $productAttribute, string $defaultName): void
     {
-        $apiLabels = $this->getApiLabels($localizationData);
+        $apiLabels = $this->getApiLabels($localizationData, $defaultName);
         $attributeLabels = $productAttribute->getFrontendLabels();
         $defaultStore = $this->storeManager->getDefaultStoreView();
 
@@ -102,17 +102,19 @@ class SpecificationTranslation
      * Extract attribute labels from api data
      *
      * @param array $localizationData
+     * @param string $defaultName
      * @return array
      */
-    private function getApiLabels(array $localizationData): array
+    private function getApiLabels(array $localizationData, string $defaultName): array
     {
         $languageMapping = $this->katanaConfig->getLanguageMapping();
+        $preparedLocalizationData = $this->prepareLocalizedData($localizationData, $defaultName);
         $apiLabels = [];
 
         foreach ($languageMapping as $storeViewCode => $language) {
             $apiLabelValue = null;
 
-            foreach ($localizationData as $localeDatum) {
+            foreach ($preparedLocalizationData as $localeDatum) {
                 if ($localeDatum['LocaleKey'] === 'Name' && $localeDatum['LanguageCulture'] === $language) {
                     $apiLabelValue = $localeDatum['LocaleValue'];
                     break;
@@ -127,5 +129,22 @@ class SpecificationTranslation
         }
 
         return $apiLabels;
+    }
+
+    /**
+     * This is to map the default name to the localized data for katana default language code
+     *
+     * @param array $localizationData
+     * @param string $defaultName
+     * @return array
+     */
+    private function prepareLocalizedData(array $localizationData, string $defaultName): array
+    {
+        $localizationData[] = [
+            'LocaleKey' => 'Name',
+            'LocaleValue' => $defaultName,
+            'LanguageCulture' => 'default'
+        ];
+        return $localizationData;
     }
 }

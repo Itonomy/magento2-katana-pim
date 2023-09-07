@@ -217,6 +217,9 @@ class ProductImport implements ImportRunnerInterface
         }
 
         foreach ($languageMapping as $storeViewId => $languageCode) {
+            if ($languageCode === 'default') {
+                continue;
+            }
             $this->log('Starting import for ' . $languageCode . ' language in store ' . $storeViewId, $importInfo);
 
             $parsedData = $this->localizedDataParser->parse(

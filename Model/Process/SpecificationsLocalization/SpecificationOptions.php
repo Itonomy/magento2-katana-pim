@@ -212,9 +212,11 @@ class SpecificationOptions
         $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
         $defaultName = \trim($optionData['Name']);
         $optionLabel->setStoreId($defaultStore->getId())->setLabel($defaultName);
-        $storeLabels[] = $optionLabel;
+        $storeLabels[$defaultStore->getId()] = $optionLabel;
 
-        foreach ($optionData['LocalizedProperties'] as $prop) {
+        $preparedOptionData = $this->prepareLocalizedData($optionData['LocalizedProperties'], $defaultName);
+
+        foreach ($preparedOptionData as $prop) {
             if ($prop['LocaleKey'] !== 'Name') {
                 continue;
             }
@@ -227,9 +229,12 @@ class SpecificationOptions
             }
 
             foreach ($storeIds as $storeId) {
+                if ($storeId === (int)$defaultStore->getId()) {
+                    unset($storeLabels[$storeId]);
+                }
                 $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
                 $optionLabel->setStoreId($storeId)->setLabel($label);
-                $storeLabels[] = $optionLabel;
+                $storeLabels[$storeId] = $optionLabel;
             }
         }
 
@@ -268,5 +273,23 @@ class SpecificationOptions
             \trim(\mb_strtoupper($str1, $encoding)),
             \trim(\mb_strtoupper($str2, $encoding))
         );
+    }
+
+    /**
+     * This is to map the default name to the localized data for katana default language code
+     *
+     * @param array $localizedData
+     * @param string $defaultName
+     * @return string[]
+     */
+    private function prepareLocalizedData(array $localizedData, string $defaultName): array
+    {
+        $localizedData[] = [
+            'LocaleKey' => 'Name',
+            'LocaleValue' => $defaultName,
+            'LanguageCulture' => Katana::DEFAULT_LANGUAGE
+        ];
+
+        return $localizedData;
     }
 }

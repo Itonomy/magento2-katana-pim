@@ -57,6 +57,11 @@
                     <label>Store Language Mapping</label>
                     <frontend_model>Itonomy\Katanapim\Block\Adminhtml\Form\Field\StoreViewLanguages</frontend_model>
                     <backend_model>Itonomy\Katanapim\Config\Backend\StoreViewLanguages</backend_model>
+                    <comment><![CDATA[<strong style="color: orange">Note:</strong> to map KatanaPim default language to Magento for attribute translations,
+                     please specify string <strong>"default"</strong> (lowercase) in Katana Language code field.
+                     <br>
+                     example: <strong>Katana Language Code - default -------- Store View - English</strong>]]>
+                    </comment>
                 </field>
             </group>
         </section>

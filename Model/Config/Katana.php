@@ -22,6 +22,8 @@ class Katana extends AbstractHelper
 
     private const LANGUAGE_MAPPING = 'katanapim_product_import/store_languages/store_language_mapping';
 
+    public const DEFAULT_LANGUAGE = 'default';
+
     /**
      * Get Api Url
      *

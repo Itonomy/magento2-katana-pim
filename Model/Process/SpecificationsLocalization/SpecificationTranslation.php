@@ -143,8 +143,9 @@ class SpecificationTranslation
         $localizationData[] = [
             'LocaleKey' => 'Name',
             'LocaleValue' => $defaultName,
-            'LanguageCulture' => 'default'
+            'LanguageCulture' => Katana::DEFAULT_LANGUAGE
         ];
+
         return $localizationData;
     }
 }

@@ -287,8 +287,9 @@ class SpecificationOptions
         $localizedData[] = [
             'LocaleKey' => 'Name',
             'LocaleValue' => $defaultName,
-            'LanguageCulture' => 'default'
+            'LanguageCulture' => Katana::DEFAULT_LANGUAGE
         ];
+
         return $localizedData;
     }
 }

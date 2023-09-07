@@ -217,7 +217,7 @@ class ProductImport implements ImportRunnerInterface
         }
 
         foreach ($languageMapping as $storeViewId => $languageCode) {
-            if ($languageCode === 'default') {
+            if ($languageCode === Katana::DEFAULT_LANGUAGE) {
                 continue;
             }
             $this->log('Starting import for ' . $languageCode . ' language in store ' . $storeViewId, $importInfo);

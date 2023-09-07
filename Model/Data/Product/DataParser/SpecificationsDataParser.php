@@ -13,6 +13,7 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\Store;
 
 class SpecificationsDataParser implements DataParserInterface
 {
@@ -204,7 +205,7 @@ class SpecificationsDataParser implements DataParserInterface
      */
     private function isSelectAttributeValueExists(string $value, ProductAttributeInterface $attribute): bool
     {
-        $options = $attribute->setStoreId(0)->getOptions();
+        $options = $attribute->setStoreId(Store::DEFAULT_STORE_ID)->getOptions();
 
         foreach ($options as $option) {
             if ($this->mbStrcasecmp($option->getLabel(), $value) === 0) {

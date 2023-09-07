@@ -227,7 +227,7 @@ class SpecificationOptions
             }
 
             foreach ($storeIds as $storeId) {
-                if ($storeId === (int) $defaultStore->getId()) {
+                if ($storeId === (int)$defaultStore->getId()) {
                     unset($storeLabels[$storeId]);
                 }
                 $optionLabel = $this->attributeOptionLabelInterfaceFactory->create();
